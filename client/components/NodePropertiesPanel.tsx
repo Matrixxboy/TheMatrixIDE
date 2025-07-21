@@ -48,32 +48,32 @@ const defaultNodeConfigs: Record<string, NodePropertyConfig[]> = {
     { id: 'defaultValue', name: 'Default Value', type: 'string' as const, value: '', description: 'Default input value' }
   ],
   function: [
-    { id: 'functionName', name: 'Function Name', type: 'string', value: 'process_data', description: 'Name of the function' },
-    { id: 'parameters', name: 'Parameters', type: 'array', value: ['data'], description: 'Function parameters' },
-    { id: 'returnType', name: 'Return Type', type: 'select', value: 'auto', options: ['auto', 'string', 'number', 'boolean', 'array', 'object'], description: 'Expected return type' },
-    { id: 'async', name: 'Async Function', type: 'boolean', value: false, description: 'Whether function is asynchronous' },
-    { id: 'errorHandling', name: 'Error Handling', type: 'boolean', value: true, description: 'Include try-catch block' },
-    { id: 'customCode', name: 'Custom Code', type: 'code', value: '# Custom implementation', description: 'Custom function implementation' }
+    { id: 'functionName', name: 'Function Name', type: 'string' as const, value: 'process_data', description: 'Name of the function' },
+    { id: 'parameters', name: 'Parameters', type: 'array' as const, value: ['data'], description: 'Function parameters' },
+    { id: 'returnType', name: 'Return Type', type: 'select' as const, value: 'auto', options: ['auto', 'string', 'number', 'boolean', 'array', 'object'], description: 'Expected return type' },
+    { id: 'async', name: 'Async Function', type: 'boolean' as const, value: false, description: 'Whether function is asynchronous' },
+    { id: 'errorHandling', name: 'Error Handling', type: 'boolean' as const, value: true, description: 'Include try-catch block' },
+    { id: 'customCode', name: 'Custom Code', type: 'code' as const, value: '# Custom implementation', description: 'Custom function implementation' }
   ],
   api: [
-    { id: 'url', name: 'API URL', type: 'string', value: 'https://api.example.com', description: 'API endpoint URL' },
-    { id: 'method', name: 'HTTP Method', type: 'select', value: 'GET', options: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], description: 'HTTP request method' },
-    { id: 'headers', name: 'Headers', type: 'array', value: ['Content-Type: application/json'], description: 'HTTP headers' },
-    { id: 'timeout', name: 'Timeout (ms)', type: 'number', value: 5000, description: 'Request timeout in milliseconds' },
-    { id: 'retries', name: 'Retry Count', type: 'number', value: 3, description: 'Number of retry attempts' },
-    { id: 'authentication', name: 'Authentication', type: 'select', value: 'none', options: ['none', 'bearer', 'basic', 'api-key'], description: 'Authentication method' }
+    { id: 'url', name: 'API URL', type: 'string' as const, value: 'https://api.example.com', description: 'API endpoint URL' },
+    { id: 'method', name: 'HTTP Method', type: 'select' as const, value: 'GET', options: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], description: 'HTTP request method' },
+    { id: 'headers', name: 'Headers', type: 'array' as const, value: ['Content-Type: application/json'], description: 'HTTP headers' },
+    { id: 'timeout', name: 'Timeout (ms)', type: 'number' as const, value: 5000, description: 'Request timeout in milliseconds' },
+    { id: 'retries', name: 'Retry Count', type: 'number' as const, value: 3, description: 'Number of retry attempts' },
+    { id: 'authentication', name: 'Authentication', type: 'select' as const, value: 'none', options: ['none', 'bearer', 'basic', 'api-key'], description: 'Authentication method' }
   ],
   logic: [
-    { id: 'condition', name: 'Condition', type: 'code', value: 'data is not None', description: 'Boolean condition to evaluate' },
-    { id: 'operator', name: 'Operator', type: 'select', value: 'if', options: ['if', 'if-else', 'switch', 'while', 'for'], description: 'Logic operator type' },
-    { id: 'trueValue', name: 'True Value', type: 'string', value: 'condition_true', description: 'Value when condition is true' },
-    { id: 'falseValue', name: 'False Value', type: 'string', value: 'condition_false', description: 'Value when condition is false' }
+    { id: 'condition', name: 'Condition', type: 'code' as const, value: 'data is not None', description: 'Boolean condition to evaluate' },
+    { id: 'operator', name: 'Operator', type: 'select' as const, value: 'if', options: ['if', 'if-else', 'switch', 'while', 'for'], description: 'Logic operator type' },
+    { id: 'trueValue', name: 'True Value', type: 'string' as const, value: 'condition_true', description: 'Value when condition is true' },
+    { id: 'falseValue', name: 'False Value', type: 'string' as const, value: 'condition_false', description: 'Value when condition is false' }
   ],
   output: [
-    { id: 'outputType', name: 'Output Type', type: 'select', value: 'console', options: ['console', 'file', 'api', 'database'], description: 'Where to send output' },
-    { id: 'format', name: 'Format', type: 'select', value: 'text', options: ['text', 'json', 'csv', 'xml'], description: 'Output format' },
-    { id: 'template', name: 'Template', type: 'string', value: 'Result: {result}', description: 'Output template with placeholders' },
-    { id: 'logLevel', name: 'Log Level', type: 'select', value: 'info', options: ['debug', 'info', 'warn', 'error'], description: 'Logging level' }
+    { id: 'outputType', name: 'Output Type', type: 'select' as const, value: 'console', options: ['console', 'file', 'api', 'database'], description: 'Where to send output' },
+    { id: 'format', name: 'Format', type: 'select' as const, value: 'text', options: ['text', 'json', 'csv', 'xml'], description: 'Output format' },
+    { id: 'template', name: 'Template', type: 'string' as const, value: 'Result: {result}', description: 'Output template with placeholders' },
+    { id: 'logLevel', name: 'Log Level', type: 'select' as const, value: 'info', options: ['debug', 'info', 'warn', 'error'], description: 'Logging level' }
   ]
 };
 
