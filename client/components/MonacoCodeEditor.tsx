@@ -63,6 +63,19 @@ export default function MonacoCodeEditor() {
     }
   }, [editorInstance, generatedCode]);
 
+  // Listen for external execution triggers
+  useEffect(() => {
+    const handleExecuteCode = () => {
+      handleRun();
+    };
+
+    window.addEventListener('executeCode', handleExecuteCode);
+
+    return () => {
+      window.removeEventListener('executeCode', handleExecuteCode);
+    };
+  }, []);
+
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     setEditorInstance(editor);
     editorRef.current = editor;
