@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -57,41 +58,31 @@ interface SettingsState {
 }
 
 export default function SettingsPanel() {
-  const [activeTab, setActiveTab] = useState('general');
-  const [settings, setSettings] = useState<SettingsState>({
-    theme: 'dark',
-    fontSize: 14,
-    nodeSnapToGrid: true,
-    showMinimap: true,
-    language: 'python',
-    autoSave: true,
-    livePreview: true,
-    wordWrap: true,
-    aiEnabled: true,
-    aiModel: 'local-gpt-neo',
-    aiSuggestions: true,
-    aiAutoComplete: true,
-    maxNodes: 100,
-    renderOptimization: true,
-    memoryLimit: 512,
-    defaultExportFormat: 'python',
-    includeComments: true,
-    minifyCode: false,
-  });
+  const { state, dispatch } = useApp();
+  const { settings, activeTab } = state;
+  const [localSettings, setLocalSettings] = useState(settings);
+  const [hasChanges, setHasChanges] = useState(false);
 
-  const updateSetting = <K extends keyof SettingsState>(key: K, value: SettingsState[K]) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  // Sync local settings with global state
+  useEffect(() => {
+    setLocalSettings(settings);
+    setHasChanges(false);
+  }, [settings]);
+
+  const updateSetting = <K extends keyof typeof settings>(key: K, value: typeof settings[K]) => {
+    setLocalSettings(prev => ({ ...prev, [key]: value }));
+    setHasChanges(true);
   };
 
   const handleSaveSettings = () => {
-    // Save settings to localStorage or backend
-    localStorage.setItem('matrix-ide-settings', JSON.stringify(settings));
+    dispatch({ type: 'UPDATE_SETTINGS', payload: localSettings });
+    localStorage.setItem('matrix-ide-settings', JSON.stringify(localSettings));
+    setHasChanges(false);
   };
 
   const handleResetSettings = () => {
-    // Reset to defaults
-    setSettings({
-      theme: 'dark',
+    const defaultSettings = {
+      theme: 'dark' as const,
       fontSize: 14,
       nodeSnapToGrid: true,
       showMinimap: true,
@@ -109,7 +100,9 @@ export default function SettingsPanel() {
       defaultExportFormat: 'python',
       includeComments: true,
       minifyCode: false,
-    });
+    };
+    setLocalSettings(defaultSettings);
+    setHasChanges(true);
   };
 
   return (
@@ -125,16 +118,23 @@ export default function SettingsPanel() {
             <RotateCcw className="h-4 w-4 mr-1" />
             Reset
           </Button>
-          <Button size="sm" onClick={handleSaveSettings} className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark">
+          <Button
+            size="sm"
+            onClick={handleSaveSettings}
+            disabled={!hasChanges}
+            className={`bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark ${
+              !hasChanges ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
             <Save className="h-4 w-4 mr-1" />
-            Save
+            {hasChanges ? 'Save Changes' : 'Saved'}
           </Button>
         </div>
       </div>
 
       {/* Settings Content */}
       <div className="flex-1 overflow-hidden">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+        <Tabs value={activeTab} onValueChange={(value) => dispatch({ type: 'SET_ACTIVE_TAB', payload: value })} className="h-full flex flex-col">
           <TabsList className="mx-4 mt-2 bg-matrix-purple-800/30 border border-matrix-purple-600/30 grid grid-cols-4">
             <TabsTrigger 
               value="general" 
@@ -181,7 +181,7 @@ export default function SettingsPanel() {
                       <div className="text-sm text-matrix-purple-200">Theme</div>
                       <div className="text-xs text-matrix-purple-400">Choose your preferred color scheme</div>
                     </div>
-                    <Select value={settings.theme} onValueChange={(value: any) => updateSetting('theme', value)}>
+                    <Select value={localSettings.theme} onValueChange={(value: any) => updateSetting('theme', value)}>
                       <SelectTrigger className="w-32 bg-matrix-purple-800/30 border-matrix-purple-600/50">
                         <SelectValue />
                       </SelectTrigger>
@@ -199,9 +199,9 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Adjust editor font size</div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-matrix-purple-300">{settings.fontSize}px</span>
+                      <span className="text-xs text-matrix-purple-300">{localSettings.fontSize}px</span>
                       <Slider
-                        value={[settings.fontSize]}
+                        value={[localSettings.fontSize]}
                         onValueChange={([value]) => updateSetting('fontSize', value)}
                         min={10}
                         max={24}
@@ -217,7 +217,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Align nodes to grid automatically</div>
                     </div>
                     <Switch
-                      checked={settings.nodeSnapToGrid}
+                      checked={localSettings.nodeSnapToGrid}
                       onCheckedChange={(checked) => updateSetting('nodeSnapToGrid', checked)}
                     />
                   </div>
@@ -228,7 +228,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Display minimap in node canvas</div>
                     </div>
                     <Switch
-                      checked={settings.showMinimap}
+                      checked={localSettings.showMinimap}
                       onCheckedChange={(checked) => updateSetting('showMinimap', checked)}
                     />
                   </div>
@@ -249,9 +249,9 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Maximum nodes in canvas</div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-matrix-purple-300">{settings.maxNodes}</span>
+                      <span className="text-xs text-matrix-purple-300">{localSettings.maxNodes}</span>
                       <Slider
-                        value={[settings.maxNodes]}
+                        value={[localSettings.maxNodes]}
                         onValueChange={([value]) => updateSetting('maxNodes', value)}
                         min={50}
                         max={500}
@@ -267,7 +267,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Optimize rendering for better performance</div>
                     </div>
                     <Switch
-                      checked={settings.renderOptimization}
+                      checked={localSettings.renderOptimization}
                       onCheckedChange={(checked) => updateSetting('renderOptimization', checked)}
                     />
                   </div>
@@ -278,9 +278,9 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Memory usage limit for AI processing</div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-matrix-purple-300">{settings.memoryLimit}MB</span>
+                      <span className="text-xs text-matrix-purple-300">{localSettings.memoryLimit}MB</span>
                       <Slider
-                        value={[settings.memoryLimit]}
+                        value={[localSettings.memoryLimit]}
                         onValueChange={([value]) => updateSetting('memoryLimit', value)}
                         min={256}
                         max={2048}
