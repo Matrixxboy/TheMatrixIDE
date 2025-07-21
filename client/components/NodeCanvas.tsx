@@ -353,8 +353,15 @@ export default function NodeCanvas() {
             <span className="text-sm font-medium text-matrix-gold-300">
               {node.data.label}
             </span>
-            <div className="text-xs text-matrix-purple-400 capitalize">
-              {node.type} • ID: {node.id.slice(-4)}
+            <div className="flex items-center gap-2 text-xs text-matrix-purple-400">
+              <span className="capitalize">{node.type}</span>
+              <span>•</span>
+              <span>ID: {node.id.slice(-4)}</span>
+              {node.data.code && node.data.code.length > 50 && (
+                <span className="text-matrix-gold-400" title="Has custom code">
+                  • <Code className="h-3 w-3 inline" />
+                </span>
+              )}
             </div>
           </div>
           {isSelected && (
