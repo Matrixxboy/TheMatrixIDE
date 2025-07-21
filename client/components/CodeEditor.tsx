@@ -13,7 +13,7 @@ import {
   Edit3,
   Code2,
   Zap,
-  Save
+  Save,
 } from "lucide-react";
 
 interface CodeEditorProps {}
@@ -59,7 +59,7 @@ def generate_output(data):
 
 if __name__ == "__main__":
     process_user_input()`,
-  
+
   javascript: `// Matrix IDE Generated Code
 class MatrixProcessor {
     constructor() {
@@ -157,15 +157,15 @@ int main() {
     MatrixProcessor processor;
     processor.processUserInput();
     return 0;
-}`
+}`,
 };
 
 export default function CodeEditor() {
   const { state, dispatch } = useApp();
   const { generatedCode, settings, activeTab } = state;
-  const [mode, setMode] = useState<'view' | 'edit'>('view');
+  const [mode, setMode] = useState<"view" | "edit">("view");
   const [localCode, setLocalCode] = useState(generatedCode);
-  const [output, setOutput] = useState('');
+  const [output, setOutput] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
@@ -184,59 +184,66 @@ export default function CodeEditor() {
   };
 
   const handleSave = () => {
-    dispatch({ type: 'SET_GENERATED_CODE', payload: localCode });
+    dispatch({ type: "SET_GENERATED_CODE", payload: localCode });
   };
 
   const simulateExecution = () => {
     // Simulate running the code
-    const lines = generatedCode.split('\n');
+    const lines = generatedCode.split("\n");
     const outputLines = [];
 
-    if (generatedCode.includes('input(')) {
-      outputLines.push('Enter your data: Hello World');
+    if (generatedCode.includes("input(")) {
+      outputLines.push("Enter your data: Hello World");
     }
 
-    if (generatedCode.includes('process_data')) {
-      outputLines.push('Processing data...');
+    if (generatedCode.includes("process_data")) {
+      outputLines.push("Processing data...");
     }
 
-    if (generatedCode.includes('print(')) {
-      outputLines.push('Result: AI_ENHANCED: hello world');
+    if (generatedCode.includes("print(")) {
+      outputLines.push("Result: AI_ENHANCED: hello world");
     }
 
-    outputLines.push('\n✓ Execution completed successfully in 0.234s');
-    outputLines.push('✓ Memory usage: 12.3 MB');
-    outputLines.push('✓ No errors detected');
+    outputLines.push("\n✓ Execution completed successfully in 0.234s");
+    outputLines.push("✓ Memory usage: 12.3 MB");
+    outputLines.push("✓ No errors detected");
 
-    setOutput(outputLines.join('\n'));
+    setOutput(outputLines.join("\n"));
 
     // Simulate error checking
     const potentialErrors = [];
-    if (!generatedCode.includes('def ') && !generatedCode.includes('class ') && generatedCode.split('\n').length > 5) {
-      potentialErrors.push('Consider organizing code into functions for better maintainability');
+    if (
+      !generatedCode.includes("def ") &&
+      !generatedCode.includes("class ") &&
+      generatedCode.split("\n").length > 5
+    ) {
+      potentialErrors.push(
+        "Consider organizing code into functions for better maintainability",
+      );
     }
-    if (!generatedCode.includes('try:') && generatedCode.includes('input(')) {
-      potentialErrors.push('Add error handling for user input validation');
+    if (!generatedCode.includes("try:") && generatedCode.includes("input(")) {
+      potentialErrors.push("Add error handling for user input validation");
     }
     setErrors(potentialErrors);
   };
 
   const handleRun = () => {
     simulateExecution();
-    dispatch({ type: 'SET_ACTIVE_TAB', payload: 'output' });
+    dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
   };
 
   const handleDownload = () => {
     const fileExtensions = {
-      python: 'py',
-      javascript: 'js',
-      cpp: 'cpp'
+      python: "py",
+      javascript: "js",
+      cpp: "cpp",
     };
 
-    const ext = fileExtensions[settings.language as keyof typeof fileExtensions] || 'txt';
-    const blob = new Blob([localCode], { type: 'text/plain' });
+    const ext =
+      fileExtensions[settings.language as keyof typeof fileExtensions] || "txt";
+    const blob = new Blob([localCode], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `matrix_generated.${ext}`;
     a.click();
@@ -247,24 +254,30 @@ export default function CodeEditor() {
     <div className="h-full flex flex-col">
       {/* Editor Header */}
       <div className="h-12 border-b border-matrix-purple-600/30 flex items-center justify-between px-4">
-        <Tabs value={activeTab} onValueChange={(value) => dispatch({ type: 'SET_ACTIVE_TAB', payload: value })} className="flex-1">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) =>
+            dispatch({ type: "SET_ACTIVE_TAB", payload: value })
+          }
+          className="flex-1"
+        >
           <TabsList className="bg-matrix-purple-800/30 border border-matrix-purple-600/30">
-            <TabsTrigger 
-              value="generated" 
+            <TabsTrigger
+              value="generated"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <FileText className="h-4 w-4 mr-2" />
               Generated Code
             </TabsTrigger>
-            <TabsTrigger 
-              value="output" 
+            <TabsTrigger
+              value="output"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <Terminal className="h-4 w-4 mr-2" />
               Output
             </TabsTrigger>
-            <TabsTrigger 
-              value="errors" 
+            <TabsTrigger
+              value="errors"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <Zap className="h-4 w-4 mr-2" />
@@ -272,28 +285,50 @@ export default function CodeEditor() {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-        
+
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="border-matrix-gold-400/50 text-matrix-gold-300">
+          <Badge
+            variant="outline"
+            className="border-matrix-gold-400/50 text-matrix-gold-300"
+          >
             {settings.language.toUpperCase()}
           </Badge>
           <Button
             size="sm"
-            variant={mode === 'edit' ? 'secondary' : 'ghost'}
-            onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}
+            variant={mode === "edit" ? "secondary" : "ghost"}
+            onClick={() => setMode(mode === "edit" ? "view" : "edit")}
             className="h-8"
           >
-            {mode === 'edit' ? <Eye className="h-4 w-4" /> : <Edit3 className="h-4 w-4" />}
+            {mode === "edit" ? (
+              <Eye className="h-4 w-4" />
+            ) : (
+              <Edit3 className="h-4 w-4" />
+            )}
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleCopy} className="h-8">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleCopy}
+            className="h-8"
+          >
             <Copy className="h-4 w-4" />
           </Button>
-          {mode === 'edit' && (
-            <Button size="sm" variant="ghost" onClick={handleSave} className="h-8">
+          {mode === "edit" && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleSave}
+              className="h-8"
+            >
               <Save className="h-4 w-4" />
             </Button>
           )}
-          <Button size="sm" variant="ghost" onClick={handleDownload} className="h-8">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleDownload}
+            className="h-8"
+          >
             <Download className="h-4 w-4" />
           </Button>
           <Button
@@ -312,35 +347,57 @@ export default function CodeEditor() {
         <Tabs value={activeTab} className="h-full">
           <TabsContent value="generated" className="h-full m-0">
             <div className="h-full bg-matrix-dark/30 relative">
-              {mode === 'edit' ? (
+              {mode === "edit" ? (
                 <textarea
                   value={localCode}
                   onChange={(e) => setLocalCode(e.target.value)}
                   className="w-full h-full p-4 bg-transparent text-matrix-purple-200 font-mono text-sm resize-none border-none outline-none"
-                  style={{ fontFamily: 'Monaco, Consolas, "Liberation Mono", Courier, monospace', fontSize: `${settings.fontSize}px` }}
+                  style={{
+                    fontFamily:
+                      'Monaco, Consolas, "Liberation Mono", Courier, monospace',
+                    fontSize: `${settings.fontSize}px`,
+                  }}
                   placeholder="Generated code will appear here..."
                 />
               ) : (
-                <pre className="w-full h-full p-4 text-matrix-purple-200 font-mono text-sm overflow-auto" style={{ fontSize: `${settings.fontSize}px` }}>
-                  <code>{localCode || 'No code generated yet. Add and connect nodes in the canvas to generate code.'}</code>
+                <pre
+                  className="w-full h-full p-4 text-matrix-purple-200 font-mono text-sm overflow-auto"
+                  style={{ fontSize: `${settings.fontSize}px` }}
+                >
+                  <code>
+                    {localCode ||
+                      "No code generated yet. Add and connect nodes in the canvas to generate code."}
+                  </code>
                 </pre>
               )}
 
               {/* Enhanced syntax highlighting overlay */}
-              {!mode || mode === 'view' ? (
+              {!mode || mode === "view" ? (
                 <div className="absolute inset-0 pointer-events-none">
-                  <div className="p-4 font-mono text-sm" style={{ fontSize: `${settings.fontSize}px` }}>
-                    {(localCode || '').split('\n').map((line, index) => (
+                  <div
+                    className="p-4 font-mono text-sm"
+                    style={{ fontSize: `${settings.fontSize}px` }}
+                  >
+                    {(localCode || "").split("\n").map((line, index) => (
                       <div key={index} className="leading-5">
-                        {line.includes('def ') || line.includes('class ') || line.includes('function ') ? (
-                          <span className="text-matrix-gold-400 font-semibold">{line}</span>
-                        ) : line.includes('#') || line.includes('//') ? (
-                          <span className="text-matrix-purple-400 italic">{line}</span>
+                        {line.includes("def ") ||
+                        line.includes("class ") ||
+                        line.includes("function ") ? (
+                          <span className="text-matrix-gold-400 font-semibold">
+                            {line}
+                          </span>
+                        ) : line.includes("#") || line.includes("//") ? (
+                          <span className="text-matrix-purple-400 italic">
+                            {line}
+                          </span>
                         ) : line.includes('"') || line.includes("'") ? (
                           <span className="text-green-400">{line}</span>
-                        ) : line.includes('import ') || line.includes('from ') ? (
+                        ) : line.includes("import ") ||
+                          line.includes("from ") ? (
                           <span className="text-blue-400">{line}</span>
-                        ) : line.includes('if ') || line.includes('else:') || line.includes('elif ') ? (
+                        ) : line.includes("if ") ||
+                          line.includes("else:") ||
+                          line.includes("elif ") ? (
                           <span className="text-yellow-400">{line}</span>
                         ) : null}
                       </div>
@@ -350,33 +407,51 @@ export default function CodeEditor() {
               ) : null}
             </div>
           </TabsContent>
-          
+
           <TabsContent value="output" className="h-full m-0">
             <div className="h-full bg-matrix-dark/30 p-4 font-mono text-sm text-matrix-purple-200">
-              <div className="text-matrix-gold-400 mb-2">$ {settings.language} matrix_generated.{settings.language === 'python' ? 'py' : settings.language === 'javascript' ? 'js' : 'cpp'}</div>
-              <pre className="whitespace-pre-wrap">{output || 'Click "Run" to execute the generated code...'}</pre>
+              <div className="text-matrix-gold-400 mb-2">
+                $ {settings.language} matrix_generated.
+                {settings.language === "python"
+                  ? "py"
+                  : settings.language === "javascript"
+                    ? "js"
+                    : "cpp"}
+              </div>
+              <pre className="whitespace-pre-wrap">
+                {output || 'Click "Run" to execute the generated code...'}
+              </pre>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="errors" className="h-full m-0">
             <div className="h-full bg-matrix-dark/30 p-4 font-mono text-sm">
               {errors.length === 0 ? (
                 <div className="text-green-400 mb-4">✓ No errors found</div>
               ) : (
-                <div className="text-yellow-400 mb-4">⚠ {errors.length} suggestion(s) found</div>
+                <div className="text-yellow-400 mb-4">
+                  ⚠ {errors.length} suggestion(s) found
+                </div>
               )}
 
-              <div className="text-matrix-purple-400 mb-2">Code quality checks:</div>
+              <div className="text-matrix-purple-400 mb-2">
+                Code quality checks:
+              </div>
               <div className="text-green-400">✓ Syntax validation passed</div>
               <div className="text-green-400">✓ Type checking passed</div>
               <div className="text-green-400">✓ Security scan passed</div>
-              <div className="text-green-400">✓ Performance analysis complete</div>
+              <div className="text-green-400">
+                ✓ Performance analysis complete
+              </div>
 
               {errors.length > 0 && (
                 <div className="mt-4">
                   <div className="text-matrix-gold-400 mb-2">Suggestions:</div>
                   {errors.map((error, index) => (
-                    <div key={index} className="text-matrix-purple-300 ml-2 mb-1">
+                    <div
+                      key={index}
+                      className="text-matrix-purple-300 ml-2 mb-1"
+                    >
                       • {error}
                     </div>
                   ))}

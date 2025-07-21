@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode } from "react";
 
 // Types
 export interface Node {
   id: string;
-  type: 'input' | 'output' | 'function' | 'variable' | 'api' | 'logic';
+  type: "input" | "output" | "function" | "variable" | "api" | "logic";
   position: { x: number; y: number };
   data: {
     label: string;
@@ -25,7 +25,7 @@ export interface Connection {
 export interface FileNode {
   id: string;
   name: string;
-  type: 'file' | 'folder';
+  type: "file" | "folder";
   children?: FileNode[];
   expanded?: boolean;
   language?: string;
@@ -33,7 +33,7 @@ export interface FileNode {
 }
 
 export interface Settings {
-  theme: 'dark' | 'light' | 'auto';
+  theme: "dark" | "light" | "auto";
   fontSize: number;
   nodeSnapToGrid: boolean;
   showMinimap: boolean;
@@ -60,24 +60,24 @@ export interface AppState {
   selectedNode: string | null;
   canvasZoom: number;
   canvasPan: { x: number; y: number };
-  
+
   // UI state
   sidebarOpen: boolean;
-  activePanel: 'code' | 'ai' | 'settings';
+  activePanel: "code" | "ai" | "settings";
   activeTab: string;
-  
+
   // Project state
   projectFiles: FileNode[];
   currentFile: string | null;
   generatedCode: string;
-  
+
   // Settings
   settings: Settings;
-  
+
   // AI state
   aiMessages: Array<{
     id: string;
-    type: 'user' | 'ai';
+    type: "user" | "ai";
     content: string;
     timestamp: Date;
     category?: string;
@@ -87,134 +87,167 @@ export interface AppState {
 
 // Actions
 type AppAction =
-  | { type: 'ADD_NODE'; payload: Node }
-  | { type: 'UPDATE_NODE'; payload: { id: string; updates: Partial<Node> } }
-  | { type: 'DELETE_NODE'; payload: string }
-  | { type: 'SELECT_NODE'; payload: string | null }
-  | { type: 'MOVE_NODE'; payload: { id: string; position: { x: number; y: number } } }
-  | { type: 'ADD_CONNECTION'; payload: Connection }
-  | { type: 'DELETE_CONNECTION'; payload: string }
-  | { type: 'SET_CANVAS_ZOOM'; payload: number }
-  | { type: 'SET_CANVAS_PAN'; payload: { x: number; y: number } }
-  | { type: 'TOGGLE_SIDEBAR' }
-  | { type: 'SET_ACTIVE_PANEL'; payload: 'code' | 'ai' | 'settings' }
-  | { type: 'SET_ACTIVE_TAB'; payload: string }
-  | { type: 'UPDATE_SETTINGS'; payload: Partial<Settings> }
-  | { type: 'SET_GENERATED_CODE'; payload: string }
-  | { type: 'TOGGLE_FILE_FOLDER'; payload: string }
-  | { type: 'SELECT_FILE'; payload: string }
-  | { type: 'ADD_AI_MESSAGE'; payload: { type: 'user' | 'ai'; content: string; category?: string } }
-  | { type: 'SET_AI_PROCESSING'; payload: boolean };
+  | { type: "ADD_NODE"; payload: Node }
+  | { type: "UPDATE_NODE"; payload: { id: string; updates: Partial<Node> } }
+  | { type: "DELETE_NODE"; payload: string }
+  | { type: "SELECT_NODE"; payload: string | null }
+  | {
+      type: "MOVE_NODE";
+      payload: { id: string; position: { x: number; y: number } };
+    }
+  | { type: "ADD_CONNECTION"; payload: Connection }
+  | { type: "DELETE_CONNECTION"; payload: string }
+  | { type: "SET_CANVAS_ZOOM"; payload: number }
+  | { type: "SET_CANVAS_PAN"; payload: { x: number; y: number } }
+  | { type: "TOGGLE_SIDEBAR" }
+  | { type: "SET_ACTIVE_PANEL"; payload: "code" | "ai" | "settings" }
+  | { type: "SET_ACTIVE_TAB"; payload: string }
+  | { type: "UPDATE_SETTINGS"; payload: Partial<Settings> }
+  | { type: "SET_GENERATED_CODE"; payload: string }
+  | { type: "TOGGLE_FILE_FOLDER"; payload: string }
+  | { type: "SELECT_FILE"; payload: string }
+  | {
+      type: "ADD_AI_MESSAGE";
+      payload: { type: "user" | "ai"; content: string; category?: string };
+    }
+  | { type: "SET_AI_PROCESSING"; payload: boolean };
 
 // Initial state
 const initialState: AppState = {
   nodes: [
     {
-      id: '1',
-      type: 'input',
+      id: "1",
+      type: "input",
       position: { x: 100, y: 100 },
       data: {
-        label: 'User Input',
-        outputs: ['value'],
-        code: 'user_input = input("Enter value: ")'
-      }
+        label: "User Input",
+        outputs: ["value"],
+        code: 'user_input = input("Enter value: ")',
+      },
     },
     {
-      id: '2',
-      type: 'function',
+      id: "2",
+      type: "function",
       position: { x: 300, y: 150 },
       data: {
-        label: 'Process Data',
-        inputs: ['data'],
-        outputs: ['result'],
-        code: 'result = process_data(data)'
-      }
+        label: "Process Data",
+        inputs: ["data"],
+        outputs: ["result"],
+        code: "result = process_data(data)",
+      },
     },
     {
-      id: '3',
-      type: 'output',
+      id: "3",
+      type: "output",
       position: { x: 500, y: 200 },
       data: {
-        label: 'Display Result',
-        inputs: ['result'],
-        code: 'print(f"Result: {result}")'
-      }
-    }
+        label: "Display Result",
+        inputs: ["result"],
+        code: 'print(f"Result: {result}")',
+      },
+    },
   ],
   connections: [
     {
-      id: 'conn1',
-      source: '1',
-      target: '2',
-      sourceOutput: 'value',
-      targetInput: 'data'
+      id: "conn1",
+      source: "1",
+      target: "2",
+      sourceOutput: "value",
+      targetInput: "data",
     },
     {
-      id: 'conn2',
-      source: '2',
-      target: '3',
-      sourceOutput: 'result',
-      targetInput: 'result'
-    }
+      id: "conn2",
+      source: "2",
+      target: "3",
+      sourceOutput: "result",
+      targetInput: "result",
+    },
   ],
   selectedNode: null,
   canvasZoom: 1,
   canvasPan: { x: 0, y: 0 },
   sidebarOpen: true,
-  activePanel: 'code',
-  activeTab: 'generated',
+  activePanel: "code",
+  activeTab: "generated",
   projectFiles: [
     {
-      id: '1',
-      name: 'matrix-project',
-      type: 'folder',
+      id: "1",
+      name: "matrix-project",
+      type: "folder",
       expanded: true,
       children: [
         {
-          id: '2',
-          name: 'src',
-          type: 'folder',
+          id: "2",
+          name: "src",
+          type: "folder",
           expanded: true,
           children: [
-            { id: '3', name: 'main.py', type: 'file', language: 'python', content: '# Generated code will appear here' },
-            { id: '4', name: 'data_processor.py', type: 'file', language: 'python', content: 'def process_data(data):\n    return data.strip().lower()' },
-            { id: '5', name: 'ai_module.py', type: 'file', language: 'python', content: '# AI processing module' },
-          ]
+            {
+              id: "3",
+              name: "main.py",
+              type: "file",
+              language: "python",
+              content: "# Generated code will appear here",
+            },
+            {
+              id: "4",
+              name: "data_processor.py",
+              type: "file",
+              language: "python",
+              content:
+                "def process_data(data):\n    return data.strip().lower()",
+            },
+            {
+              id: "5",
+              name: "ai_module.py",
+              type: "file",
+              language: "python",
+              content: "# AI processing module",
+            },
+          ],
         },
-        { id: '13', name: 'README.md', type: 'file', language: 'markdown', content: '# Matrix IDE Project\n\nThis project was generated using The Matrix IDE.' },
-      ]
-    }
+        {
+          id: "13",
+          name: "README.md",
+          type: "file",
+          language: "markdown",
+          content:
+            "# Matrix IDE Project\n\nThis project was generated using The Matrix IDE.",
+        },
+      ],
+    },
   ],
   currentFile: null,
-  generatedCode: '',
+  generatedCode: "",
   settings: {
-    theme: 'dark',
+    theme: "dark",
     fontSize: 14,
     nodeSnapToGrid: true,
     showMinimap: true,
-    language: 'python',
+    language: "python",
     autoSave: true,
     livePreview: true,
     wordWrap: true,
     aiEnabled: true,
-    aiModel: 'local-gpt-neo',
+    aiModel: "local-gpt-neo",
     aiSuggestions: true,
     aiAutoComplete: true,
     maxNodes: 100,
     renderOptimization: true,
     memoryLimit: 512,
-    defaultExportFormat: 'python',
+    defaultExportFormat: "python",
     includeComments: true,
     minifyCode: false,
   },
   aiMessages: [
     {
-      id: '1',
-      type: 'ai',
-      content: 'Welcome to Matrix IDE AI Assistant! I\'m running locally on your machine for complete privacy. How can I help you with your code today?',
+      id: "1",
+      type: "ai",
+      content:
+        "Welcome to Matrix IDE AI Assistant! I'm running locally on your machine for complete privacy. How can I help you with your code today?",
       timestamp: new Date(),
-      category: 'chat'
-    }
+      category: "chat",
+    },
   ],
   aiProcessing: false,
 };
@@ -222,105 +255,108 @@ const initialState: AppState = {
 // Reducer
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
-    case 'ADD_NODE':
+    case "ADD_NODE":
       return {
         ...state,
-        nodes: [...state.nodes, action.payload]
+        nodes: [...state.nodes, action.payload],
       };
-      
-    case 'UPDATE_NODE':
+
+    case "UPDATE_NODE":
       return {
         ...state,
-        nodes: state.nodes.map(node =>
+        nodes: state.nodes.map((node) =>
           node.id === action.payload.id
             ? { ...node, ...action.payload.updates }
-            : node
-        )
+            : node,
+        ),
       };
-      
-    case 'DELETE_NODE':
+
+    case "DELETE_NODE":
       return {
         ...state,
-        nodes: state.nodes.filter(node => node.id !== action.payload),
+        nodes: state.nodes.filter((node) => node.id !== action.payload),
         connections: state.connections.filter(
-          conn => conn.source !== action.payload && conn.target !== action.payload
-        )
+          (conn) =>
+            conn.source !== action.payload && conn.target !== action.payload,
+        ),
       };
-      
-    case 'SELECT_NODE':
+
+    case "SELECT_NODE":
       return {
         ...state,
-        selectedNode: action.payload
+        selectedNode: action.payload,
       };
-      
-    case 'MOVE_NODE':
+
+    case "MOVE_NODE":
       return {
         ...state,
-        nodes: state.nodes.map(node =>
+        nodes: state.nodes.map((node) =>
           node.id === action.payload.id
             ? { ...node, position: action.payload.position }
-            : node
-        )
+            : node,
+        ),
       };
-      
-    case 'ADD_CONNECTION':
+
+    case "ADD_CONNECTION":
       return {
         ...state,
-        connections: [...state.connections, action.payload]
+        connections: [...state.connections, action.payload],
       };
-      
-    case 'DELETE_CONNECTION':
+
+    case "DELETE_CONNECTION":
       return {
         ...state,
-        connections: state.connections.filter(conn => conn.id !== action.payload)
+        connections: state.connections.filter(
+          (conn) => conn.id !== action.payload,
+        ),
       };
-      
-    case 'SET_CANVAS_ZOOM':
+
+    case "SET_CANVAS_ZOOM":
       return {
         ...state,
-        canvasZoom: action.payload
+        canvasZoom: action.payload,
       };
-      
-    case 'SET_CANVAS_PAN':
+
+    case "SET_CANVAS_PAN":
       return {
         ...state,
-        canvasPan: action.payload
+        canvasPan: action.payload,
       };
-      
-    case 'TOGGLE_SIDEBAR':
+
+    case "TOGGLE_SIDEBAR":
       return {
         ...state,
-        sidebarOpen: !state.sidebarOpen
+        sidebarOpen: !state.sidebarOpen,
       };
-      
-    case 'SET_ACTIVE_PANEL':
+
+    case "SET_ACTIVE_PANEL":
       return {
         ...state,
-        activePanel: action.payload
+        activePanel: action.payload,
       };
-      
-    case 'SET_ACTIVE_TAB':
+
+    case "SET_ACTIVE_TAB":
       return {
         ...state,
-        activeTab: action.payload
+        activeTab: action.payload,
       };
-      
-    case 'UPDATE_SETTINGS':
+
+    case "UPDATE_SETTINGS":
       return {
         ...state,
-        settings: { ...state.settings, ...action.payload }
+        settings: { ...state.settings, ...action.payload },
       };
-      
-    case 'SET_GENERATED_CODE':
+
+    case "SET_GENERATED_CODE":
       return {
         ...state,
-        generatedCode: action.payload
+        generatedCode: action.payload,
       };
-      
-    case 'TOGGLE_FILE_FOLDER':
+
+    case "TOGGLE_FILE_FOLDER":
       const toggleNode = (nodes: FileNode[]): FileNode[] => {
-        return nodes.map(node => {
-          if (node.id === action.payload && node.type === 'folder') {
+        return nodes.map((node) => {
+          if (node.id === action.payload && node.type === "folder") {
             return { ...node, expanded: !node.expanded };
           }
           if (node.children) {
@@ -331,16 +367,16 @@ function appReducer(state: AppState, action: AppAction): AppState {
       };
       return {
         ...state,
-        projectFiles: toggleNode(state.projectFiles)
+        projectFiles: toggleNode(state.projectFiles),
       };
-      
-    case 'SELECT_FILE':
+
+    case "SELECT_FILE":
       return {
         ...state,
-        currentFile: action.payload
+        currentFile: action.payload,
       };
-      
-    case 'ADD_AI_MESSAGE':
+
+    case "ADD_AI_MESSAGE":
       return {
         ...state,
         aiMessages: [
@@ -350,17 +386,17 @@ function appReducer(state: AppState, action: AppAction): AppState {
             type: action.payload.type,
             content: action.payload.content,
             timestamp: new Date(),
-            category: action.payload.category
-          }
-        ]
+            category: action.payload.category,
+          },
+        ],
       };
-      
-    case 'SET_AI_PROCESSING':
+
+    case "SET_AI_PROCESSING":
       return {
         ...state,
-        aiProcessing: action.payload
+        aiProcessing: action.payload,
       };
-      
+
     default:
       return state;
   }
@@ -375,7 +411,7 @@ const AppContext = createContext<{
 // Provider
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
-  
+
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       {children}
@@ -387,7 +423,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 export function useApp() {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
+    throw new Error("useApp must be used within an AppProvider");
   }
   return context;
 }

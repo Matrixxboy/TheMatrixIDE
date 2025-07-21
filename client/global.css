@@ -129,7 +129,11 @@
 
   body {
     @apply bg-background text-foreground;
-    background: radial-gradient(ellipse at center, hsl(var(--matrix-purple-900)) 0%, hsl(var(--matrix-dark)) 70%);
+    background: radial-gradient(
+      ellipse at center,
+      hsl(var(--matrix-purple-900)) 0%,
+      hsl(var(--matrix-dark)) 70%
+    );
     min-height: 100vh;
   }
 }
@@ -170,7 +174,8 @@
   }
 
   @keyframes matrix-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
       box-shadow: 0 0 20px hsla(var(--matrix-glow), 0.3);
     }
@@ -182,8 +187,11 @@
 
   /* Node editor specific styles */
   .node-canvas {
-    background-image:
-      radial-gradient(circle at 1px 1px, hsla(var(--matrix-purple-600), 0.3) 1px, transparent 0);
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      hsla(var(--matrix-purple-600), 0.3) 1px,
+      transparent 0
+    );
     background-size: 20px 20px;
   }
 }

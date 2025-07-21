@@ -1,12 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Plus, 
-  Minus, 
-  RotateCcw, 
-  ZoomIn, 
-  ZoomOut, 
+import {
+  Plus,
+  Minus,
+  RotateCcw,
+  ZoomIn,
+  ZoomOut,
   Move3D,
   Code,
   Play,
@@ -14,17 +14,42 @@ import {
   Database,
   Workflow,
   Zap as FunctionIcon,
-  Trash2
+  Trash2,
 } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { Node, Connection } from "@/contexts/AppContext";
 
 const nodeTypes = [
-  { type: 'input', label: 'Input', icon: Variable, color: 'from-blue-400 to-blue-600' },
-  { type: 'function', label: 'Function', icon: FunctionIcon, color: 'from-green-400 to-green-600' },
-  { type: 'api', label: 'API Call', icon: Database, color: 'from-purple-400 to-purple-600' },
-  { type: 'logic', label: 'Logic', icon: Workflow, color: 'from-orange-400 to-orange-600' },
-  { type: 'output', label: 'Output', icon: Code, color: 'from-red-400 to-red-600' },
+  {
+    type: "input",
+    label: "Input",
+    icon: Variable,
+    color: "from-blue-400 to-blue-600",
+  },
+  {
+    type: "function",
+    label: "Function",
+    icon: FunctionIcon,
+    color: "from-green-400 to-green-600",
+  },
+  {
+    type: "api",
+    label: "API Call",
+    icon: Database,
+    color: "from-purple-400 to-purple-600",
+  },
+  {
+    type: "logic",
+    label: "Logic",
+    icon: Workflow,
+    color: "from-orange-400 to-orange-600",
+  },
+  {
+    type: "output",
+    label: "Output",
+    icon: Code,
+    color: "from-red-400 to-red-600",
+  },
 ];
 
 interface DragState {
@@ -43,119 +68,152 @@ interface ConnectionState {
 
 export default function NodeCanvas() {
   const { state, dispatch } = useApp();
-  const { nodes, connections, selectedNode, canvasZoom, canvasPan, generatedCode, settings } = state;
-  
+  const {
+    nodes,
+    connections,
+    selectedNode,
+    canvasZoom,
+    canvasPan,
+    generatedCode,
+    settings,
+  } = state;
+
   const [dragState, setDragState] = useState<DragState>({
     isDragging: false,
     nodeId: null,
     offset: { x: 0, y: 0 },
-    startPosition: { x: 0, y: 0 }
+    startPosition: { x: 0, y: 0 },
   });
-  
+
   const [connectionState, setConnectionState] = useState<ConnectionState>({
     isConnecting: false,
     sourceNode: null,
     sourceOutput: null,
-    tempConnection: null
+    tempConnection: null,
   });
-  
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId?: string } | null>(null);
+
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    nodeId?: string;
+  } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const handleZoomIn = () => dispatch({ type: 'SET_CANVAS_ZOOM', payload: Math.min(canvasZoom + 0.1, 2) });
-  const handleZoomOut = () => dispatch({ type: 'SET_CANVAS_ZOOM', payload: Math.max(canvasZoom - 0.1, 0.5) });
+  const handleZoomIn = () =>
+    dispatch({
+      type: "SET_CANVAS_ZOOM",
+      payload: Math.min(canvasZoom + 0.1, 2),
+    });
+  const handleZoomOut = () =>
+    dispatch({
+      type: "SET_CANVAS_ZOOM",
+      payload: Math.max(canvasZoom - 0.1, 0.5),
+    });
   const handleReset = () => {
-    dispatch({ type: 'SET_CANVAS_ZOOM', payload: 1 });
-    dispatch({ type: 'SET_CANVAS_PAN', payload: { x: 0, y: 0 } });
+    dispatch({ type: "SET_CANVAS_ZOOM", payload: 1 });
+    dispatch({ type: "SET_CANVAS_PAN", payload: { x: 0, y: 0 } });
   };
 
   const addNode = (type: string) => {
     const newNode: Node = {
       id: Date.now().toString(),
-      type: type as Node['type'],
-      position: { 
-        x: 200 + Math.random() * 200, 
-        y: 200 + Math.random() * 200 
+      type: type as Node["type"],
+      position: {
+        x: 200 + Math.random() * 200,
+        y: 200 + Math.random() * 200,
       },
       data: {
         label: `New ${type}`,
-        inputs: type !== 'input' ? ['input'] : undefined,
-        outputs: type !== 'output' ? ['output'] : undefined,
-        code: `# ${type} node code`
-      }
+        inputs: type !== "input" ? ["input"] : undefined,
+        outputs: type !== "output" ? ["output"] : undefined,
+        code: `# ${type} node code`,
+      },
     };
-    dispatch({ type: 'ADD_NODE', payload: newNode });
+    dispatch({ type: "ADD_NODE", payload: newNode });
   };
 
   const deleteNode = (nodeId: string) => {
-    dispatch({ type: 'DELETE_NODE', payload: nodeId });
+    dispatch({ type: "DELETE_NODE", payload: nodeId });
     setContextMenu(null);
   };
 
   // Mouse handlers for node dragging
-  const handleMouseDown = useCallback((e: React.MouseEvent, nodeId: string) => {
-    if (e.button !== 0) return; // Only left click
-    
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    
-    const node = nodes.find(n => n.id === nodeId);
-    if (!node) return;
-    
-    const mouseX = (e.clientX - rect.left - canvasPan.x) / canvasZoom;
-    const mouseY = (e.clientY - rect.top - canvasPan.y) / canvasZoom;
-    
-    setDragState({
-      isDragging: true,
-      nodeId,
-      offset: {
-        x: mouseX - node.position.x,
-        y: mouseY - node.position.y
-      },
-      startPosition: { x: mouseX, y: mouseY }
-    });
-    
-    dispatch({ type: 'SELECT_NODE', payload: nodeId });
-    
-    e.preventDefault();
-    e.stopPropagation();
-  }, [nodes, canvasPan, canvasZoom, dispatch]);
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent, nodeId: string) => {
+      if (e.button !== 0) return; // Only left click
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    
-    const mouseX = (e.clientX - rect.left - canvasPan.x) / canvasZoom;
-    const mouseY = (e.clientY - rect.top - canvasPan.y) / canvasZoom;
-    
-    setMousePosition({ x: mouseX, y: mouseY });
-    
-    if (dragState.isDragging && dragState.nodeId) {
-      const newPosition = {
-        x: mouseX - dragState.offset.x,
-        y: mouseY - dragState.offset.y
-      };
-      
-      // Snap to grid if enabled
-      if (settings.nodeSnapToGrid) {
-        newPosition.x = Math.round(newPosition.x / 20) * 20;
-        newPosition.y = Math.round(newPosition.y / 20) * 20;
-      }
-      
-      dispatch({ 
-        type: 'MOVE_NODE', 
-        payload: { id: dragState.nodeId, position: newPosition }
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const node = nodes.find((n) => n.id === nodeId);
+      if (!node) return;
+
+      const mouseX = (e.clientX - rect.left - canvasPan.x) / canvasZoom;
+      const mouseY = (e.clientY - rect.top - canvasPan.y) / canvasZoom;
+
+      setDragState({
+        isDragging: true,
+        nodeId,
+        offset: {
+          x: mouseX - node.position.x,
+          y: mouseY - node.position.y,
+        },
+        startPosition: { x: mouseX, y: mouseY },
       });
-    }
-    
-    if (connectionState.isConnecting) {
-      setConnectionState(prev => ({
-        ...prev,
-        tempConnection: { x: mouseX, y: mouseY }
-      }));
-    }
-  }, [dragState, canvasPan, canvasZoom, settings.nodeSnapToGrid, dispatch, connectionState.isConnecting]);
+
+      dispatch({ type: "SELECT_NODE", payload: nodeId });
+
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    [nodes, canvasPan, canvasZoom, dispatch],
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const mouseX = (e.clientX - rect.left - canvasPan.x) / canvasZoom;
+      const mouseY = (e.clientY - rect.top - canvasPan.y) / canvasZoom;
+
+      setMousePosition({ x: mouseX, y: mouseY });
+
+      if (dragState.isDragging && dragState.nodeId) {
+        const newPosition = {
+          x: mouseX - dragState.offset.x,
+          y: mouseY - dragState.offset.y,
+        };
+
+        // Snap to grid if enabled
+        if (settings.nodeSnapToGrid) {
+          newPosition.x = Math.round(newPosition.x / 20) * 20;
+          newPosition.y = Math.round(newPosition.y / 20) * 20;
+        }
+
+        dispatch({
+          type: "MOVE_NODE",
+          payload: { id: dragState.nodeId, position: newPosition },
+        });
+      }
+
+      if (connectionState.isConnecting) {
+        setConnectionState((prev) => ({
+          ...prev,
+          tempConnection: { x: mouseX, y: mouseY },
+        }));
+      }
+    },
+    [
+      dragState,
+      canvasPan,
+      canvasZoom,
+      settings.nodeSnapToGrid,
+      dispatch,
+      connectionState.isConnecting,
+    ],
+  );
 
   const handleMouseUp = useCallback(() => {
     if (dragState.isDragging) {
@@ -163,71 +221,84 @@ export default function NodeCanvas() {
         isDragging: false,
         nodeId: null,
         offset: { x: 0, y: 0 },
-        startPosition: { x: 0, y: 0 }
+        startPosition: { x: 0, y: 0 },
       });
     }
-    
+
     if (connectionState.isConnecting) {
       setConnectionState({
         isConnecting: false,
         sourceNode: null,
         sourceOutput: null,
-        tempConnection: null
+        tempConnection: null,
       });
     }
   }, [dragState.isDragging, connectionState.isConnecting]);
 
   // Handle connection creation
-  const startConnection = (nodeId: string, outputName: string, e: React.MouseEvent) => {
+  const startConnection = (
+    nodeId: string,
+    outputName: string,
+    e: React.MouseEvent,
+  ) => {
     e.stopPropagation();
     setConnectionState({
       isConnecting: true,
       sourceNode: nodeId,
       sourceOutput: outputName,
-      tempConnection: null
+      tempConnection: null,
     });
   };
 
-  const endConnection = (nodeId: string, inputName: string, e: React.MouseEvent) => {
+  const endConnection = (
+    nodeId: string,
+    inputName: string,
+    e: React.MouseEvent,
+  ) => {
     e.stopPropagation();
-    
-    if (connectionState.isConnecting && connectionState.sourceNode && connectionState.sourceOutput) {
+
+    if (
+      connectionState.isConnecting &&
+      connectionState.sourceNode &&
+      connectionState.sourceOutput
+    ) {
       // Don't connect to the same node
       if (connectionState.sourceNode === nodeId) {
         setConnectionState({
           isConnecting: false,
           sourceNode: null,
           sourceOutput: null,
-          tempConnection: null
+          tempConnection: null,
         });
         return;
       }
-      
+
       // Check if connection already exists
-      const existingConnection = connections.find(conn => 
-        conn.source === connectionState.sourceNode &&
-        conn.target === nodeId &&
-        conn.sourceOutput === connectionState.sourceOutput &&
-        conn.targetInput === inputName
+      const existingConnection = connections.find(
+        (conn) =>
+          conn.source === connectionState.sourceNode &&
+          conn.target === nodeId &&
+          conn.sourceOutput === connectionState.sourceOutput &&
+          conn.targetInput === inputName,
       );
-      
+
       if (!existingConnection) {
         const newConnection: Connection = {
           id: Date.now().toString(),
           source: connectionState.sourceNode,
           target: nodeId,
           sourceOutput: connectionState.sourceOutput,
-          targetInput: inputName
+          targetInput: inputName,
         };
-        
-        dispatch({ type: 'ADD_CONNECTION', payload: newConnection });
+
+        dispatch({ type: "ADD_CONNECTION", payload: newConnection });
       }
-      
+
       setConnectionState({
         isConnecting: false,
         sourceNode: null,
         sourceOutput: null,
-        tempConnection: null
+        tempConnection: null,
       });
     }
   };
@@ -238,51 +309,55 @@ export default function NodeCanvas() {
     setContextMenu({
       x: e.clientX,
       y: e.clientY,
-      nodeId
+      nodeId,
     });
   };
 
   // Close context menu when clicking elsewhere
   useEffect(() => {
     const handleClick = () => setContextMenu(null);
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
   }, []);
 
   const renderNode = (node: Node) => {
-    const nodeTypeConfig = nodeTypes.find(nt => nt.type === node.type);
+    const nodeTypeConfig = nodeTypes.find((nt) => nt.type === node.type);
     const Icon = nodeTypeConfig?.icon || FunctionIcon;
     const isSelected = selectedNode === node.id;
-    
+
     return (
       <div
         key={node.id}
         className={`absolute glass-panel rounded-lg p-4 min-w-40 cursor-move transform transition-all duration-200 ${
-          isSelected ? 'ring-2 ring-matrix-gold-400 glow-gold' : ''
-        } ${dragState.isDragging && dragState.nodeId === node.id ? 'z-50' : 'z-10'}`}
+          isSelected ? "ring-2 ring-matrix-gold-400 glow-gold" : ""
+        } ${dragState.isDragging && dragState.nodeId === node.id ? "z-50" : "z-10"}`}
         style={{
           left: node.position.x,
           top: node.position.y,
           transform: `scale(${canvasZoom})`,
-          transformOrigin: 'top left'
+          transformOrigin: "top left",
         }}
         onMouseDown={(e) => handleMouseDown(e, node.id)}
         onContextMenu={(e) => handleContextMenu(e, node.id)}
       >
         {/* Node Header */}
         <div className="flex items-center gap-2 mb-3">
-          <div className={`w-6 h-6 rounded bg-gradient-to-r ${nodeTypeConfig?.color} flex items-center justify-center`}>
+          <div
+            className={`w-6 h-6 rounded bg-gradient-to-r ${nodeTypeConfig?.color} flex items-center justify-center`}
+          >
             <Icon className="h-3 w-3 text-white" />
           </div>
-          <span className="text-sm font-medium text-matrix-gold-300">{node.data.label}</span>
+          <span className="text-sm font-medium text-matrix-gold-300">
+            {node.data.label}
+          </span>
         </div>
-        
+
         {/* Input connections */}
         {node.data.inputs && (
           <div className="mb-3">
             {node.data.inputs.map((input, index) => (
-              <div 
-                key={input} 
+              <div
+                key={input}
                 className="flex items-center gap-2 mb-1 relative"
                 onMouseUp={(e) => endConnection(node.id, input, e)}
               >
@@ -292,13 +367,13 @@ export default function NodeCanvas() {
             ))}
           </div>
         )}
-        
+
         {/* Output connections */}
         {node.data.outputs && (
           <div className="text-right">
             {node.data.outputs.map((output, index) => (
-              <div 
-                key={output} 
+              <div
+                key={output}
                 className="flex items-center justify-end gap-2 mb-1 relative"
                 onMouseDown={(e) => startConnection(node.id, output, e)}
               >
@@ -313,24 +388,24 @@ export default function NodeCanvas() {
   };
 
   const getNodeOutputPosition = (nodeId: string, outputName: string) => {
-    const node = nodes.find(n => n.id === nodeId);
+    const node = nodes.find((n) => n.id === nodeId);
     if (!node || !node.data.outputs) return { x: 0, y: 0 };
-    
+
     const outputIndex = node.data.outputs.indexOf(outputName);
     return {
       x: node.position.x + 152, // Node width + margin
-      y: node.position.y + 40 + (outputIndex * 20) + 10 // Header + offset
+      y: node.position.y + 40 + outputIndex * 20 + 10, // Header + offset
     };
   };
 
   const getNodeInputPosition = (nodeId: string, inputName: string) => {
-    const node = nodes.find(n => n.id === nodeId);
+    const node = nodes.find((n) => n.id === nodeId);
     if (!node || !node.data.inputs) return { x: 0, y: 0 };
-    
+
     const inputIndex = node.data.inputs.indexOf(inputName);
     return {
       x: node.position.x,
-      y: node.position.y + 40 + (inputIndex * 20) + 10
+      y: node.position.y + 40 + inputIndex * 20 + 10,
     };
   };
 
@@ -339,13 +414,28 @@ export default function NodeCanvas() {
       {/* Toolbar */}
       <div className="absolute top-4 left-4 z-20 glass-panel rounded-lg p-2 flex flex-col gap-2">
         <div className="flex items-center gap-1">
-          <Button size="sm" variant="ghost" onClick={handleZoomIn} className="h-8 w-8 p-0">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleZoomIn}
+            className="h-8 w-8 p-0"
+          >
             <Plus className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleZoomOut} className="h-8 w-8 p-0">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleZoomOut}
+            className="h-8 w-8 p-0"
+          >
             <Minus className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleReset} className="h-8 w-8 p-0">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleReset}
+            className="h-8 w-8 p-0"
+          >
             <RotateCcw className="h-4 w-4" />
           </Button>
         </div>
@@ -356,7 +446,9 @@ export default function NodeCanvas() {
 
       {/* Node Palette */}
       <div className="absolute top-4 right-4 z-20 glass-panel rounded-lg p-2">
-        <div className="text-xs text-matrix-gold-300 mb-2 font-medium">Add Node</div>
+        <div className="text-xs text-matrix-gold-300 mb-2 font-medium">
+          Add Node
+        </div>
         <div className="flex flex-col gap-1">
           {nodeTypes.map((nodeType) => {
             const Icon = nodeType.icon;
@@ -368,7 +460,9 @@ export default function NodeCanvas() {
                 onClick={() => addNode(nodeType.type)}
                 className="justify-start gap-2 h-8 hover:bg-matrix-purple-700/30"
               >
-                <div className={`w-4 h-4 rounded bg-gradient-to-r ${nodeType.color} flex items-center justify-center`}>
+                <div
+                  className={`w-4 h-4 rounded bg-gradient-to-r ${nodeType.color} flex items-center justify-center`}
+                >
                   <Icon className="h-2 w-2 text-white" />
                 </div>
                 <span className="text-xs">{nodeType.label}</span>
@@ -382,18 +476,27 @@ export default function NodeCanvas() {
       <div className="absolute bottom-4 right-4 z-20 glass-panel rounded-lg p-4 max-w-sm">
         <div className="flex items-center gap-2 mb-2">
           <Code className="h-4 w-4 text-matrix-gold-400" />
-          <span className="text-sm font-medium text-matrix-gold-300">Generated Code</span>
+          <span className="text-sm font-medium text-matrix-gold-300">
+            Generated Code
+          </span>
           <Button size="sm" variant="ghost" className="h-6 w-6 p-0 ml-auto">
             <Play className="h-3 w-3" />
           </Button>
         </div>
         <div className="bg-matrix-dark/50 rounded p-3 font-mono text-xs text-matrix-purple-300 max-h-32 overflow-auto">
-          <pre className="whitespace-pre-wrap">{generatedCode.split('\n').slice(0, 10).join('\n')}</pre>
-          {generatedCode.split('\n').length > 10 && (
-            <div className="text-matrix-purple-400 mt-2">...and {generatedCode.split('\n').length - 10} more lines</div>
+          <pre className="whitespace-pre-wrap">
+            {generatedCode.split("\n").slice(0, 10).join("\n")}
+          </pre>
+          {generatedCode.split("\n").length > 10 && (
+            <div className="text-matrix-purple-400 mt-2">
+              ...and {generatedCode.split("\n").length - 10} more lines
+            </div>
           )}
         </div>
-        <Badge variant="outline" className="mt-2 border-matrix-gold-400/50 text-matrix-gold-300 text-xs">
+        <Badge
+          variant="outline"
+          className="mt-2 border-matrix-gold-400/50 text-matrix-gold-300 text-xs"
+        >
           {settings.language.toUpperCase()} - Auto-generated
         </Badge>
       </div>
@@ -408,16 +511,25 @@ export default function NodeCanvas() {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        onClick={() => dispatch({ type: 'SELECT_NODE', payload: null })}
+        onClick={() => dispatch({ type: "SELECT_NODE", payload: null })}
       >
         {/* Render connections */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 5 }}>
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          style={{ zIndex: 5 }}
+        >
           {connections.map((connection) => {
-            const startPos = getNodeOutputPosition(connection.source, connection.sourceOutput);
-            const endPos = getNodeInputPosition(connection.target, connection.targetInput);
-            
+            const startPos = getNodeOutputPosition(
+              connection.source,
+              connection.sourceOutput,
+            );
+            const endPos = getNodeInputPosition(
+              connection.target,
+              connection.targetInput,
+            );
+
             const midX = (startPos.x + endPos.x) / 2;
-            
+
             return (
               <g key={connection.id}>
                 <path
@@ -430,29 +542,48 @@ export default function NodeCanvas() {
               </g>
             );
           })}
-          
+
           {/* Temporary connection line */}
-          {connectionState.isConnecting && connectionState.tempConnection && connectionState.sourceNode && connectionState.sourceOutput && (
-            <line
-              x1={getNodeOutputPosition(connectionState.sourceNode, connectionState.sourceOutput).x}
-              y1={getNodeOutputPosition(connectionState.sourceNode, connectionState.sourceOutput).y}
-              x2={connectionState.tempConnection.x}
-              y2={connectionState.tempConnection.y}
-              stroke="hsl(var(--matrix-gold-400))"
-              strokeWidth="2"
-              strokeDasharray="5,5"
-              className="opacity-70"
-            />
-          )}
-          
+          {connectionState.isConnecting &&
+            connectionState.tempConnection &&
+            connectionState.sourceNode &&
+            connectionState.sourceOutput && (
+              <line
+                x1={
+                  getNodeOutputPosition(
+                    connectionState.sourceNode,
+                    connectionState.sourceOutput,
+                  ).x
+                }
+                y1={
+                  getNodeOutputPosition(
+                    connectionState.sourceNode,
+                    connectionState.sourceOutput,
+                  ).y
+                }
+                x2={connectionState.tempConnection.x}
+                y2={connectionState.tempConnection.y}
+                stroke="hsl(var(--matrix-gold-400))"
+                strokeWidth="2"
+                strokeDasharray="5,5"
+                className="opacity-70"
+              />
+            )}
+
           <defs>
-            <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient
+              id="connectionGradient"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
               <stop offset="0%" stopColor="hsl(var(--matrix-purple-400))" />
               <stop offset="100%" stopColor="hsl(var(--matrix-gold-400))" />
             </linearGradient>
           </defs>
         </svg>
-        
+
         {/* Render nodes */}
         {nodes.map(renderNode)}
       </div>
