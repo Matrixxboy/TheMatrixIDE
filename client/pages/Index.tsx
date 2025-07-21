@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useApp } from "@/contexts/AppContext";
+import { generateCodeForLanguage } from "@/utils/codeGenerator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -28,9 +30,21 @@ import ProjectSidebar from "@/components/ProjectSidebar";
 import SettingsPanel from "@/components/SettingsPanel";
 
 export default function Index() {
-  const [activePanel, setActivePanel] = useState<'code' | 'ai' | 'settings'>('code');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [currentLanguage, setCurrentLanguage] = useState('python');
+  const { state, dispatch } = useApp();
+  const {
+    sidebarOpen,
+    activePanel,
+    settings,
+    nodes,
+    connections,
+    generatedCode
+  } = state;
+
+  // Generate code when nodes or connections change
+  useEffect(() => {
+    const code = generateCodeForLanguage(nodes, connections, settings.language);
+    dispatch({ type: 'SET_GENERATED_CODE', payload: code });
+  }, [nodes, connections, settings.language, dispatch]);
 
   return (
     <div className="h-screen w-full flex flex-col bg-gradient-to-br from-matrix-dark via-matrix-purple-900 to-matrix-dark text-foreground overflow-hidden">
@@ -40,7 +54,7 @@ export default function Index() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={() => dispatch({ type: 'TOGGLE_SIDEBAR' })}
             className="hover:bg-matrix-purple-700/50"
           >
             <Menu className="h-5 w-5" />
@@ -60,11 +74,11 @@ export default function Index() {
 
         <div className="flex items-center gap-2">
           {/* Language Selector */}
-          <Badge 
-            variant="secondary" 
+          <Badge
+            variant="secondary"
             className="bg-matrix-purple-700/50 text-matrix-gold-300 border-matrix-purple-600/50"
           >
-            {currentLanguage.toUpperCase()}
+            {settings.language.toUpperCase()}
           </Badge>
           
           {/* Action Buttons */}
@@ -105,9 +119,9 @@ export default function Index() {
               <Button
                 variant={activePanel === 'code' ? 'secondary' : 'ghost'}
                 size="sm"
-                onClick={() => setActivePanel('code')}
-                className={activePanel === 'code' 
-                  ? 'bg-matrix-purple-700/50 text-matrix-gold-300' 
+                onClick={() => dispatch({ type: 'SET_ACTIVE_PANEL', payload: 'code' })}
+                className={activePanel === 'code'
+                  ? 'bg-matrix-purple-700/50 text-matrix-gold-300'
                   : 'hover:bg-matrix-purple-700/30'
                 }
               >
@@ -117,9 +131,9 @@ export default function Index() {
               <Button
                 variant={activePanel === 'ai' ? 'secondary' : 'ghost'}
                 size="sm"
-                onClick={() => setActivePanel('ai')}
-                className={activePanel === 'ai' 
-                  ? 'bg-matrix-purple-700/50 text-matrix-gold-300' 
+                onClick={() => dispatch({ type: 'SET_ACTIVE_PANEL', payload: 'ai' })}
+                className={activePanel === 'ai'
+                  ? 'bg-matrix-purple-700/50 text-matrix-gold-300'
                   : 'hover:bg-matrix-purple-700/30'
                 }
               >
@@ -129,9 +143,9 @@ export default function Index() {
               <Button
                 variant={activePanel === 'settings' ? 'secondary' : 'ghost'}
                 size="sm"
-                onClick={() => setActivePanel('settings')}
-                className={activePanel === 'settings' 
-                  ? 'bg-matrix-purple-700/50 text-matrix-gold-300' 
+                onClick={() => dispatch({ type: 'SET_ACTIVE_PANEL', payload: 'settings' })}
+                className={activePanel === 'settings'
+                  ? 'bg-matrix-purple-700/50 text-matrix-gold-300'
                   : 'hover:bg-matrix-purple-700/30'
                 }
               >
@@ -142,7 +156,7 @@ export default function Index() {
 
             {/* Panel Content */}
             <div className="flex-1 overflow-hidden">
-              {activePanel === 'code' && <CodeEditor language={currentLanguage} />}
+              {activePanel === 'code' && <CodeEditor />}
               {activePanel === 'ai' && <AIAssistant />}
               {activePanel === 'settings' && <SettingsPanel />}
             </div>
