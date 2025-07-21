@@ -26,14 +26,7 @@ import {
   Cpu
 } from "lucide-react";
 
-interface FileNode {
-  id: string;
-  name: string;
-  type: 'file' | 'folder';
-  children?: FileNode[];
-  expanded?: boolean;
-  language?: string;
-}
+
 
 interface NodeDefinition {
   id: string;
