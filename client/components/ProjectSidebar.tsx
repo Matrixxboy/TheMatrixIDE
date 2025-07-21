@@ -139,6 +139,18 @@ const nodeLibrary: NodeDefinition[] = [
   }
 ];
 
+// Helper function to count files recursively
+const countFiles = (nodes: FileNode[]): number => {
+  return nodes.reduce((count, node) => {
+    if (node.type === 'file') {
+      return count + 1;
+    } else if (node.children) {
+      return count + countFiles(node.children);
+    }
+    return count;
+  }, 0);
+};
+
 export default function ProjectSidebar() {
   const { state, dispatch } = useApp();
   const { projectFiles, currentFile, nodes } = state;
