@@ -139,49 +139,143 @@
 }
 
 @layer utilities {
-  /* Glassmorphism effects */
+  /* Enhanced Glassmorphism effects */
   .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(139, 92, 246, 0.1);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    box-shadow:
+      0 8px 32px rgba(139, 92, 246, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass:hover {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+    box-shadow:
+      0 12px 40px rgba(139, 92, 246, 0.18),
+      inset 0 1px 0 rgba(245, 158, 11, 0.2);
+    transform: translateY(-2px);
   }
 
   .glass-dark {
-    background: hsla(var(--matrix-purple-800), 0.3);
-    backdrop-filter: blur(15px);
-    border: 1px solid hsla(var(--matrix-purple-600), 0.2);
+    background: rgba(30, 27, 75, 0.8);
+    backdrop-filter: blur(20px) saturate(200%);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    box-shadow:
+      0 4px 24px rgba(37, 22, 84, 0.3),
+      inset 0 1px 0 rgba(139, 92, 246, 0.2);
   }
 
   .glass-panel {
-    background: hsla(var(--matrix-purple-900), 0.4);
-    backdrop-filter: blur(20px);
-    border: 1px solid hsla(var(--matrix-gold-400), 0.1);
-    box-shadow: 0 8px 32px hsla(var(--matrix-purple-800), 0.3);
+    background: rgba(30, 27, 75, 0.6);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow:
+      0 8px 32px rgba(37, 22, 84, 0.4),
+      inset 0 1px 0 rgba(245, 158, 11, 0.1),
+      0 0 0 1px rgba(139, 92, 246, 0.1) inset;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Glow effects */
+  .glass-panel:hover {
+    background: rgba(30, 27, 75, 0.75);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow:
+      0 12px 40px rgba(37, 22, 84, 0.5),
+      inset 0 1px 0 rgba(245, 158, 11, 0.2),
+      0 0 0 1px rgba(245, 158, 11, 0.1) inset;
+  }
+
+  /* Enhanced Glow effects */
   .glow {
-    box-shadow: 0 0 20px hsla(var(--matrix-glow), 0.3);
+    box-shadow:
+      0 0 20px hsla(var(--matrix-glow), 0.4),
+      0 0 40px hsla(var(--matrix-glow), 0.2),
+      0 0 80px hsla(var(--matrix-glow), 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .glow:hover {
+    box-shadow:
+      0 0 30px hsla(var(--matrix-glow), 0.6),
+      0 0 60px hsla(var(--matrix-glow), 0.3),
+      0 0 120px hsla(var(--matrix-glow), 0.15);
   }
 
   .glow-gold {
-    box-shadow: 0 0 20px hsla(var(--matrix-gold-400), 0.4);
+    box-shadow:
+      0 0 20px hsla(var(--matrix-gold-400), 0.5),
+      0 0 40px hsla(var(--matrix-gold-400), 0.3),
+      0 0 80px hsla(var(--matrix-gold-400), 0.1);
+    transition: all 0.3s ease;
   }
 
-  /* Matrix animations */
+  .glow-gold:hover {
+    box-shadow:
+      0 0 30px hsla(var(--matrix-gold-400), 0.7),
+      0 0 60px hsla(var(--matrix-gold-400), 0.4),
+      0 0 120px hsla(var(--matrix-gold-400), 0.2);
+  }
+
+  /* Enhanced Matrix animations */
   .matrix-pulse {
-    animation: matrix-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: matrix-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .matrix-float {
+    animation: matrix-float 6s ease-in-out infinite;
+  }
+
+  .matrix-glow-pulse {
+    animation: matrix-glow-pulse 4s ease-in-out infinite;
+  }
+
+  .matrix-interactive {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .matrix-interactive:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .matrix-interactive:active {
+    transform: translateY(0) scale(0.98);
   }
 
   @keyframes matrix-pulse {
-    0%,
-    100% {
+    0%, 100% {
       opacity: 1;
+      transform: scale(1);
       box-shadow: 0 0 20px hsla(var(--matrix-glow), 0.3);
     }
     50% {
-      opacity: 0.8;
-      box-shadow: 0 0 30px hsla(var(--matrix-glow), 0.5);
+      opacity: 0.9;
+      transform: scale(1.02);
+      box-shadow: 0 0 40px hsla(var(--matrix-glow), 0.5);
+    }
+  }
+
+  @keyframes matrix-float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes matrix-glow-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 20px hsla(var(--matrix-gold-400), 0.3),
+        inset 0 1px 0 rgba(245, 158, 11, 0.1);
+    }
+    50% {
+      box-shadow:
+        0 0 40px hsla(var(--matrix-gold-400), 0.5),
+        inset 0 1px 0 rgba(245, 158, 11, 0.2);
     }
   }
 
