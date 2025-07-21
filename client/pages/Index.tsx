@@ -34,8 +34,11 @@ export default function Index() {
 
   // Generate code when nodes or connections change
   useEffect(() => {
-    const code = generateCodeForLanguage(nodes, connections, settings.language);
-    dispatch({ type: "SET_GENERATED_CODE", payload: code });
+    if (nodes.length > 0) {
+      const code = generateCodeForLanguage(nodes, connections, settings.language);
+      dispatch({ type: "SET_GENERATED_CODE", payload: code });
+      console.log("Code regenerated due to node/connection changes");
+    }
   }, [nodes, connections, settings.language, dispatch]);
 
   return (
