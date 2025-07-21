@@ -331,7 +331,7 @@ export default function NodeCanvas() {
       <div
         key={node.id}
         className={`absolute glass-panel rounded-lg p-4 min-w-40 cursor-move transform transition-all duration-200 ${
-          isSelected ? "ring-2 ring-matrix-gold-400 glow-gold" : ""
+          isSelected ? "ring-2 ring-matrix-gold-400/50 shadow-lg" : ""
         } ${dragState.isDragging && dragState.nodeId === node.id ? "z-50" : "z-10"}`}
         style={{
           left: node.position.x,
