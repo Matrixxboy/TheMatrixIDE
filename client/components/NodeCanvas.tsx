@@ -349,9 +349,17 @@ export default function NodeCanvas() {
           >
             <Icon className="h-3 w-3 text-white" />
           </div>
-          <span className="text-sm font-medium text-matrix-gold-300">
-            {node.data.label}
-          </span>
+          <div className="flex-1">
+            <span className="text-sm font-medium text-matrix-gold-300">
+              {node.data.label}
+            </span>
+            <div className="text-xs text-matrix-purple-400 capitalize">
+              {node.type} • ID: {node.id.slice(-4)}
+            </div>
+          </div>
+          {isSelected && (
+            <div className="w-2 h-2 rounded-full bg-matrix-gold-400 animate-pulse"></div>
+          )}
         </div>
 
         {/* Input connections */}
