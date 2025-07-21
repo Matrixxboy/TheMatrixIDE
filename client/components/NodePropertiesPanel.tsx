@@ -40,12 +40,12 @@ interface NodePropertyConfig {
   required?: boolean;
 }
 
-const defaultNodeConfigs = {
+const defaultNodeConfigs: Record<string, NodePropertyConfig[]> = {
   input: [
-    { id: 'prompt', name: 'Input Prompt', type: 'string', value: 'Enter value:', description: 'Text shown to user' },
-    { id: 'placeholder', name: 'Placeholder', type: 'string', value: '', description: 'Placeholder text' },
-    { id: 'validation', name: 'Validation', type: 'select', value: 'none', options: ['none', 'required', 'number', 'email'], description: 'Input validation type' },
-    { id: 'defaultValue', name: 'Default Value', type: 'string', value: '', description: 'Default input value' }
+    { id: 'prompt', name: 'Input Prompt', type: 'string' as const, value: 'Enter value:', description: 'Text shown to user' },
+    { id: 'placeholder', name: 'Placeholder', type: 'string' as const, value: '', description: 'Placeholder text' },
+    { id: 'validation', name: 'Validation', type: 'select' as const, value: 'none', options: ['none', 'required', 'number', 'email'], description: 'Input validation type' },
+    { id: 'defaultValue', name: 'Default Value', type: 'string' as const, value: '', description: 'Default input value' }
   ],
   function: [
     { id: 'functionName', name: 'Function Name', type: 'string', value: 'process_data', description: 'Name of the function' },
