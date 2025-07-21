@@ -1,0 +1,393 @@
+import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+
+// Types
+export interface Node {
+  id: string;
+  type: 'input' | 'output' | 'function' | 'variable' | 'api' | 'logic';
+  position: { x: number; y: number };
+  data: {
+    label: string;
+    value?: string;
+    inputs?: string[];
+    outputs?: string[];
+    code?: string;
+  };
+}
+
+export interface Connection {
+  id: string;
+  source: string;
+  target: string;
+  sourceOutput: string;
+  targetInput: string;
+}
+
+export interface FileNode {
+  id: string;
+  name: string;
+  type: 'file' | 'folder';
+  children?: FileNode[];
+  expanded?: boolean;
+  language?: string;
+  content?: string;
+}
+
+export interface Settings {
+  theme: 'dark' | 'light' | 'auto';
+  fontSize: number;
+  nodeSnapToGrid: boolean;
+  showMinimap: boolean;
+  language: string;
+  autoSave: boolean;
+  livePreview: boolean;
+  wordWrap: boolean;
+  aiEnabled: boolean;
+  aiModel: string;
+  aiSuggestions: boolean;
+  aiAutoComplete: boolean;
+  maxNodes: number;
+  renderOptimization: boolean;
+  memoryLimit: number;
+  defaultExportFormat: string;
+  includeComments: boolean;
+  minifyCode: boolean;
+}
+
+export interface AppState {
+  // Canvas state
+  nodes: Node[];
+  connections: Connection[];
+  selectedNode: string | null;
+  canvasZoom: number;
+  canvasPan: { x: number; y: number };
+  
+  // UI state
+  sidebarOpen: boolean;
+  activePanel: 'code' | 'ai' | 'settings';
+  activeTab: string;
+  
+  // Project state
+  projectFiles: FileNode[];
+  currentFile: string | null;
+  generatedCode: string;
+  
+  // Settings
+  settings: Settings;
+  
+  // AI state
+  aiMessages: Array<{
+    id: string;
+    type: 'user' | 'ai';
+    content: string;
+    timestamp: Date;
+    category?: string;
+  }>;
+  aiProcessing: boolean;
+}
+
+// Actions
+type AppAction =
+  | { type: 'ADD_NODE'; payload: Node }
+  | { type: 'UPDATE_NODE'; payload: { id: string; updates: Partial<Node> } }
+  | { type: 'DELETE_NODE'; payload: string }
+  | { type: 'SELECT_NODE'; payload: string | null }
+  | { type: 'MOVE_NODE'; payload: { id: string; position: { x: number; y: number } } }
+  | { type: 'ADD_CONNECTION'; payload: Connection }
+  | { type: 'DELETE_CONNECTION'; payload: string }
+  | { type: 'SET_CANVAS_ZOOM'; payload: number }
+  | { type: 'SET_CANVAS_PAN'; payload: { x: number; y: number } }
+  | { type: 'TOGGLE_SIDEBAR' }
+  | { type: 'SET_ACTIVE_PANEL'; payload: 'code' | 'ai' | 'settings' }
+  | { type: 'SET_ACTIVE_TAB'; payload: string }
+  | { type: 'UPDATE_SETTINGS'; payload: Partial<Settings> }
+  | { type: 'SET_GENERATED_CODE'; payload: string }
+  | { type: 'TOGGLE_FILE_FOLDER'; payload: string }
+  | { type: 'SELECT_FILE'; payload: string }
+  | { type: 'ADD_AI_MESSAGE'; payload: { type: 'user' | 'ai'; content: string; category?: string } }
+  | { type: 'SET_AI_PROCESSING'; payload: boolean };
+
+// Initial state
+const initialState: AppState = {
+  nodes: [
+    {
+      id: '1',
+      type: 'input',
+      position: { x: 100, y: 100 },
+      data: {
+        label: 'User Input',
+        outputs: ['value'],
+        code: 'user_input = input("Enter value: ")'
+      }
+    },
+    {
+      id: '2',
+      type: 'function',
+      position: { x: 300, y: 150 },
+      data: {
+        label: 'Process Data',
+        inputs: ['data'],
+        outputs: ['result'],
+        code: 'result = process_data(data)'
+      }
+    },
+    {
+      id: '3',
+      type: 'output',
+      position: { x: 500, y: 200 },
+      data: {
+        label: 'Display Result',
+        inputs: ['result'],
+        code: 'print(f"Result: {result}")'
+      }
+    }
+  ],
+  connections: [
+    {
+      id: 'conn1',
+      source: '1',
+      target: '2',
+      sourceOutput: 'value',
+      targetInput: 'data'
+    },
+    {
+      id: 'conn2',
+      source: '2',
+      target: '3',
+      sourceOutput: 'result',
+      targetInput: 'result'
+    }
+  ],
+  selectedNode: null,
+  canvasZoom: 1,
+  canvasPan: { x: 0, y: 0 },
+  sidebarOpen: true,
+  activePanel: 'code',
+  activeTab: 'generated',
+  projectFiles: [
+    {
+      id: '1',
+      name: 'matrix-project',
+      type: 'folder',
+      expanded: true,
+      children: [
+        {
+          id: '2',
+          name: 'src',
+          type: 'folder',
+          expanded: true,
+          children: [
+            { id: '3', name: 'main.py', type: 'file', language: 'python', content: '# Generated code will appear here' },
+            { id: '4', name: 'data_processor.py', type: 'file', language: 'python', content: 'def process_data(data):\n    return data.strip().lower()' },
+            { id: '5', name: 'ai_module.py', type: 'file', language: 'python', content: '# AI processing module' },
+          ]
+        },
+        { id: '13', name: 'README.md', type: 'file', language: 'markdown', content: '# Matrix IDE Project\n\nThis project was generated using The Matrix IDE.' },
+      ]
+    }
+  ],
+  currentFile: null,
+  generatedCode: '',
+  settings: {
+    theme: 'dark',
+    fontSize: 14,
+    nodeSnapToGrid: true,
+    showMinimap: true,
+    language: 'python',
+    autoSave: true,
+    livePreview: true,
+    wordWrap: true,
+    aiEnabled: true,
+    aiModel: 'local-gpt-neo',
+    aiSuggestions: true,
+    aiAutoComplete: true,
+    maxNodes: 100,
+    renderOptimization: true,
+    memoryLimit: 512,
+    defaultExportFormat: 'python',
+    includeComments: true,
+    minifyCode: false,
+  },
+  aiMessages: [
+    {
+      id: '1',
+      type: 'ai',
+      content: 'Welcome to Matrix IDE AI Assistant! I\'m running locally on your machine for complete privacy. How can I help you with your code today?',
+      timestamp: new Date(),
+      category: 'chat'
+    }
+  ],
+  aiProcessing: false,
+};
+
+// Reducer
+function appReducer(state: AppState, action: AppAction): AppState {
+  switch (action.type) {
+    case 'ADD_NODE':
+      return {
+        ...state,
+        nodes: [...state.nodes, action.payload]
+      };
+      
+    case 'UPDATE_NODE':
+      return {
+        ...state,
+        nodes: state.nodes.map(node =>
+          node.id === action.payload.id
+            ? { ...node, ...action.payload.updates }
+            : node
+        )
+      };
+      
+    case 'DELETE_NODE':
+      return {
+        ...state,
+        nodes: state.nodes.filter(node => node.id !== action.payload),
+        connections: state.connections.filter(
+          conn => conn.source !== action.payload && conn.target !== action.payload
+        )
+      };
+      
+    case 'SELECT_NODE':
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+      
+    case 'MOVE_NODE':
+      return {
+        ...state,
+        nodes: state.nodes.map(node =>
+          node.id === action.payload.id
+            ? { ...node, position: action.payload.position }
+            : node
+        )
+      };
+      
+    case 'ADD_CONNECTION':
+      return {
+        ...state,
+        connections: [...state.connections, action.payload]
+      };
+      
+    case 'DELETE_CONNECTION':
+      return {
+        ...state,
+        connections: state.connections.filter(conn => conn.id !== action.payload)
+      };
+      
+    case 'SET_CANVAS_ZOOM':
+      return {
+        ...state,
+        canvasZoom: action.payload
+      };
+      
+    case 'SET_CANVAS_PAN':
+      return {
+        ...state,
+        canvasPan: action.payload
+      };
+      
+    case 'TOGGLE_SIDEBAR':
+      return {
+        ...state,
+        sidebarOpen: !state.sidebarOpen
+      };
+      
+    case 'SET_ACTIVE_PANEL':
+      return {
+        ...state,
+        activePanel: action.payload
+      };
+      
+    case 'SET_ACTIVE_TAB':
+      return {
+        ...state,
+        activeTab: action.payload
+      };
+      
+    case 'UPDATE_SETTINGS':
+      return {
+        ...state,
+        settings: { ...state.settings, ...action.payload }
+      };
+      
+    case 'SET_GENERATED_CODE':
+      return {
+        ...state,
+        generatedCode: action.payload
+      };
+      
+    case 'TOGGLE_FILE_FOLDER':
+      const toggleNode = (nodes: FileNode[]): FileNode[] => {
+        return nodes.map(node => {
+          if (node.id === action.payload && node.type === 'folder') {
+            return { ...node, expanded: !node.expanded };
+          }
+          if (node.children) {
+            return { ...node, children: toggleNode(node.children) };
+          }
+          return node;
+        });
+      };
+      return {
+        ...state,
+        projectFiles: toggleNode(state.projectFiles)
+      };
+      
+    case 'SELECT_FILE':
+      return {
+        ...state,
+        currentFile: action.payload
+      };
+      
+    case 'ADD_AI_MESSAGE':
+      return {
+        ...state,
+        aiMessages: [
+          ...state.aiMessages,
+          {
+            id: Date.now().toString(),
+            type: action.payload.type,
+            content: action.payload.content,
+            timestamp: new Date(),
+            category: action.payload.category
+          }
+        ]
+      };
+      
+    case 'SET_AI_PROCESSING':
+      return {
+        ...state,
+        aiProcessing: action.payload
+      };
+      
+    default:
+      return state;
+  }
+}
+
+// Context
+const AppContext = createContext<{
+  state: AppState;
+  dispatch: React.Dispatch<AppAction>;
+} | null>(null);
+
+// Provider
+export function AppProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(appReducer, initialState);
+  
+  return (
+    <AppContext.Provider value={{ state, dispatch }}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+// Hook
+export function useApp() {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useApp must be used within an AppProvider');
+  }
+  return context;
+}
