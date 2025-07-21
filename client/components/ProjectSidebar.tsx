@@ -24,6 +24,7 @@ import {
   Database,
   Globe,
   Cpu,
+  Layers,
 } from "lucide-react";
 
 interface NodeDefinition {
