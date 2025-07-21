@@ -38,7 +38,7 @@ interface Connection {
 
 const nodeTypes = [
   { type: 'input', label: 'Input', icon: Variable, color: 'from-blue-400 to-blue-600' },
-  { type: 'function', label: 'Function', icon: Function, color: 'from-green-400 to-green-600' },
+  { type: 'function', label: 'Function', icon: FunctionIcon, color: 'from-green-400 to-green-600' },
   { type: 'api', label: 'API Call', icon: Database, color: 'from-purple-400 to-purple-600' },
   { type: 'logic', label: 'Logic', icon: Workflow, color: 'from-orange-400 to-orange-600' },
   { type: 'output', label: 'Output', icon: Code, color: 'from-red-400 to-red-600' },
