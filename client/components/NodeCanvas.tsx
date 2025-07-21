@@ -106,7 +106,7 @@ export default function NodeCanvas() {
 
   const renderNode = (node: Node) => {
     const nodeTypeConfig = nodeTypes.find(nt => nt.type === node.type);
-    const Icon = nodeTypeConfig?.icon || Function;
+    const Icon = nodeTypeConfig?.icon || FunctionIcon;
     
     return (
       <div
