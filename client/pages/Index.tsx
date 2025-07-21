@@ -3,24 +3,15 @@ import { useApp } from "@/contexts/AppContext";
 import { generateCodeForLanguage } from "@/utils/codeGenerator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   Play,
   Save,
   Settings,
-  FileText,
   Code,
   Bot,
-  FolderTree,
   Download,
   Github,
   Zap,
-  Monitor,
-  Terminal,
-  Palette,
-  Plus,
-  Minus,
-  RotateCcw,
   Menu,
 } from "lucide-react";
 import NodeCanvas from "@/components/NodeCanvas";
@@ -29,7 +20,6 @@ import AIAssistant from "@/components/AIAssistant";
 import ProjectSidebar from "@/components/ProjectSidebar";
 import SettingsPanel from "@/components/SettingsPanel";
 import NodePropertiesPanel from "@/components/NodePropertiesPanel";
-import NodeTemplatesPanel from "@/components/NodeTemplatesPanel";
 
 export default function Index() {
   const { state, dispatch } = useApp();
@@ -49,20 +39,29 @@ export default function Index() {
   }, [nodes, connections, settings.language, dispatch]);
 
   return (
-    <div className="h-screen w-full flex flex-col bg-gradient-to-br from-matrix-dark via-matrix-purple-900 to-matrix-dark text-foreground overflow-hidden">
+    <div className="h-screen w-full flex flex-col bg-gradient-to-br from-matrix-dark via-matrix-purple-900 to-matrix-dark text-foreground overflow-hidden relative">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-matrix-purple-500/20 to-matrix-gold-500/20 rounded-full blur-3xl matrix-float"></div>
+        <div className="absolute top-60 right-20 w-48 h-48 bg-gradient-to-r from-matrix-gold-500/20 to-matrix-purple-500/20 rounded-full blur-3xl matrix-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-40 left-1/3 w-56 h-56 bg-gradient-to-r from-matrix-purple-600/20 to-matrix-gold-400/20 rounded-full blur-3xl matrix-float" style={{animationDelay: '4s'}}></div>
+      </div>
+      
       {/* Header */}
-      <header className="h-16 glass-dark border-b border-matrix-purple-600/30 flex items-center justify-between px-6 z-50">
-        <div className="flex items-center gap-4">
+      <header className="h-16 glass-dark border-b border-matrix-purple-600/30 flex items-center justify-between px-6 z-50 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-matrix-purple-500/5 to-transparent"></div>
+        
+        <div className="flex items-center gap-4 relative z-10">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => dispatch({ type: "TOGGLE_SIDEBAR" })}
-            className="hover:bg-matrix-purple-700/50"
+            className="hover:bg-matrix-purple-700/50 matrix-interactive"
           >
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-matrix-gold-400 to-matrix-gold-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-matrix-gold-400 to-matrix-gold-600 flex items-center justify-center matrix-glow-pulse">
               <Zap className="h-5 w-5 text-matrix-dark" />
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-matrix-gold-300 to-matrix-gold-500 bg-clip-text text-transparent">
@@ -70,18 +69,18 @@ export default function Index() {
             </h1>
             <Badge
               variant="outline"
-              className="border-matrix-gold-400/50 text-matrix-gold-300"
+              className="border-matrix-gold-400/50 text-matrix-gold-300 glass matrix-interactive"
             >
               v1.0.0-beta
             </Badge>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative z-10">
           {/* Language Selector */}
           <Badge
             variant="secondary"
-            className="bg-matrix-purple-700/50 text-matrix-gold-300 border-matrix-purple-600/50"
+            className="glass text-matrix-gold-300 border-matrix-purple-600/50 matrix-interactive"
           >
             {settings.language.toUpperCase()}
           </Badge>
@@ -90,14 +89,14 @@ export default function Index() {
           <Button
             size="sm"
             variant="outline"
-            className="border-matrix-purple-600/50 hover:bg-matrix-purple-700/50"
+            className="glass border-matrix-purple-600/50 hover:bg-matrix-purple-700/50 matrix-interactive"
           >
             <Save className="h-4 w-4 mr-2" />
             Save
           </Button>
           <Button
             size="sm"
-            className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark"
+            className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark glow-gold matrix-interactive"
           >
             <Play className="h-4 w-4 mr-2" />
             Run
@@ -105,7 +104,7 @@ export default function Index() {
           <Button
             size="sm"
             variant="outline"
-            className="border-matrix-purple-600/50 hover:bg-matrix-purple-700/50"
+            className="glass border-matrix-purple-600/50 hover:bg-matrix-purple-700/50 matrix-interactive"
           >
             <Download className="h-4 w-4 mr-2" />
             Export
@@ -113,31 +112,31 @@ export default function Index() {
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
         {/* Sidebar */}
         {sidebarOpen && (
-          <div className="w-80 glass-panel border-r border-matrix-purple-600/30 flex flex-col">
+          <div className="w-80 glass-panel border-r border-matrix-purple-600/30 flex flex-col m-2 rounded-xl matrix-interactive">
             <ProjectSidebar />
           </div>
         )}
 
         {/* Main Content Area */}
-        <div className="flex-1 flex">
+        <div className="flex-1 flex gap-2 p-2">
           {/* Node Canvas */}
-          <div className="flex-1 relative">
+          <div className="flex-1 relative glass-panel rounded-xl overflow-hidden matrix-interactive">
             <NodeCanvas />
           </div>
-
-          {/* Right Panel - Node Properties and Templates */}
-          <div className="w-80 glass-panel border-l border-matrix-purple-600/30 flex flex-col">
+          
+          {/* Right Panel - Node Properties */}
+          <div className="w-80 glass-panel rounded-xl flex flex-col matrix-interactive">
             <div className="flex-1 overflow-hidden">
               <NodePropertiesPanel />
             </div>
           </div>
         </div>
-
+        
         {/* Bottom Panel - Code Editor, AI, Settings */}
-        <div className="h-80 glass-panel border-t border-matrix-purple-600/30 flex flex-col">
+        <div className="h-80 glass-panel border-t border-matrix-purple-600/30 flex flex-col m-2 mt-0 rounded-xl matrix-interactive">
           {/* Panel Tabs */}
           <div className="h-12 flex items-center gap-1 px-4 border-b border-matrix-purple-600/30">
             <Button
@@ -148,8 +147,8 @@ export default function Index() {
               }
               className={
                 activePanel === "code"
-                  ? "bg-matrix-purple-700/50 text-matrix-gold-300"
-                  : "hover:bg-matrix-purple-700/30"
+                  ? "glass text-matrix-gold-300 matrix-interactive"
+                  : "hover:bg-matrix-purple-700/30 matrix-interactive"
               }
             >
               <Code className="h-4 w-4 mr-2" />
@@ -163,8 +162,8 @@ export default function Index() {
               }
               className={
                 activePanel === "ai"
-                  ? "bg-matrix-purple-700/50 text-matrix-gold-300"
-                  : "hover:bg-matrix-purple-700/30"
+                  ? "glass text-matrix-gold-300 matrix-interactive"
+                  : "hover:bg-matrix-purple-700/30 matrix-interactive"
               }
             >
               <Bot className="h-4 w-4 mr-2" />
@@ -178,8 +177,8 @@ export default function Index() {
               }
               className={
                 activePanel === "settings"
-                  ? "bg-matrix-purple-700/50 text-matrix-gold-300"
-                  : "hover:bg-matrix-purple-700/30"
+                  ? "glass text-matrix-gold-300 matrix-interactive"
+                  : "hover:bg-matrix-purple-700/30 matrix-interactive"
               }
             >
               <Settings className="h-4 w-4 mr-2" />
@@ -197,11 +196,11 @@ export default function Index() {
       </div>
 
       {/* Footer */}
-      <footer className="h-8 glass-dark border-t border-matrix-purple-600/30 flex items-center justify-between px-6 text-sm">
+      <footer className="h-8 glass-dark border-t border-matrix-purple-600/30 flex items-center justify-between px-6 text-sm relative z-10">
         <div className="flex items-center gap-4">
           <Badge
             variant="outline"
-            className="border-matrix-gold-400/50 text-matrix-gold-300 text-xs"
+            className="border-matrix-gold-400/50 text-matrix-gold-300 text-xs glass matrix-interactive"
           >
             Open Source
           </Badge>
@@ -211,7 +210,7 @@ export default function Index() {
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 text-xs hover:bg-matrix-purple-700/30"
+            className="h-6 text-xs hover:bg-matrix-purple-700/30 matrix-interactive"
           >
             <Github className="h-3 w-3 mr-1" />
             GitHub
