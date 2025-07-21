@@ -741,14 +741,60 @@ export default function NodePropertiesPanel() {
 
             <TabsContent value="code" className="m-0">
               <div className="glass-panel rounded-lg p-4">
-                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">
-                  Generated Code Preview
-                </h4>
-                <div className="bg-matrix-dark/50 rounded p-3 font-mono text-sm">
-                  <pre className="text-matrix-purple-200 whitespace-pre-wrap">
-                    {selectedNodeData.data.code ||
-                      "# Code will be generated based on node configuration"}
-                  </pre>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-medium text-matrix-gold-300">
+                    Node Code
+                  </h4>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      const updatedCode = `# ${selectedNodeData.data.label} Node\n# Generated at: ${new Date().toISOString()}\n\ndef ${selectedNodeData.data.label.toLowerCase().replace(/\s+/g, '_')}():\n    """${selectedNodeData.data.label} implementation"""\n    pass\n\nif __name__ == "__main__":\n    ${selectedNodeData.data.label.toLowerCase().replace(/\s+/g, '_')}()`;
+                      dispatch({
+                        type: "UPDATE_NODE",
+                        payload: {
+                          id: selectedNodeData.id,
+                          updates: {
+                            data: {
+                              ...selectedNodeData.data,
+                              code: updatedCode,
+                            },
+                          },
+                        },
+                      });
+                    }}
+                    className="text-xs"
+                  >
+                    <Code className="h-3 w-3 mr-1" />
+                    Generate
+                  </Button>
+                </div>
+                <Textarea
+                  value={selectedNodeData.data.code || "# Code will be generated based on node configuration"}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "UPDATE_NODE",
+                      payload: {
+                        id: selectedNodeData.id,
+                        updates: {
+                          data: {
+                            ...selectedNodeData.data,
+                            code: e.target.value,
+                          },
+                        },
+                      },
+                    })
+                  }
+                  className="bg-matrix-dark/50 border-matrix-purple-600/50 font-mono text-sm min-h-32 text-matrix-purple-200"
+                  placeholder="Enter custom code for this node..."
+                />
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-xs text-matrix-purple-400">
+                    Edit the code that will be executed for this node
+                  </p>
+                  <Badge variant="outline" className="text-xs border-matrix-gold-400/50 text-matrix-gold-300">
+                    {selectedNodeData.data.code?.split('\n').length || 1} lines
+                  </Badge>
                 </div>
               </div>
             </TabsContent>
