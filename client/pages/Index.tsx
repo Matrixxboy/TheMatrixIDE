@@ -103,6 +103,15 @@ export default function Index() {
           <Button
             size="sm"
             className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark matrix-interactive"
+            onClick={() => {
+              dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" });
+              dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
+              // Trigger code execution by creating a custom event
+              setTimeout(() => {
+                const event = new CustomEvent('executeCode');
+                window.dispatchEvent(event);
+              }, 100);
+            }}
           >
             <Play className="h-4 w-4 mr-2" />
             Run
