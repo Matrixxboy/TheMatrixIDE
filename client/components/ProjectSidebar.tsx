@@ -340,20 +340,27 @@ export default function ProjectSidebar() {
         onValueChange={setActiveTab}
         className="flex-1 flex flex-col"
       >
-        <TabsList className="mx-4 bg-matrix-purple-800/30 border border-matrix-purple-600/30">
+        <TabsList className="mx-4 bg-matrix-purple-800/30 border border-matrix-purple-600/30 grid grid-cols-3">
           <TabsTrigger
             value="files"
             className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
           >
-            <FolderTree className="h-4 w-4 mr-2" />
+            <FolderTree className="h-4 w-4 mr-1" />
             Files
           </TabsTrigger>
           <TabsTrigger
             value="nodes"
             className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
           >
-            <Workflow className="h-4 w-4 mr-2" />
+            <Workflow className="h-4 w-4 mr-1" />
             Nodes
+          </TabsTrigger>
+          <TabsTrigger
+            value="templates"
+            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+          >
+            <Layers className="h-4 w-4 mr-1" />
+            Templates
           </TabsTrigger>
         </TabsList>
 
