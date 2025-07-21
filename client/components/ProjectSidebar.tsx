@@ -185,7 +185,7 @@ export default function ProjectSidebar() {
             if (node.type === 'folder') {
               toggleFolder(node.id);
             } else {
-              selectFile(node.id, node.content);
+              selectFile(node.id, node.content || '');
             }
           }}
         >
