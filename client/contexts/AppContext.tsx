@@ -11,6 +11,7 @@ export interface Node {
     inputs?: string[];
     outputs?: string[];
     code?: string;
+    config?: any;
   };
 }
 
