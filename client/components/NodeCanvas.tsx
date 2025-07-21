@@ -124,13 +124,15 @@ export default function NodeCanvas() {
         y: 200 + Math.random() * 200,
       },
       data: {
-        label: `New ${type}`,
+        label: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
         inputs: type !== "input" ? ["input"] : undefined,
         outputs: type !== "output" ? ["output"] : undefined,
-        code: `# ${type} node code`,
+        code: `# ${type} node code\nprint("${type} node executed")`,
+        config: {},
       },
     };
     dispatch({ type: "ADD_NODE", payload: newNode });
+    console.log("Added node:", newNode);
   };
 
   const deleteNode = (nodeId: string) => {
