@@ -136,7 +136,7 @@ export default function Index() {
         </div>
         
         {/* Bottom Panel - Code Editor, AI, Settings */}
-        <div className="h-80 glass-panel border-t border-matrix-purple-600/30 flex flex-col m-2 mt-0 rounded-xl matrix-interactive">
+        <div className="h-96 glass-panel border-t border-matrix-purple-600/30 flex flex-col m-2 mt-0 rounded-xl matrix-interactive">
           {/* Panel Tabs */}
           <div className="h-12 flex items-center gap-1 px-4 border-b border-matrix-purple-600/30">
             <Button
