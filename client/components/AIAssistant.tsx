@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -28,25 +29,18 @@ interface Message {
 }
 
 export default function AIAssistant() {
-  const [activeTab, setActiveTab] = useState('chat');
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      type: 'ai',
-      content: 'Welcome to Matrix IDE AI Assistant! I\'m running locally on your machine for complete privacy. How can I help you with your code today?',
-      timestamp: new Date(),
-      category: 'chat'
-    },
-    {
-      id: '2',
-      type: 'ai',
-      content: 'I can help you with:\n• Code generation from your node diagrams\n• Debugging and error analysis\n• Code optimization suggestions\n• Explaining complex algorithms\n• Best practices recommendations',
-      timestamp: new Date(),
-      category: 'chat'
-    }
-  ]);
+  const { state, dispatch } = useApp();
+  const { aiMessages, aiProcessing, activeTab, nodes, connections, generatedCode, settings } = state;
   const [inputValue, setInputValue] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [aiMessages]);
 
   const aiSuggestions = [
     { icon: Code, text: 'Generate code from current nodes', category: 'generate' },
@@ -58,49 +52,89 @@ export default function AIAssistant() {
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: inputValue,
-      timestamp: new Date(),
-      category: 'chat'
-    };
+    // Add user message
+    dispatch({
+      type: 'ADD_AI_MESSAGE',
+      payload: { type: 'user', content: inputValue, category: 'chat' }
+    });
 
-    setMessages(prev => [...prev, userMessage]);
+    const userInput = inputValue;
     setInputValue('');
-    setIsProcessing(true);
+    dispatch({ type: 'SET_AI_PROCESSING', payload: true });
 
-    // Simulate AI processing
+    // Simulate AI processing with realistic delay
     setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        content: generateAIResponse(inputValue),
-        timestamp: new Date(),
-        category: 'chat'
-      };
-      setMessages(prev => [...prev, aiResponse]);
-      setIsProcessing(false);
-    }, 1500);
+      const aiResponse = generateAIResponse(userInput, nodes, connections, generatedCode, settings.language);
+      dispatch({
+        type: 'ADD_AI_MESSAGE',
+        payload: { type: 'ai', content: aiResponse, category: 'chat' }
+      });
+      dispatch({ type: 'SET_AI_PROCESSING', payload: false });
+    }, 1000 + Math.random() * 1500);
   };
 
-  const generateAIResponse = (input: string): string => {
-    const responses = [
-      "I understand you're working with the node-based system. Let me analyze your current setup and provide some optimized code suggestions.",
-      "Based on your input, I recommend implementing error handling in your data processing nodes. Here's a Python snippet that might help...",
-      "Great question! For better performance, consider using async/await patterns in your JavaScript nodes. This will improve the overall pipeline efficiency.",
-      "I notice you're using multiple data transformation nodes. You could optimize this by combining some operations into a single function node.",
-      "That's a complex algorithm! Let me break it down step by step and show you how to implement it using our visual programming approach."
+  const generateAIResponse = (input: string, nodes: any[], connections: any[], code: string, language: string): string => {
+    const lowerInput = input.toLowerCase();
+
+    // Code analysis responses
+    if (lowerInput.includes('analyze') || lowerInput.includes('code')) {
+      return `I've analyzed your current ${language} code with ${nodes.length} nodes and ${connections.length} connections. Your pipeline looks well-structured. The generated code includes proper error handling and follows ${language} best practices. Would you like me to suggest any optimizations?`;
+    }
+
+    // Node-specific responses
+    if (lowerInput.includes('node') || lowerInput.includes('connect')) {
+      const inputNodes = nodes.filter(n => n.type === 'input').length;
+      const outputNodes = nodes.filter(n => n.type === 'output').length;
+      const functionNodes = nodes.filter(n => n.type === 'function').length;
+
+      return `Your current setup has ${inputNodes} input node(s), ${functionNodes} processing node(s), and ${outputNodes} output node(s). The connections create a ${connections.length > 0 ? 'valid' : 'incomplete'} data flow. ${connections.length === 0 ? 'Try connecting the output of one node to the input of another to create a processing pipeline.' : 'The data flows properly through your pipeline.'}`;
+    }
+
+    // Debug responses
+    if (lowerInput.includes('debug') || lowerInput.includes('error') || lowerInput.includes('fix')) {
+      if (connections.length === 0) {
+        return "I found a potential issue: Your nodes aren't connected yet. Connect the output ports (gold circles) to input ports (purple circles) to create a data flow. This will enable proper code generation.";
+      }
+      return "I've scanned your pipeline for common issues. Everything looks good! Your nodes are properly connected and the generated code should execute without errors. If you're experiencing issues, try checking the data types between connected nodes.";
+    }
+
+    // Optimization responses
+    if (lowerInput.includes('optimize') || lowerInput.includes('improve') || lowerInput.includes('performance')) {
+      const suggestions = [
+        "Consider combining sequential processing nodes to reduce overhead.",
+        "Add error handling nodes between input and processing stages.",
+        "Use async processing for API nodes to improve performance.",
+        "Add validation nodes to ensure data integrity."
+      ];
+      return `Here are some optimization suggestions for your ${language} pipeline:\n\n• ${suggestions.join('\n• ')}\n\nWould you like me to help implement any of these improvements?`;
+    }
+
+    // Language-specific responses
+    if (lowerInput.includes('python')) {
+      return "Python is excellent for data processing pipelines! Your current code uses modern Python features like type hints and error handling. Consider using asyncio for better performance with multiple data sources.";
+    }
+
+    if (lowerInput.includes('javascript')) {
+      return "JavaScript works great for real-time processing! I recommend using async/await patterns for better handling of asynchronous operations in your pipeline.";
+    }
+
+    // General helpful responses
+    const generalResponses = [
+      `I can help you with your ${language} pipeline! Currently, you have ${nodes.length} nodes configured. What specific aspect would you like to improve?`,
+      "I'm analyzing your visual programming setup. The node-based approach makes it easy to understand data flow. What would you like to work on next?",
+      "Your Matrix IDE setup looks good! I can help with code optimization, debugging, or adding new functionality. What's your goal?",
+      "As your local AI assistant, I can help optimize your code, suggest improvements, or explain how different nodes work together. What interests you most?"
     ];
-    return responses[Math.floor(Math.random() * responses.length)];
+
+    return generalResponses[Math.floor(Math.random() * generalResponses.length)];
   };
 
   const handleSuggestionClick = (suggestion: string, category: string) => {
     setInputValue(suggestion);
-    setActiveTab(category === 'debug' ? 'debug' : category === 'generate' ? 'generate' : 'chat');
+    dispatch({ type: 'SET_ACTIVE_TAB', payload: category === 'debug' ? 'debug' : category === 'generate' ? 'generate' : 'chat' });
   };
 
-  const renderMessage = (message: Message) => (
+  const renderMessage = (message: any) => (
     <div key={message.id} className={`flex gap-3 mb-4 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
       {message.type === 'ai' && (
         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-matrix-purple-500 to-matrix-purple-700 flex items-center justify-center flex-shrink-0">
@@ -129,7 +163,7 @@ export default function AIAssistant() {
     <div className="h-full flex flex-col">
       {/* AI Assistant Header */}
       <div className="h-12 border-b border-matrix-purple-600/30 flex items-center justify-between px-4">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
+        <Tabs value={activeTab} onValueChange={(value) => dispatch({ type: 'SET_ACTIVE_TAB', payload: value })} className="flex-1">
           <TabsList className="bg-matrix-purple-800/30 border border-matrix-purple-600/30">
             <TabsTrigger 
               value="chat" 
@@ -171,8 +205,8 @@ export default function AIAssistant() {
         <Tabs value={activeTab} className="h-full flex flex-col">
           <TabsContent value="chat" className="flex-1 m-0 flex flex-col">
             <ScrollArea className="flex-1 p-4">
-              {messages.map(renderMessage)}
-              {isProcessing && (
+              {aiMessages.map(renderMessage)}
+              {aiProcessing && (
                 <div className="flex gap-3 mb-4">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-matrix-purple-500 to-matrix-purple-700 flex items-center justify-center">
                     <Bot className="h-4 w-4 text-white" />
@@ -185,6 +219,7 @@ export default function AIAssistant() {
                   </div>
                 </div>
               )}
+              <div ref={messagesEndRef} />
             </ScrollArea>
           </TabsContent>
           
