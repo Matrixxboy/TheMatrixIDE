@@ -24,10 +24,12 @@ import {
   Menu,
 } from "lucide-react";
 import NodeCanvas from "@/components/NodeCanvas";
-import CodeEditor from "@/components/CodeEditor";
+import MonacoCodeEditor from "@/components/MonacoCodeEditor";
 import AIAssistant from "@/components/AIAssistant";
 import ProjectSidebar from "@/components/ProjectSidebar";
 import SettingsPanel from "@/components/SettingsPanel";
+import NodePropertiesPanel from "@/components/NodePropertiesPanel";
+import NodeTemplatesPanel from "@/components/NodeTemplatesPanel";
 
 export default function Index() {
   const { state, dispatch } = useApp();
@@ -120,69 +122,78 @@ export default function Index() {
         )}
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex">
           {/* Node Canvas */}
           <div className="flex-1 relative">
             <NodeCanvas />
           </div>
 
-          {/* Bottom Panel */}
-          <div className="h-80 glass-panel border-t border-matrix-purple-600/30 flex flex-col">
-            {/* Panel Tabs */}
-            <div className="h-12 flex items-center gap-1 px-4 border-b border-matrix-purple-600/30">
-              <Button
-                variant={activePanel === "code" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() =>
-                  dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" })
-                }
-                className={
-                  activePanel === "code"
-                    ? "bg-matrix-purple-700/50 text-matrix-gold-300"
-                    : "hover:bg-matrix-purple-700/30"
-                }
-              >
-                <Code className="h-4 w-4 mr-2" />
-                Code Editor
-              </Button>
-              <Button
-                variant={activePanel === "ai" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() =>
-                  dispatch({ type: "SET_ACTIVE_PANEL", payload: "ai" })
-                }
-                className={
-                  activePanel === "ai"
-                    ? "bg-matrix-purple-700/50 text-matrix-gold-300"
-                    : "hover:bg-matrix-purple-700/30"
-                }
-              >
-                <Bot className="h-4 w-4 mr-2" />
-                AI Assistant
-              </Button>
-              <Button
-                variant={activePanel === "settings" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() =>
-                  dispatch({ type: "SET_ACTIVE_PANEL", payload: "settings" })
-                }
-                className={
-                  activePanel === "settings"
-                    ? "bg-matrix-purple-700/50 text-matrix-gold-300"
-                    : "hover:bg-matrix-purple-700/30"
-                }
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
-            </div>
-
-            {/* Panel Content */}
+          {/* Right Panel - Node Properties and Templates */}
+          <div className="w-80 glass-panel border-l border-matrix-purple-600/30 flex flex-col">
             <div className="flex-1 overflow-hidden">
-              {activePanel === "code" && <CodeEditor />}
-              {activePanel === "ai" && <AIAssistant />}
-              {activePanel === "settings" && <SettingsPanel />}
+              <NodePropertiesPanel />
             </div>
+          </div>
+        </div>
+
+        {/* Bottom Panel - Code Editor, AI, Settings */}
+        <div className="h-80 glass-panel border-t border-matrix-purple-600/30 flex flex-col">
+          {/* Panel Tabs */}
+          <div className="h-12 flex items-center gap-1 px-4 border-b border-matrix-purple-600/30">
+            <Button
+              variant={activePanel === "code" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() =>
+                dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" })
+              }
+              className={
+                activePanel === "code"
+                  ? "bg-matrix-purple-700/50 text-matrix-gold-300"
+                  : "hover:bg-matrix-purple-700/30"
+              }
+            >
+              <Code className="h-4 w-4 mr-2" />
+              Code Editor
+            </Button>
+            <Button
+              variant={activePanel === "ai" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() =>
+                dispatch({ type: "SET_ACTIVE_PANEL", payload: "ai" })
+              }
+              className={
+                activePanel === "ai"
+                  ? "bg-matrix-purple-700/50 text-matrix-gold-300"
+                  : "hover:bg-matrix-purple-700/30"
+              }
+            >
+              <Bot className="h-4 w-4 mr-2" />
+              AI Assistant
+            </Button>
+            <Button
+              variant={activePanel === "settings" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() =>
+                dispatch({ type: "SET_ACTIVE_PANEL", payload: "settings" })
+              }
+              className={
+                activePanel === "settings"
+                  ? "bg-matrix-purple-700/50 text-matrix-gold-300"
+                  : "hover:bg-matrix-purple-700/30"
+              }
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </Button>
+          </div>
+
+
+
+          {/* Panel Content */}
+          <div className="flex-1 overflow-hidden">
+            {activePanel === "code" && <MonacoCodeEditor />}
+            {activePanel === "ai" && <AIAssistant />}
+            {activePanel === "settings" && <SettingsPanel />}
           </div>
         </div>
       </div>
