@@ -129,5 +129,61 @@
 
   body {
     @apply bg-background text-foreground;
+    background: radial-gradient(ellipse at center, hsl(var(--matrix-purple-900)) 0%, hsl(var(--matrix-dark)) 70%);
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  /* Glassmorphism effects */
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-dark {
+    background: hsla(var(--matrix-purple-800), 0.3);
+    backdrop-filter: blur(15px);
+    border: 1px solid hsla(var(--matrix-purple-600), 0.2);
+  }
+
+  .glass-panel {
+    background: hsla(var(--matrix-purple-900), 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsla(var(--matrix-gold-400), 0.1);
+    box-shadow: 0 8px 32px hsla(var(--matrix-purple-800), 0.3);
+  }
+
+  /* Glow effects */
+  .glow {
+    box-shadow: 0 0 20px hsla(var(--matrix-glow), 0.3);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px hsla(var(--matrix-gold-400), 0.4);
+  }
+
+  /* Matrix animations */
+  .matrix-pulse {
+    animation: matrix-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes matrix-pulse {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 20px hsla(var(--matrix-glow), 0.3);
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 30px hsla(var(--matrix-glow), 0.5);
+    }
+  }
+
+  /* Node editor specific styles */
+  .node-canvas {
+    background-image:
+      radial-gradient(circle at 1px 1px, hsla(var(--matrix-purple-600), 0.3) 1px, transparent 0);
+    background-size: 20px 20px;
   }
 }
