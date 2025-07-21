@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -139,37 +140,42 @@ const nodeLibrary: NodeDefinition[] = [
 ];
 
 export default function ProjectSidebar() {
+  const { state, dispatch } = useApp();
+  const { projectFiles, currentFile, nodes } = state;
   const [activeTab, setActiveTab] = useState('files');
   const [searchTerm, setSearchTerm] = useState('');
-  const [projectFiles, setProjectFiles] = useState(projectStructure);
 
   const toggleFolder = (id: string) => {
-    const updateNode = (nodes: FileNode[]): FileNode[] => {
-      return nodes.map(node => {
-        if (node.id === id && node.type === 'folder') {
-          return { ...node, expanded: !node.expanded };
-        }
-        if (node.children) {
-          return { ...node, children: updateNode(node.children) };
-        }
-        return node;
-      });
-    };
-    setProjectFiles(updateNode(projectFiles));
+    dispatch({ type: 'TOGGLE_FILE_FOLDER', payload: id });
+  };
+
+  const selectFile = (id: string, content?: string) => {
+    dispatch({ type: 'SELECT_FILE', payload: id });
+    if (content) {
+      dispatch({ type: 'SET_GENERATED_CODE', payload: content });
+    }
   };
 
   const renderFileNode = (node: FileNode, depth = 0) => {
     const Icon = node.type === 'folder' ? (node.expanded ? FolderOpen : Folder) : FileText;
     const ChevronIcon = node.type === 'folder' ? (node.expanded ? ChevronDown : ChevronRight) : null;
+    const isSelected = currentFile === node.id;
 
     return (
       <div key={node.id}>
-        <div 
-          className={`flex items-center gap-2 px-2 py-1 rounded cursor-pointer hover:bg-matrix-purple-700/30 ${
-            node.type === 'file' ? 'text-matrix-purple-300' : 'text-matrix-gold-300'
+        <div
+          className={`flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-colors ${
+            isSelected ? 'bg-matrix-gold-500/20 text-matrix-gold-300' :
+            node.type === 'file' ? 'text-matrix-purple-300 hover:bg-matrix-purple-700/30' : 'text-matrix-gold-300 hover:bg-matrix-purple-700/30'
           }`}
           style={{ paddingLeft: `${8 + depth * 16}px` }}
-          onClick={() => node.type === 'folder' ? toggleFolder(node.id) : null}
+          onClick={() => {
+            if (node.type === 'folder') {
+              toggleFolder(node.id);
+            } else {
+              selectFile(node.id, node.content);
+            }
+          }}
         >
           {ChevronIcon && (
             <ChevronIcon className="h-3 w-3 text-matrix-purple-400" />
@@ -191,6 +197,24 @@ export default function ProjectSidebar() {
     );
   };
 
+  const addNodeFromLibrary = (nodeType: string, nodeName: string) => {
+    const newNode = {
+      id: Date.now().toString(),
+      type: nodeType as any,
+      position: {
+        x: 100 + Math.random() * 300,
+        y: 100 + Math.random() * 300
+      },
+      data: {
+        label: nodeName,
+        inputs: nodeType !== 'input' ? ['input'] : undefined,
+        outputs: nodeType !== 'output' ? ['output'] : undefined,
+        code: `# ${nodeName} implementation`
+      }
+    };
+    dispatch({ type: 'ADD_NODE', payload: newNode });
+  };
+
   const renderNodeLibraryItem = (node: NodeDefinition) => {
     const Icon = node.icon;
     const typeColors = {
@@ -202,7 +226,7 @@ export default function ProjectSidebar() {
     };
 
     return (
-      <div key={node.id} className="glass-panel rounded-lg p-3 mb-2 cursor-pointer hover:bg-matrix-purple-700/20">
+      <div key={node.id} className="glass-panel rounded-lg p-3 mb-2 cursor-pointer hover:bg-matrix-purple-700/20 group">
         <div className="flex items-center gap-3">
           <div className={`w-8 h-8 rounded bg-gradient-to-r ${typeColors[node.type]} flex items-center justify-center`}>
             <Icon className="h-4 w-4 text-white" />
@@ -211,7 +235,12 @@ export default function ProjectSidebar() {
             <div className="text-sm font-medium text-matrix-gold-300">{node.name}</div>
             <div className="text-xs text-matrix-purple-400">{node.description}</div>
           </div>
-          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => addNodeFromLibrary(node.type, node.name)}
+          >
             <Plus className="h-3 w-3" />
           </Button>
         </div>
@@ -288,15 +317,15 @@ export default function ProjectSidebar() {
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
                     <span className="text-matrix-purple-300">Files</span>
-                    <span className="text-matrix-gold-300">8</span>
+                    <span className="text-matrix-gold-300">{countFiles(projectFiles)}</span>
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-matrix-purple-300">Nodes</span>
-                    <span className="text-matrix-gold-300">12</span>
+                    <span className="text-matrix-gold-300">{nodes.length}</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-matrix-purple-300">Lines of Code</span>
-                    <span className="text-matrix-gold-300">342</span>
+                    <span className="text-matrix-purple-300">Connections</span>
+                    <span className="text-matrix-gold-300">{state.connections.length}</span>
                   </div>
                 </div>
               </div>
@@ -305,7 +334,7 @@ export default function ProjectSidebar() {
 
           <TabsContent value="nodes" className="h-full m-0">
             <ScrollArea className="h-full px-4 py-2">
-              <div className="text-xs text-matrix-purple-400 mb-3">Node Library</div>
+              <div className="text-xs text-matrix-purple-400 mb-3">Node Library (Click + to add)</div>
               {filteredNodes.map(renderNodeLibraryItem)}
               
               {/* Custom Nodes */}
