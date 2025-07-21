@@ -3,16 +3,17 @@ import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Play, 
-  Copy, 
-  Download, 
-  FileText, 
+import {
+  Play,
+  Copy,
+  Download,
+  FileText,
   Terminal,
   Eye,
   Edit3,
   Code2,
-  Zap
+  Zap,
+  Save
 } from "lucide-react";
 
 interface CodeEditorProps {}
