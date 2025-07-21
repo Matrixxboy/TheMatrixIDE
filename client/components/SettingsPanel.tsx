@@ -306,7 +306,7 @@ export default function SettingsPanel() {
                       <div className="text-sm text-matrix-purple-200">Default Language</div>
                       <div className="text-xs text-matrix-purple-400">Primary programming language</div>
                     </div>
-                    <Select value={settings.language} onValueChange={(value) => updateSetting('language', value)}>
+                    <Select value={localSettings.language} onValueChange={(value) => updateSetting('language', value)}>
                       <SelectTrigger className="w-32 bg-matrix-purple-800/30 border-matrix-purple-600/50">
                         <SelectValue />
                       </SelectTrigger>
@@ -326,7 +326,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Automatically save changes</div>
                     </div>
                     <Switch
-                      checked={settings.autoSave}
+                      checked={localSettings.autoSave}
                       onCheckedChange={(checked) => updateSetting('autoSave', checked)}
                     />
                   </div>
@@ -337,7 +337,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Real-time code execution preview</div>
                     </div>
                     <Switch
-                      checked={settings.livePreview}
+                      checked={localSettings.livePreview}
                       onCheckedChange={(checked) => updateSetting('livePreview', checked)}
                     />
                   </div>
@@ -348,7 +348,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Wrap long lines in editor</div>
                     </div>
                     <Switch
-                      checked={settings.wordWrap}
+                      checked={localSettings.wordWrap}
                       onCheckedChange={(checked) => updateSetting('wordWrap', checked)}
                     />
                   </div>
@@ -374,7 +374,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Enable local AI processing</div>
                     </div>
                     <Switch
-                      checked={settings.aiEnabled}
+                      checked={localSettings.aiEnabled}
                       onCheckedChange={(checked) => updateSetting('aiEnabled', checked)}
                     />
                   </div>
@@ -384,7 +384,7 @@ export default function SettingsPanel() {
                       <div className="text-sm text-matrix-purple-200">AI Model</div>
                       <div className="text-xs text-matrix-purple-400">Local AI model to use</div>
                     </div>
-                    <Select value={settings.aiModel} onValueChange={(value) => updateSetting('aiModel', value)}>
+                    <Select value={localSettings.aiModel} onValueChange={(value) => updateSetting('aiModel', value)}>
                       <SelectTrigger className="w-40 bg-matrix-purple-800/30 border-matrix-purple-600/50">
                         <SelectValue />
                       </SelectTrigger>
@@ -402,7 +402,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Show AI-powered suggestions</div>
                     </div>
                     <Switch
-                      checked={settings.aiSuggestions}
+                      checked={localSettings.aiSuggestions}
                       onCheckedChange={(checked) => updateSetting('aiSuggestions', checked)}
                     />
                   </div>
@@ -413,7 +413,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Auto-complete code with AI</div>
                     </div>
                     <Switch
-                      checked={settings.aiAutoComplete}
+                      checked={localSettings.aiAutoComplete}
                       onCheckedChange={(checked) => updateSetting('aiAutoComplete', checked)}
                     />
                   </div>
@@ -434,7 +434,7 @@ export default function SettingsPanel() {
                       <div className="text-sm text-matrix-purple-200">Default Export Format</div>
                       <div className="text-xs text-matrix-purple-400">Default code export format</div>
                     </div>
-                    <Select value={settings.defaultExportFormat} onValueChange={(value) => updateSetting('defaultExportFormat', value)}>
+                    <Select value={localSettings.defaultExportFormat} onValueChange={(value) => updateSetting('defaultExportFormat', value)}>
                       <SelectTrigger className="w-32 bg-matrix-purple-800/30 border-matrix-purple-600/50">
                         <SelectValue />
                       </SelectTrigger>
@@ -453,7 +453,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Add explanatory comments to exported code</div>
                     </div>
                     <Switch
-                      checked={settings.includeComments}
+                      checked={localSettings.includeComments}
                       onCheckedChange={(checked) => updateSetting('includeComments', checked)}
                     />
                   </div>
@@ -464,7 +464,7 @@ export default function SettingsPanel() {
                       <div className="text-xs text-matrix-purple-400">Minify exported code for production</div>
                     </div>
                     <Switch
-                      checked={settings.minifyCode}
+                      checked={localSettings.minifyCode}
                       onCheckedChange={(checked) => updateSetting('minifyCode', checked)}
                     />
                   </div>
