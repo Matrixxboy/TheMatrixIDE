@@ -338,7 +338,7 @@ export default function AIAssistant() {
           />
           <Button 
             onClick={handleSendMessage}
-            disabled={isProcessing || !inputValue.trim()}
+            disabled={aiProcessing || !inputValue.trim()}
             className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark"
           >
             <Send className="h-4 w-4" />
