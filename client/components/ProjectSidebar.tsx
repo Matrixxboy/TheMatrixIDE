@@ -421,6 +421,10 @@ export default function ProjectSidebar() {
               </div>
             </ScrollArea>
           </TabsContent>
+
+          <TabsContent value="templates" className="h-full m-0">
+            <NodeTemplatesPanel />
+          </TabsContent>
         </div>
       </Tabs>
     </div>
