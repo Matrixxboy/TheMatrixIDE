@@ -187,8 +187,6 @@ export default function Index() {
             </Button>
           </div>
 
-
-
           {/* Panel Content */}
           <div className="flex-1 overflow-hidden">
             {activePanel === "code" && <MonacoCodeEditor />}

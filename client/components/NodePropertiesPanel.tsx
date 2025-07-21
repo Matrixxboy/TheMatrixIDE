@@ -1,21 +1,27 @@
-import { useState, useEffect } from 'react';
-import { useApp } from '@/contexts/AppContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Settings, 
-  Code, 
-  Link2, 
-  Zap, 
-  Database, 
+import { useState, useEffect } from "react";
+import { useApp } from "@/contexts/AppContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Settings,
+  Code,
+  Link2,
+  Zap,
+  Database,
   Globe,
   Variable,
   Plus,
@@ -27,13 +33,13 @@ import {
   Eye,
   EyeOff,
   Info,
-  AlertTriangle
-} from 'lucide-react';
+  AlertTriangle,
+} from "lucide-react";
 
 interface NodePropertyConfig {
   id: string;
   name: string;
-  type: 'string' | 'number' | 'boolean' | 'select' | 'code' | 'array';
+  type: "string" | "number" | "boolean" | "select" | "code" | "array";
   value: any;
   options?: string[];
   description?: string;
@@ -42,60 +48,220 @@ interface NodePropertyConfig {
 
 const defaultNodeConfigs: Record<string, NodePropertyConfig[]> = {
   input: [
-    { id: 'prompt', name: 'Input Prompt', type: 'string' as const, value: 'Enter value:', description: 'Text shown to user' },
-    { id: 'placeholder', name: 'Placeholder', type: 'string' as const, value: '', description: 'Placeholder text' },
-    { id: 'validation', name: 'Validation', type: 'select' as const, value: 'none', options: ['none', 'required', 'number', 'email'], description: 'Input validation type' },
-    { id: 'defaultValue', name: 'Default Value', type: 'string' as const, value: '', description: 'Default input value' }
+    {
+      id: "prompt",
+      name: "Input Prompt",
+      type: "string" as const,
+      value: "Enter value:",
+      description: "Text shown to user",
+    },
+    {
+      id: "placeholder",
+      name: "Placeholder",
+      type: "string" as const,
+      value: "",
+      description: "Placeholder text",
+    },
+    {
+      id: "validation",
+      name: "Validation",
+      type: "select" as const,
+      value: "none",
+      options: ["none", "required", "number", "email"],
+      description: "Input validation type",
+    },
+    {
+      id: "defaultValue",
+      name: "Default Value",
+      type: "string" as const,
+      value: "",
+      description: "Default input value",
+    },
   ],
   function: [
-    { id: 'functionName', name: 'Function Name', type: 'string' as const, value: 'process_data', description: 'Name of the function' },
-    { id: 'parameters', name: 'Parameters', type: 'array' as const, value: ['data'], description: 'Function parameters' },
-    { id: 'returnType', name: 'Return Type', type: 'select' as const, value: 'auto', options: ['auto', 'string', 'number', 'boolean', 'array', 'object'], description: 'Expected return type' },
-    { id: 'async', name: 'Async Function', type: 'boolean' as const, value: false, description: 'Whether function is asynchronous' },
-    { id: 'errorHandling', name: 'Error Handling', type: 'boolean' as const, value: true, description: 'Include try-catch block' },
-    { id: 'customCode', name: 'Custom Code', type: 'code' as const, value: '# Custom implementation', description: 'Custom function implementation' }
+    {
+      id: "functionName",
+      name: "Function Name",
+      type: "string" as const,
+      value: "process_data",
+      description: "Name of the function",
+    },
+    {
+      id: "parameters",
+      name: "Parameters",
+      type: "array" as const,
+      value: ["data"],
+      description: "Function parameters",
+    },
+    {
+      id: "returnType",
+      name: "Return Type",
+      type: "select" as const,
+      value: "auto",
+      options: ["auto", "string", "number", "boolean", "array", "object"],
+      description: "Expected return type",
+    },
+    {
+      id: "async",
+      name: "Async Function",
+      type: "boolean" as const,
+      value: false,
+      description: "Whether function is asynchronous",
+    },
+    {
+      id: "errorHandling",
+      name: "Error Handling",
+      type: "boolean" as const,
+      value: true,
+      description: "Include try-catch block",
+    },
+    {
+      id: "customCode",
+      name: "Custom Code",
+      type: "code" as const,
+      value: "# Custom implementation",
+      description: "Custom function implementation",
+    },
   ],
   api: [
-    { id: 'url', name: 'API URL', type: 'string' as const, value: 'https://api.example.com', description: 'API endpoint URL' },
-    { id: 'method', name: 'HTTP Method', type: 'select' as const, value: 'GET', options: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], description: 'HTTP request method' },
-    { id: 'headers', name: 'Headers', type: 'array' as const, value: ['Content-Type: application/json'], description: 'HTTP headers' },
-    { id: 'timeout', name: 'Timeout (ms)', type: 'number' as const, value: 5000, description: 'Request timeout in milliseconds' },
-    { id: 'retries', name: 'Retry Count', type: 'number' as const, value: 3, description: 'Number of retry attempts' },
-    { id: 'authentication', name: 'Authentication', type: 'select' as const, value: 'none', options: ['none', 'bearer', 'basic', 'api-key'], description: 'Authentication method' }
+    {
+      id: "url",
+      name: "API URL",
+      type: "string" as const,
+      value: "https://api.example.com",
+      description: "API endpoint URL",
+    },
+    {
+      id: "method",
+      name: "HTTP Method",
+      type: "select" as const,
+      value: "GET",
+      options: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+      description: "HTTP request method",
+    },
+    {
+      id: "headers",
+      name: "Headers",
+      type: "array" as const,
+      value: ["Content-Type: application/json"],
+      description: "HTTP headers",
+    },
+    {
+      id: "timeout",
+      name: "Timeout (ms)",
+      type: "number" as const,
+      value: 5000,
+      description: "Request timeout in milliseconds",
+    },
+    {
+      id: "retries",
+      name: "Retry Count",
+      type: "number" as const,
+      value: 3,
+      description: "Number of retry attempts",
+    },
+    {
+      id: "authentication",
+      name: "Authentication",
+      type: "select" as const,
+      value: "none",
+      options: ["none", "bearer", "basic", "api-key"],
+      description: "Authentication method",
+    },
   ],
   logic: [
-    { id: 'condition', name: 'Condition', type: 'code' as const, value: 'data is not None', description: 'Boolean condition to evaluate' },
-    { id: 'operator', name: 'Operator', type: 'select' as const, value: 'if', options: ['if', 'if-else', 'switch', 'while', 'for'], description: 'Logic operator type' },
-    { id: 'trueValue', name: 'True Value', type: 'string' as const, value: 'condition_true', description: 'Value when condition is true' },
-    { id: 'falseValue', name: 'False Value', type: 'string' as const, value: 'condition_false', description: 'Value when condition is false' }
+    {
+      id: "condition",
+      name: "Condition",
+      type: "code" as const,
+      value: "data is not None",
+      description: "Boolean condition to evaluate",
+    },
+    {
+      id: "operator",
+      name: "Operator",
+      type: "select" as const,
+      value: "if",
+      options: ["if", "if-else", "switch", "while", "for"],
+      description: "Logic operator type",
+    },
+    {
+      id: "trueValue",
+      name: "True Value",
+      type: "string" as const,
+      value: "condition_true",
+      description: "Value when condition is true",
+    },
+    {
+      id: "falseValue",
+      name: "False Value",
+      type: "string" as const,
+      value: "condition_false",
+      description: "Value when condition is false",
+    },
   ],
   output: [
-    { id: 'outputType', name: 'Output Type', type: 'select' as const, value: 'console', options: ['console', 'file', 'api', 'database'], description: 'Where to send output' },
-    { id: 'format', name: 'Format', type: 'select' as const, value: 'text', options: ['text', 'json', 'csv', 'xml'], description: 'Output format' },
-    { id: 'template', name: 'Template', type: 'string' as const, value: 'Result: {result}', description: 'Output template with placeholders' },
-    { id: 'logLevel', name: 'Log Level', type: 'select' as const, value: 'info', options: ['debug', 'info', 'warn', 'error'], description: 'Logging level' }
-  ]
+    {
+      id: "outputType",
+      name: "Output Type",
+      type: "select" as const,
+      value: "console",
+      options: ["console", "file", "api", "database"],
+      description: "Where to send output",
+    },
+    {
+      id: "format",
+      name: "Format",
+      type: "select" as const,
+      value: "text",
+      options: ["text", "json", "csv", "xml"],
+      description: "Output format",
+    },
+    {
+      id: "template",
+      name: "Template",
+      type: "string" as const,
+      value: "Result: {result}",
+      description: "Output template with placeholders",
+    },
+    {
+      id: "logLevel",
+      name: "Log Level",
+      type: "select" as const,
+      value: "info",
+      options: ["debug", "info", "warn", "error"],
+      description: "Logging level",
+    },
+  ],
 };
 
 export default function NodePropertiesPanel() {
   const { state, dispatch } = useApp();
   const { selectedNode, nodes } = state;
-  const [activeTab, setActiveTab] = useState('properties');
+  const [activeTab, setActiveTab] = useState("properties");
   const [nodeConfig, setNodeConfig] = useState<NodePropertyConfig[]>([]);
   const [hasChanges, setHasChanges] = useState(false);
 
-  const selectedNodeData = selectedNode ? nodes.find(n => n.id === selectedNode) : null;
+  const selectedNodeData = selectedNode
+    ? nodes.find((n) => n.id === selectedNode)
+    : null;
 
   useEffect(() => {
     if (selectedNodeData) {
-      const defaultConfig = defaultNodeConfigs[selectedNodeData.type as keyof typeof defaultNodeConfigs] || [];
+      const defaultConfig =
+        defaultNodeConfigs[
+          selectedNodeData.type as keyof typeof defaultNodeConfigs
+        ] || [];
       const existingConfig = selectedNodeData.data.config || {};
-      
-      const config = defaultConfig.map(prop => ({
+
+      const config = defaultConfig.map((prop) => ({
         ...prop,
-        value: existingConfig[prop.id] !== undefined ? existingConfig[prop.id] : prop.value
+        value:
+          existingConfig[prop.id] !== undefined
+            ? existingConfig[prop.id]
+            : prop.value,
       }));
-      
+
       setNodeConfig(config);
       setHasChanges(false);
     } else {
@@ -104,36 +270,52 @@ export default function NodePropertiesPanel() {
   }, [selectedNodeData]);
 
   const updateProperty = (propertyId: string, value: any) => {
-    setNodeConfig(prev => prev.map(prop => 
-      prop.id === propertyId ? { ...prop, value } : prop
-    ));
+    setNodeConfig((prev) =>
+      prev.map((prop) => (prop.id === propertyId ? { ...prop, value } : prop)),
+    );
     setHasChanges(true);
   };
 
   const addArrayItem = (propertyId: string) => {
-    setNodeConfig(prev => prev.map(prop => 
-      prop.id === propertyId ? { ...prop, value: [...prop.value, ''] } : prop
-    ));
+    setNodeConfig((prev) =>
+      prev.map((prop) =>
+        prop.id === propertyId ? { ...prop, value: [...prop.value, ""] } : prop,
+      ),
+    );
     setHasChanges(true);
   };
 
   const removeArrayItem = (propertyId: string, index: number) => {
-    setNodeConfig(prev => prev.map(prop => 
-      prop.id === propertyId ? { 
-        ...prop, 
-        value: prop.value.filter((_: any, i: number) => i !== index) 
-      } : prop
-    ));
+    setNodeConfig((prev) =>
+      prev.map((prop) =>
+        prop.id === propertyId
+          ? {
+              ...prop,
+              value: prop.value.filter((_: any, i: number) => i !== index),
+            }
+          : prop,
+      ),
+    );
     setHasChanges(true);
   };
 
-  const updateArrayItem = (propertyId: string, index: number, value: string) => {
-    setNodeConfig(prev => prev.map(prop => 
-      prop.id === propertyId ? { 
-        ...prop, 
-        value: prop.value.map((item: string, i: number) => i === index ? value : item)
-      } : prop
-    ));
+  const updateArrayItem = (
+    propertyId: string,
+    index: number,
+    value: string,
+  ) => {
+    setNodeConfig((prev) =>
+      prev.map((prop) =>
+        prop.id === propertyId
+          ? {
+              ...prop,
+              value: prop.value.map((item: string, i: number) =>
+                i === index ? value : item,
+              ),
+            }
+          : prop,
+      ),
+    );
     setHasChanges(true);
   };
 
@@ -145,16 +327,16 @@ export default function NodePropertiesPanel() {
       }, {} as any);
 
       dispatch({
-        type: 'UPDATE_NODE',
+        type: "UPDATE_NODE",
         payload: {
           id: selectedNodeData.id,
           updates: {
             data: {
               ...selectedNodeData.data,
-              config: configObject
-            }
-          }
-        }
+              config: configObject,
+            },
+          },
+        },
       });
       setHasChanges(false);
     }
@@ -162,7 +344,10 @@ export default function NodePropertiesPanel() {
 
   const resetChanges = () => {
     if (selectedNodeData) {
-      const defaultConfig = defaultNodeConfigs[selectedNodeData.type as keyof typeof defaultNodeConfigs] || [];
+      const defaultConfig =
+        defaultNodeConfigs[
+          selectedNodeData.type as keyof typeof defaultNodeConfigs
+        ] || [];
       setNodeConfig(defaultConfig);
       setHasChanges(true);
     }
@@ -175,26 +360,26 @@ export default function NodePropertiesPanel() {
         id: Date.now().toString(),
         position: {
           x: selectedNodeData.position.x + 50,
-          y: selectedNodeData.position.y + 50
+          y: selectedNodeData.position.y + 50,
         },
         data: {
           ...selectedNodeData.data,
-          label: `${selectedNodeData.data.label} Copy`
-        }
+          label: `${selectedNodeData.data.label} Copy`,
+        },
       };
-      dispatch({ type: 'ADD_NODE', payload: newNode });
+      dispatch({ type: "ADD_NODE", payload: newNode });
     }
   };
 
   const deleteNode = () => {
     if (selectedNodeData) {
-      dispatch({ type: 'DELETE_NODE', payload: selectedNodeData.id });
+      dispatch({ type: "DELETE_NODE", payload: selectedNodeData.id });
     }
   };
 
   const renderPropertyInput = (property: NodePropertyConfig) => {
     switch (property.type) {
-      case 'string':
+      case "string":
         return (
           <Input
             value={property.value}
@@ -203,40 +388,47 @@ export default function NodePropertiesPanel() {
             className="bg-matrix-purple-800/30 border-matrix-purple-600/50"
           />
         );
-      
-      case 'number':
+
+      case "number":
         return (
           <Input
             type="number"
             value={property.value}
-            onChange={(e) => updateProperty(property.id, parseFloat(e.target.value) || 0)}
+            onChange={(e) =>
+              updateProperty(property.id, parseFloat(e.target.value) || 0)
+            }
             className="bg-matrix-purple-800/30 border-matrix-purple-600/50"
           />
         );
-      
-      case 'boolean':
+
+      case "boolean":
         return (
           <Switch
             checked={property.value}
             onCheckedChange={(checked) => updateProperty(property.id, checked)}
           />
         );
-      
-      case 'select':
+
+      case "select":
         return (
-          <Select value={property.value} onValueChange={(value) => updateProperty(property.id, value)}>
+          <Select
+            value={property.value}
+            onValueChange={(value) => updateProperty(property.id, value)}
+          >
             <SelectTrigger className="bg-matrix-purple-800/30 border-matrix-purple-600/50">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {property.options?.map(option => (
-                <SelectItem key={option} value={option}>{option}</SelectItem>
+              {property.options?.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         );
-      
-      case 'code':
+
+      case "code":
         return (
           <Textarea
             value={property.value}
@@ -245,15 +437,17 @@ export default function NodePropertiesPanel() {
             placeholder={property.description}
           />
         );
-      
-      case 'array':
+
+      case "array":
         return (
           <div className="space-y-2">
             {property.value.map((item: string, index: number) => (
               <div key={index} className="flex items-center gap-2">
                 <Input
                   value={item}
-                  onChange={(e) => updateArrayItem(property.id, index, e.target.value)}
+                  onChange={(e) =>
+                    updateArrayItem(property.id, index, e.target.value)
+                  }
                   className="bg-matrix-purple-800/30 border-matrix-purple-600/50"
                 />
                 <Button
@@ -277,7 +471,7 @@ export default function NodePropertiesPanel() {
             </Button>
           </div>
         );
-      
+
       default:
         return null;
     }
@@ -288,7 +482,9 @@ export default function NodePropertiesPanel() {
       <div className="h-full flex items-center justify-center text-center p-8">
         <div>
           <Settings className="h-12 w-12 text-matrix-purple-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-matrix-gold-300 mb-2">No Node Selected</h3>
+          <h3 className="text-lg font-medium text-matrix-gold-300 mb-2">
+            No Node Selected
+          </h3>
           <p className="text-sm text-matrix-purple-400">
             Select a node from the canvas to view and edit its properties.
           </p>
@@ -306,16 +502,30 @@ export default function NodePropertiesPanel() {
             <Settings className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h3 className="text-sm font-medium text-matrix-gold-300">{selectedNodeData.data.label}</h3>
-            <p className="text-xs text-matrix-purple-400 capitalize">{selectedNodeData.type} Node</p>
+            <h3 className="text-sm font-medium text-matrix-gold-300">
+              {selectedNodeData.data.label}
+            </h3>
+            <p className="text-xs text-matrix-purple-400 capitalize">
+              {selectedNodeData.type} Node
+            </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-1">
-          <Button size="sm" variant="ghost" onClick={duplicateNode} className="h-8 w-8 p-0">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={duplicateNode}
+            className="h-8 w-8 p-0"
+          >
             <Copy className="h-3 w-3" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={deleteNode} className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={deleteNode}
+            className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
+          >
             <Trash2 className="h-3 w-3" />
           </Button>
         </div>
@@ -323,24 +533,28 @@ export default function NodePropertiesPanel() {
 
       {/* Content */}
       <div className="flex-1 overflow-hidden">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="h-full flex flex-col"
+        >
           <TabsList className="mx-4 mt-2 bg-matrix-purple-800/30 border border-matrix-purple-600/30">
-            <TabsTrigger 
-              value="properties" 
+            <TabsTrigger
+              value="properties"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <Settings className="h-4 w-4 mr-1" />
               Properties
             </TabsTrigger>
-            <TabsTrigger 
-              value="connections" 
+            <TabsTrigger
+              value="connections"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <Link2 className="h-4 w-4 mr-1" />
               Connections
             </TabsTrigger>
-            <TabsTrigger 
-              value="code" 
+            <TabsTrigger
+              value="code"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <Code className="h-4 w-4 mr-1" />
@@ -352,52 +566,75 @@ export default function NodePropertiesPanel() {
             <TabsContent value="properties" className="m-0 space-y-4">
               {/* Basic Properties */}
               <div className="glass-panel rounded-lg p-4">
-                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">Basic Properties</h4>
+                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">
+                  Basic Properties
+                </h4>
                 <div className="space-y-3">
                   <div>
-                    <Label className="text-xs text-matrix-purple-300">Node Label</Label>
+                    <Label className="text-xs text-matrix-purple-300">
+                      Node Label
+                    </Label>
                     <Input
                       value={selectedNodeData.data.label}
-                      onChange={(e) => dispatch({
-                        type: 'UPDATE_NODE',
-                        payload: {
-                          id: selectedNodeData.id,
-                          updates: {
-                            data: { ...selectedNodeData.data, label: e.target.value }
-                          }
-                        }
-                      })}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "UPDATE_NODE",
+                          payload: {
+                            id: selectedNodeData.id,
+                            updates: {
+                              data: {
+                                ...selectedNodeData.data,
+                                label: e.target.value,
+                              },
+                            },
+                          },
+                        })
+                      }
                       className="bg-matrix-purple-800/30 border-matrix-purple-600/50"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <Label className="text-xs text-matrix-purple-300">X Position</Label>
+                      <Label className="text-xs text-matrix-purple-300">
+                        X Position
+                      </Label>
                       <Input
                         type="number"
                         value={selectedNodeData.position.x}
-                        onChange={(e) => dispatch({
-                          type: 'MOVE_NODE',
-                          payload: {
-                            id: selectedNodeData.id,
-                            position: { ...selectedNodeData.position, x: parseInt(e.target.value) || 0 }
-                          }
-                        })}
+                        onChange={(e) =>
+                          dispatch({
+                            type: "MOVE_NODE",
+                            payload: {
+                              id: selectedNodeData.id,
+                              position: {
+                                ...selectedNodeData.position,
+                                x: parseInt(e.target.value) || 0,
+                              },
+                            },
+                          })
+                        }
                         className="bg-matrix-purple-800/30 border-matrix-purple-600/50"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs text-matrix-purple-300">Y Position</Label>
+                      <Label className="text-xs text-matrix-purple-300">
+                        Y Position
+                      </Label>
                       <Input
                         type="number"
                         value={selectedNodeData.position.y}
-                        onChange={(e) => dispatch({
-                          type: 'MOVE_NODE',
-                          payload: {
-                            id: selectedNodeData.id,
-                            position: { ...selectedNodeData.position, y: parseInt(e.target.value) || 0 }
-                          }
-                        })}
+                        onChange={(e) =>
+                          dispatch({
+                            type: "MOVE_NODE",
+                            payload: {
+                              id: selectedNodeData.id,
+                              position: {
+                                ...selectedNodeData.position,
+                                y: parseInt(e.target.value) || 0,
+                              },
+                            },
+                          })
+                        }
                         className="bg-matrix-purple-800/30 border-matrix-purple-600/50"
                       />
                     </div>
@@ -407,21 +644,30 @@ export default function NodePropertiesPanel() {
 
               {/* Advanced Properties */}
               <div className="glass-panel rounded-lg p-4">
-                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">Advanced Configuration</h4>
+                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">
+                  Advanced Configuration
+                </h4>
                 <div className="space-y-4">
                   {nodeConfig.map((property) => (
                     <div key={property.id}>
                       <div className="flex items-center justify-between mb-2">
-                        <Label className="text-xs text-matrix-purple-300">{property.name}</Label>
+                        <Label className="text-xs text-matrix-purple-300">
+                          {property.name}
+                        </Label>
                         {property.required && (
-                          <Badge variant="outline" className="text-xs h-5 border-red-400/50 text-red-300">
+                          <Badge
+                            variant="outline"
+                            className="text-xs h-5 border-red-400/50 text-red-300"
+                          >
                             Required
                           </Badge>
                         )}
                       </div>
                       {renderPropertyInput(property)}
                       {property.description && (
-                        <p className="text-xs text-matrix-purple-400 mt-1">{property.description}</p>
+                        <p className="text-xs text-matrix-purple-400 mt-1">
+                          {property.description}
+                        </p>
                       )}
                     </div>
                   ))}
@@ -431,18 +677,30 @@ export default function NodePropertiesPanel() {
 
             <TabsContent value="connections" className="m-0">
               <div className="glass-panel rounded-lg p-4">
-                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">Node Connections</h4>
-                
+                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">
+                  Node Connections
+                </h4>
+
                 {/* Input Connections */}
                 {selectedNodeData.data.inputs && (
                   <div className="mb-4">
-                    <h5 className="text-xs font-medium text-matrix-purple-300 mb-2">Inputs</h5>
+                    <h5 className="text-xs font-medium text-matrix-purple-300 mb-2">
+                      Inputs
+                    </h5>
                     <div className="space-y-2">
                       {selectedNodeData.data.inputs.map((input, index) => (
-                        <div key={input} className="flex items-center gap-2 p-2 glass-dark rounded">
+                        <div
+                          key={input}
+                          className="flex items-center gap-2 p-2 glass-dark rounded"
+                        >
                           <div className="w-3 h-3 rounded-full bg-matrix-purple-400 border-2 border-matrix-purple-300"></div>
-                          <span className="text-sm text-matrix-purple-200">{input}</span>
-                          <Badge variant="outline" className="ml-auto text-xs border-matrix-purple-600/50">
+                          <span className="text-sm text-matrix-purple-200">
+                            {input}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className="ml-auto text-xs border-matrix-purple-600/50"
+                          >
                             Input {index + 1}
                           </Badge>
                         </div>
@@ -454,13 +712,23 @@ export default function NodePropertiesPanel() {
                 {/* Output Connections */}
                 {selectedNodeData.data.outputs && (
                   <div>
-                    <h5 className="text-xs font-medium text-matrix-purple-300 mb-2">Outputs</h5>
+                    <h5 className="text-xs font-medium text-matrix-purple-300 mb-2">
+                      Outputs
+                    </h5>
                     <div className="space-y-2">
                       {selectedNodeData.data.outputs.map((output, index) => (
-                        <div key={output} className="flex items-center gap-2 p-2 glass-dark rounded">
+                        <div
+                          key={output}
+                          className="flex items-center gap-2 p-2 glass-dark rounded"
+                        >
                           <div className="w-3 h-3 rounded-full bg-matrix-gold-400 border-2 border-matrix-gold-300"></div>
-                          <span className="text-sm text-matrix-purple-200">{output}</span>
-                          <Badge variant="outline" className="ml-auto text-xs border-matrix-gold-600/50 text-matrix-gold-300">
+                          <span className="text-sm text-matrix-purple-200">
+                            {output}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className="ml-auto text-xs border-matrix-gold-600/50 text-matrix-gold-300"
+                          >
                             Output {index + 1}
                           </Badge>
                         </div>
@@ -473,10 +741,13 @@ export default function NodePropertiesPanel() {
 
             <TabsContent value="code" className="m-0">
               <div className="glass-panel rounded-lg p-4">
-                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">Generated Code Preview</h4>
+                <h4 className="text-sm font-medium text-matrix-gold-300 mb-3">
+                  Generated Code Preview
+                </h4>
                 <div className="bg-matrix-dark/50 rounded p-3 font-mono text-sm">
                   <pre className="text-matrix-purple-200 whitespace-pre-wrap">
-                    {selectedNodeData.data.code || '# Code will be generated based on node configuration'}
+                    {selectedNodeData.data.code ||
+                      "# Code will be generated based on node configuration"}
                   </pre>
                 </div>
               </div>
@@ -495,7 +766,11 @@ export default function NodePropertiesPanel() {
                   <RotateCcw className="h-3 w-3 mr-1" />
                   Reset
                 </Button>
-                <Button size="sm" onClick={saveChanges} className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark">
+                <Button
+                  size="sm"
+                  onClick={saveChanges}
+                  className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark"
+                >
                   <Save className="h-3 w-3 mr-1" />
                   Save
                 </Button>

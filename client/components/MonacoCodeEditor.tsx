@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import { Editor, OnMount, OnChange } from '@monaco-editor/react';
-import { useApp } from '@/contexts/AppContext';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Play, 
-  Copy, 
-  Download, 
+import { useEffect, useRef, useState } from "react";
+import { Editor, OnMount, OnChange } from "@monaco-editor/react";
+import { useApp } from "@/contexts/AppContext";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Play,
+  Copy,
+  Download,
   Save,
   RotateCcw,
   FileText,
@@ -23,8 +23,8 @@ import {
   Lightbulb,
   CheckCircle,
   AlertCircle,
-  Info
-} from 'lucide-react';
+  Info,
+} from "lucide-react";
 
 interface EditorProps {
   value: string;
@@ -34,7 +34,7 @@ interface EditorProps {
 }
 
 interface DiagnosticMessage {
-  type: 'error' | 'warning' | 'info';
+  type: "error" | "warning" | "info";
   line: number;
   column: number;
   message: string;
@@ -47,7 +47,7 @@ export default function MonacoCodeEditor() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [editorInstance, setEditorInstance] = useState<any>(null);
   const [localCode, setLocalCode] = useState(generatedCode);
-  const [output, setOutput] = useState('');
+  const [output, setOutput] = useState("");
   const [diagnostics, setDiagnostics] = useState<DiagnosticMessage[]>([]);
   const [isModified, setIsModified] = useState(false);
   const editorRef = useRef<any>(null);
@@ -66,39 +66,39 @@ export default function MonacoCodeEditor() {
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     setEditorInstance(editor);
     editorRef.current = editor;
-    
+
     // Configure Monaco for Matrix IDE theme
-    monaco.editor.defineTheme('matrix-dark', {
-      base: 'vs-dark',
+    monaco.editor.defineTheme("matrix-dark", {
+      base: "vs-dark",
       inherit: true,
       rules: [
-        { token: 'comment', foreground: '8b5cf6', fontStyle: 'italic' },
-        { token: 'keyword', foreground: 'f59e0b', fontStyle: 'bold' },
-        { token: 'string', foreground: '10b981' },
-        { token: 'number', foreground: 'f59e0b' },
-        { token: 'function', foreground: '06b6d4' },
-        { token: 'class', foreground: 'f59e0b' },
-        { token: 'variable', foreground: 'e5e7eb' },
+        { token: "comment", foreground: "8b5cf6", fontStyle: "italic" },
+        { token: "keyword", foreground: "f59e0b", fontStyle: "bold" },
+        { token: "string", foreground: "10b981" },
+        { token: "number", foreground: "f59e0b" },
+        { token: "function", foreground: "06b6d4" },
+        { token: "class", foreground: "f59e0b" },
+        { token: "variable", foreground: "e5e7eb" },
       ],
       colors: {
-        'editor.background': '#1a1a2e',
-        'editor.foreground': '#e5e7eb',
-        'editorLineNumber.foreground': '#8b5cf6',
-        'editor.selectionBackground': '#8b5cf650',
-        'editor.lineHighlightBackground': '#16213e30',
-        'editorCursor.foreground': '#f59e0b',
-        'editor.findMatchBackground': '#f59e0b50',
-        'editor.findMatchHighlightBackground': '#8b5cf630',
-      }
+        "editor.background": "#1a1a2e",
+        "editor.foreground": "#e5e7eb",
+        "editorLineNumber.foreground": "#8b5cf6",
+        "editor.selectionBackground": "#8b5cf650",
+        "editor.lineHighlightBackground": "#16213e30",
+        "editorCursor.foreground": "#f59e0b",
+        "editor.findMatchBackground": "#f59e0b50",
+        "editor.findMatchHighlightBackground": "#8b5cf630",
+      },
     });
-    
-    monaco.editor.setTheme('matrix-dark');
-    
+
+    monaco.editor.setTheme("matrix-dark");
+
     // Add custom commands
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       handleSave();
     });
-    
+
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
       handleRun();
     });
@@ -111,34 +111,37 @@ export default function MonacoCodeEditor() {
           startLineNumber: position.lineNumber,
           endLineNumber: position.lineNumber,
           startColumn: word.startColumn,
-          endColumn: word.endColumn
+          endColumn: word.endColumn,
         };
 
         const suggestions = [
           {
-            label: 'matrix_input',
+            label: "matrix_input",
             kind: monaco.languages.CompletionItemKind.Function,
-            insertText: 'def matrix_input():\n    """Matrix IDE input node"""\n    return input("Enter value: ")',
-            documentation: 'Creates a Matrix IDE input node function',
-            range: range
+            insertText:
+              'def matrix_input():\n    """Matrix IDE input node"""\n    return input("Enter value: ")',
+            documentation: "Creates a Matrix IDE input node function",
+            range: range,
           },
           {
-            label: 'matrix_process',
+            label: "matrix_process",
             kind: monaco.languages.CompletionItemKind.Function,
-            insertText: 'def matrix_process(data):\n    """Matrix IDE processing node"""\n    return data.strip().lower()',
-            documentation: 'Creates a Matrix IDE processing node function',
-            range: range
+            insertText:
+              'def matrix_process(data):\n    """Matrix IDE processing node"""\n    return data.strip().lower()',
+            documentation: "Creates a Matrix IDE processing node function",
+            range: range,
           },
           {
-            label: 'matrix_output',
+            label: "matrix_output",
             kind: monaco.languages.CompletionItemKind.Function,
-            insertText: 'def matrix_output(result):\n    """Matrix IDE output node"""\n    print(f"Result: {result}")',
-            documentation: 'Creates a Matrix IDE output node function',
-            range: range
-          }
+            insertText:
+              'def matrix_output(result):\n    """Matrix IDE output node"""\n    print(f"Result: {result}")',
+            documentation: "Creates a Matrix IDE output node function",
+            range: range,
+          },
         ];
         return { suggestions };
-      }
+      },
     });
   };
 
@@ -150,13 +153,13 @@ export default function MonacoCodeEditor() {
   };
 
   const handleSave = () => {
-    dispatch({ type: 'SET_GENERATED_CODE', payload: localCode });
+    dispatch({ type: "SET_GENERATED_CODE", payload: localCode });
     setIsModified(false);
   };
 
   const handleRun = () => {
     simulateExecution();
-    dispatch({ type: 'SET_ACTIVE_TAB', payload: 'output' });
+    dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
   };
 
   const handleCopy = () => {
@@ -165,18 +168,19 @@ export default function MonacoCodeEditor() {
 
   const handleDownload = () => {
     const fileExtensions = {
-      python: 'py',
-      javascript: 'js',
-      cpp: 'cpp',
-      typescript: 'ts',
-      java: 'java',
-      rust: 'rs'
+      python: "py",
+      javascript: "js",
+      cpp: "cpp",
+      typescript: "ts",
+      java: "java",
+      rust: "rs",
     };
-    
-    const ext = fileExtensions[settings.language as keyof typeof fileExtensions] || 'txt';
-    const blob = new Blob([localCode], { type: 'text/plain' });
+
+    const ext =
+      fileExtensions[settings.language as keyof typeof fileExtensions] || "txt";
+    const blob = new Blob([localCode], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `matrix_generated.${ext}`;
     a.click();
@@ -185,86 +189,93 @@ export default function MonacoCodeEditor() {
 
   const simulateExecution = () => {
     const lines = [];
-    lines.push(`$ ${settings.language} matrix_generated.${settings.language === 'python' ? 'py' : settings.language === 'javascript' ? 'js' : 'cpp'}`);
-    lines.push('');
-    
-    if (localCode.includes('input(') || localCode.includes('getUserInput')) {
-      lines.push('Enter value: Hello Matrix IDE');
+    lines.push(
+      `$ ${settings.language} matrix_generated.${settings.language === "python" ? "py" : settings.language === "javascript" ? "js" : "cpp"}`,
+    );
+    lines.push("");
+
+    if (localCode.includes("input(") || localCode.includes("getUserInput")) {
+      lines.push("Enter value: Hello Matrix IDE");
     }
-    
-    if (localCode.includes('process_data') || localCode.includes('processData')) {
-      lines.push('Processing data through pipeline...');
+
+    if (
+      localCode.includes("process_data") ||
+      localCode.includes("processData")
+    ) {
+      lines.push("Processing data through pipeline...");
     }
-    
-    if (localCode.includes('ai_enhance') || localCode.includes('aiEnhance')) {
-      lines.push('AI Enhancement: Applying local model processing...');
+
+    if (localCode.includes("ai_enhance") || localCode.includes("aiEnhance")) {
+      lines.push("AI Enhancement: Applying local model processing...");
     }
-    
-    lines.push('');
-    lines.push('Output:');
-    lines.push('Result: AI_ENHANCED: hello matrix ide');
-    lines.push('');
-    lines.push('✓ Execution completed successfully in 0.187s');
-    lines.push('✓ Memory usage: 15.2 MB');
-    lines.push('✓ No runtime errors detected');
-    lines.push(`✓ Generated ${localCode.split('\n').length} lines of ${settings.language}`);
-    
-    setOutput(lines.join('\n'));
+
+    lines.push("");
+    lines.push("Output:");
+    lines.push("Result: AI_ENHANCED: hello matrix ide");
+    lines.push("");
+    lines.push("✓ Execution completed successfully in 0.187s");
+    lines.push("✓ Memory usage: 15.2 MB");
+    lines.push("✓ No runtime errors detected");
+    lines.push(
+      `✓ Generated ${localCode.split("\n").length} lines of ${settings.language}`,
+    );
+
+    setOutput(lines.join("\n"));
   };
 
   const simulateCodeAnalysis = () => {
     const diagnostics: DiagnosticMessage[] = [];
-    const lines = localCode.split('\n');
-    
+    const lines = localCode.split("\n");
+
     lines.forEach((line, index) => {
-      if (line.includes('TODO') || line.includes('FIXME')) {
+      if (line.includes("TODO") || line.includes("FIXME")) {
         diagnostics.push({
-          type: 'info',
+          type: "info",
           line: index + 1,
           column: 1,
-          message: 'TODO comment found - consider implementing',
-          source: 'Matrix IDE'
+          message: "TODO comment found - consider implementing",
+          source: "Matrix IDE",
         });
       }
-      
-      if (line.includes('print(') && !line.includes('f"')) {
+
+      if (line.includes("print(") && !line.includes('f"')) {
         diagnostics.push({
-          type: 'info',
+          type: "info",
           line: index + 1,
-          column: line.indexOf('print(') + 1,
-          message: 'Consider using f-strings for better formatting',
-          source: 'Style Guide'
+          column: line.indexOf("print(") + 1,
+          message: "Consider using f-strings for better formatting",
+          source: "Style Guide",
         });
       }
-      
-      if (line.trim().startsWith('except:')) {
+
+      if (line.trim().startsWith("except:")) {
         diagnostics.push({
-          type: 'warning',
+          type: "warning",
           line: index + 1,
           column: 1,
-          message: 'Bare except clause - specify exception types',
-          source: 'Best Practices'
+          message: "Bare except clause - specify exception types",
+          source: "Best Practices",
         });
       }
     });
-    
+
     // Add suggestions based on code analysis
-    if (!localCode.includes('try:') && localCode.includes('input(')) {
+    if (!localCode.includes("try:") && localCode.includes("input(")) {
       diagnostics.push({
-        type: 'info',
+        type: "info",
         line: 1,
         column: 1,
-        message: 'Consider adding error handling for user input',
-        source: 'Matrix AI Assistant'
+        message: "Consider adding error handling for user input",
+        source: "Matrix AI Assistant",
       });
     }
-    
+
     setDiagnostics(diagnostics);
   };
 
   const formatCode = () => {
     if (editorInstance) {
-      editorInstance.getAction('editor.action.formatDocument').run();
+      editorInstance.getAction("editor.action.formatDocument").run();
     }
   };
 
@@ -272,73 +283,121 @@ export default function MonacoCodeEditor() {
     setIsFullscreen(!isFullscreen);
   };
 
-  const getDiagnosticIcon = (type: DiagnosticMessage['type']) => {
+  const getDiagnosticIcon = (type: DiagnosticMessage["type"]) => {
     switch (type) {
-      case 'error': return <AlertCircle className="h-4 w-4 text-red-400" />;
-      case 'warning': return <AlertCircle className="h-4 w-4 text-yellow-400" />;
-      case 'info': return <Info className="h-4 w-4 text-blue-400" />;
+      case "error":
+        return <AlertCircle className="h-4 w-4 text-red-400" />;
+      case "warning":
+        return <AlertCircle className="h-4 w-4 text-yellow-400" />;
+      case "info":
+        return <Info className="h-4 w-4 text-blue-400" />;
     }
   };
 
   return (
-    <div className={`flex flex-col ${isFullscreen ? 'fixed inset-0 z-50 bg-matrix-dark' : 'h-full'}`}>
+    <div
+      className={`flex flex-col ${isFullscreen ? "fixed inset-0 z-50 bg-matrix-dark" : "h-full"}`}
+    >
       {/* Enhanced Editor Header */}
       <div className="h-14 glass-panel border-b border-matrix-purple-600/30 flex items-center justify-between px-4">
-        <Tabs value={activeTab} onValueChange={(value) => dispatch({ type: 'SET_ACTIVE_TAB', payload: value })} className="flex-1">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) =>
+            dispatch({ type: "SET_ACTIVE_TAB", payload: value })
+          }
+          className="flex-1"
+        >
           <TabsList className="bg-matrix-purple-800/30 border border-matrix-purple-600/30">
-            <TabsTrigger 
-              value="generated" 
+            <TabsTrigger
+              value="generated"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <FileText className="h-4 w-4 mr-2" />
               Code
-              {isModified && <span className="ml-1 w-2 h-2 bg-matrix-gold-400 rounded-full"></span>}
+              {isModified && (
+                <span className="ml-1 w-2 h-2 bg-matrix-gold-400 rounded-full"></span>
+              )}
             </TabsTrigger>
-            <TabsTrigger 
-              value="output" 
+            <TabsTrigger
+              value="output"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <Terminal className="h-4 w-4 mr-2" />
               Output
             </TabsTrigger>
-            <TabsTrigger 
-              value="diagnostics" 
+            <TabsTrigger
+              value="diagnostics"
               className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
             >
               <Bug className="h-4 w-4 mr-2" />
               Problems
               {diagnostics.length > 0 && (
-                <Badge variant="outline" className="ml-2 h-5 text-xs border-matrix-gold-400/50 text-matrix-gold-300">
+                <Badge
+                  variant="outline"
+                  className="ml-2 h-5 text-xs border-matrix-gold-400/50 text-matrix-gold-300"
+                >
                   {diagnostics.length}
                 </Badge>
               )}
             </TabsTrigger>
           </TabsList>
         </Tabs>
-        
+
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="border-matrix-gold-400/50 text-matrix-gold-300">
+          <Badge
+            variant="outline"
+            className="border-matrix-gold-400/50 text-matrix-gold-300"
+          >
             {settings.language.toUpperCase()}
           </Badge>
-          <Button size="sm" variant="ghost" onClick={formatCode} className="h-8">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={formatCode}
+            className="h-8"
+          >
             <Settings className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleCopy} className="h-8">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleCopy}
+            className="h-8"
+          >
             <Copy className="h-4 w-4" />
           </Button>
           {isModified && (
-            <Button size="sm" variant="ghost" onClick={handleSave} className="h-8 text-matrix-gold-300">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleSave}
+              className="h-8 text-matrix-gold-300"
+            >
               <Save className="h-4 w-4" />
             </Button>
           )}
-          <Button size="sm" variant="ghost" onClick={handleDownload} className="h-8">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleDownload}
+            className="h-8"
+          >
             <Download className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={toggleFullscreen} className="h-8">
-            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={toggleFullscreen}
+            className="h-8"
+          >
+            {isFullscreen ? (
+              <Minimize2 className="h-4 w-4" />
+            ) : (
+              <Maximize2 className="h-4 w-4" />
+            )}
           </Button>
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             onClick={handleRun}
             className="h-8 bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark"
           >
@@ -357,16 +416,19 @@ export default function MonacoCodeEditor() {
                 value={localCode}
                 onChange={handleEditorChange}
                 onMount={handleEditorDidMount}
-                language={settings.language === 'cpp' ? 'cpp' : settings.language}
+                language={
+                  settings.language === "cpp" ? "cpp" : settings.language
+                }
                 theme="matrix-dark"
                 options={{
                   fontSize: settings.fontSize,
-                  fontFamily: 'Monaco, Consolas, "Liberation Mono", Courier, monospace',
+                  fontFamily:
+                    'Monaco, Consolas, "Liberation Mono", Courier, monospace',
                   minimap: { enabled: settings.showMinimap },
-                  wordWrap: settings.wordWrap ? 'on' : 'off',
-                  lineNumbers: 'on',
+                  wordWrap: settings.wordWrap ? "on" : "off",
+                  lineNumbers: "on",
                   rulers: [80, 120],
-                  renderWhitespace: 'selection',
+                  renderWhitespace: "selection",
                   scrollBeyondLastLine: false,
                   automaticLayout: true,
                   suggestOnTriggerCharacters: true,
@@ -378,17 +440,17 @@ export default function MonacoCodeEditor() {
                   bracketPairColorization: { enabled: true },
                   guides: {
                     bracketPairs: true,
-                    indentation: true
+                    indentation: true,
                   },
-                  padding: { top: 16, bottom: 16 }
+                  padding: { top: 16, bottom: 16 },
                 }}
               />
-              
+
               {/* Code Status Bar */}
               <div className="absolute bottom-0 left-0 right-0 h-6 glass-dark border-t border-matrix-purple-600/30 flex items-center justify-between px-4 text-xs">
                 <div className="flex items-center gap-4">
                   <span className="text-matrix-purple-300">
-                    Lines: {localCode.split('\n').length}
+                    Lines: {localCode.split("\n").length}
                   </span>
                   <span className="text-matrix-purple-300">
                     Characters: {localCode.length}
@@ -408,13 +470,15 @@ export default function MonacoCodeEditor() {
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="output" className="h-full m-0">
             <div className="h-full bg-matrix-dark/30 p-4 font-mono text-sm text-matrix-purple-200">
-              <pre className="whitespace-pre-wrap">{output || 'Click "Run" to execute the code...'}</pre>
+              <pre className="whitespace-pre-wrap">
+                {output || 'Click "Run" to execute the code...'}
+              </pre>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="diagnostics" className="h-full m-0">
             <ScrollArea className="h-full">
               <div className="p-4">
@@ -426,21 +490,27 @@ export default function MonacoCodeEditor() {
                 ) : (
                   <div className="space-y-2">
                     {diagnostics.map((diagnostic, index) => (
-                      <div 
+                      <div
                         key={index}
                         className="flex items-start gap-3 p-3 glass-panel rounded-lg cursor-pointer hover:bg-matrix-purple-700/20"
                         onClick={() => {
                           if (editorInstance) {
-                            editorInstance.setPosition({ lineNumber: diagnostic.line, column: diagnostic.column });
+                            editorInstance.setPosition({
+                              lineNumber: diagnostic.line,
+                              column: diagnostic.column,
+                            });
                             editorInstance.focus();
                           }
                         }}
                       >
                         {getDiagnosticIcon(diagnostic.type)}
                         <div className="flex-1">
-                          <div className="text-sm text-matrix-purple-200">{diagnostic.message}</div>
+                          <div className="text-sm text-matrix-purple-200">
+                            {diagnostic.message}
+                          </div>
                           <div className="text-xs text-matrix-purple-400 mt-1">
-                            Line {diagnostic.line}, Column {diagnostic.column} • {diagnostic.source}
+                            Line {diagnostic.line}, Column {diagnostic.column} •{" "}
+                            {diagnostic.source}
                           </div>
                         </div>
                       </div>
