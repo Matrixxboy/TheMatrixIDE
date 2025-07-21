@@ -43,14 +43,20 @@ export default function Index() {
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-matrix-purple-500/20 to-matrix-gold-500/20 rounded-full blur-3xl matrix-float"></div>
-        <div className="absolute top-60 right-20 w-48 h-48 bg-gradient-to-r from-matrix-gold-500/20 to-matrix-purple-500/20 rounded-full blur-3xl matrix-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-40 left-1/3 w-56 h-56 bg-gradient-to-r from-matrix-purple-600/20 to-matrix-gold-400/20 rounded-full blur-3xl matrix-float" style={{animationDelay: '4s'}}></div>
+        <div
+          className="absolute top-60 right-20 w-48 h-48 bg-gradient-to-r from-matrix-gold-500/20 to-matrix-purple-500/20 rounded-full blur-3xl matrix-float"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute bottom-40 left-1/3 w-56 h-56 bg-gradient-to-r from-matrix-purple-600/20 to-matrix-gold-400/20 rounded-full blur-3xl matrix-float"
+          style={{ animationDelay: "4s" }}
+        ></div>
       </div>
-      
+
       {/* Header */}
       <header className="h-16 glass-dark border-b border-matrix-purple-600/30 flex items-center justify-between px-6 z-50 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-matrix-purple-500/5 to-transparent"></div>
-        
+
         <div className="flex items-center gap-4 relative z-10">
           <Button
             variant="ghost"
@@ -126,7 +132,7 @@ export default function Index() {
           <div className="flex-1 relative glass-panel rounded-xl overflow-hidden matrix-interactive">
             <NodeCanvas />
           </div>
-          
+
           {/* Right Panel - Node Properties */}
           <div className="w-80 glass-panel rounded-xl flex flex-col matrix-interactive">
             <div className="flex-1 overflow-hidden">
@@ -134,7 +140,7 @@ export default function Index() {
             </div>
           </div>
         </div>
-        
+
         {/* Bottom Panel - Code Editor, AI, Settings */}
         <div className="h-96 glass-panel border-t border-matrix-purple-600/30 flex flex-col m-2 mt-0 rounded-xl matrix-interactive">
           {/* Panel Tabs */}

@@ -219,7 +219,8 @@ const initialState: AppState = {
     },
   ],
   currentFile: null,
-  generatedCode: "# Matrix IDE Generated Python Code\nimport sys\nimport json\nfrom typing import Any, Dict, List\n\ndef process_data(data: Any) -> Any:\n    \"\"\"Transform and process input data\"\"\"\n    if isinstance(data, str):\n        return data.strip().lower()\n    return data\n\ndef main():\n    \"\"\"Main execution function\"\"\"\n    # User Input node\n    user_input_value = input(\"User Input: \")\n    \n    # Process Data node\n    process_data_result = process_data(user_input_value)\n    \n    # Display Result\n    print(f\"Display Result: {process_data_result}\")\n    \n    return \"Execution completed successfully\"\n\nif __name__ == \"__main__\":\n    try:\n        result = main()\n        print(result)\n    except Exception as e:\n        print(f\"Error: {e}\")\n        sys.exit(1)",
+  generatedCode:
+    '# Matrix IDE Generated Python Code\nimport sys\nimport json\nfrom typing import Any, Dict, List\n\ndef process_data(data: Any) -> Any:\n    """Transform and process input data"""\n    if isinstance(data, str):\n        return data.strip().lower()\n    return data\n\ndef main():\n    """Main execution function"""\n    # User Input node\n    user_input_value = input("User Input: ")\n    \n    # Process Data node\n    process_data_result = process_data(user_input_value)\n    \n    # Display Result\n    print(f"Display Result: {process_data_result}")\n    \n    return "Execution completed successfully"\n\nif __name__ == "__main__":\n    try:\n        result = main()\n        print(result)\n    except Exception as e:\n        print(f"Error: {e}")\n        sys.exit(1)',
   settings: {
     theme: "dark",
     fontSize: 14,
