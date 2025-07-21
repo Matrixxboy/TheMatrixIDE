@@ -105,25 +105,36 @@ export default function MonacoCodeEditor() {
 
     // Add custom completions
     monaco.languages.registerCompletionItemProvider(settings.language, {
-      provideCompletionItems: () => {
+      provideCompletionItems: (model, position) => {
+        const word = model.getWordUntilPosition(position);
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn
+        };
+
         const suggestions = [
           {
             label: 'matrix_input',
             kind: monaco.languages.CompletionItemKind.Function,
             insertText: 'def matrix_input():\n    """Matrix IDE input node"""\n    return input("Enter value: ")',
-            documentation: 'Creates a Matrix IDE input node function'
+            documentation: 'Creates a Matrix IDE input node function',
+            range: range
           },
           {
             label: 'matrix_process',
             kind: monaco.languages.CompletionItemKind.Function,
             insertText: 'def matrix_process(data):\n    """Matrix IDE processing node"""\n    return data.strip().lower()',
-            documentation: 'Creates a Matrix IDE processing node function'
+            documentation: 'Creates a Matrix IDE processing node function',
+            range: range
           },
           {
             label: 'matrix_output',
             kind: monaco.languages.CompletionItemKind.Function,
             insertText: 'def matrix_output(result):\n    """Matrix IDE output node"""\n    print(f"Result: {result}")',
-            documentation: 'Creates a Matrix IDE output node function'
+            documentation: 'Creates a Matrix IDE output node function',
+            range: range
           }
         ];
         return { suggestions };
