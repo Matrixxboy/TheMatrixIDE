@@ -189,38 +189,68 @@ export default function MonacoCodeEditor() {
 
   const simulateExecution = () => {
     const lines = [];
+    const timestamp = new Date().toLocaleTimeString();
+
+    lines.push(`[${timestamp}] Starting execution...`);
     lines.push(
       `$ ${settings.language} matrix_generated.${settings.language === "python" ? "py" : settings.language === "javascript" ? "js" : "cpp"}`,
     );
     lines.push("");
 
+    // Simulate actual code execution based on content
+    if (localCode.includes("main()")) {
+      lines.push("Executing main function...");
+    }
+
     if (localCode.includes("input(") || localCode.includes("getUserInput")) {
-      lines.push("Enter value: Hello Matrix IDE");
+      lines.push("User Input: Hello Matrix IDE");
     }
 
     if (
       localCode.includes("process_data") ||
       localCode.includes("processData")
     ) {
-      lines.push("Processing data through pipeline...");
+      lines.push("Processing data: hello matrix ide");
+      lines.push("Transformed: HELLO MATRIX IDE");
     }
 
     if (localCode.includes("ai_enhance") || localCode.includes("aiEnhance")) {
       lines.push("AI Enhancement: Applying local model processing...");
     }
 
+    // Simulate function outputs
+    if (localCode.includes("print(")) {
+      const printMatches = localCode.match(/print\([^)]+\)/g);
+      if (printMatches) {
+        lines.push("");
+        lines.push("Program Output:");
+        printMatches.forEach((match, index) => {
+          if (match.includes("Display Result")) {
+            lines.push("Display Result: hello matrix ide");
+          } else if (match.includes("result")) {
+            lines.push("Execution completed successfully");
+          } else {
+            lines.push(`Output ${index + 1}: Processing complete`);
+          }
+        });
+      }
+    }
+
     lines.push("");
-    lines.push("Output:");
-    lines.push("Result: AI_ENHANCED: hello matrix ide");
-    lines.push("");
-    lines.push("✓ Execution completed successfully in 0.187s");
-    lines.push("✓ Memory usage: 15.2 MB");
+    lines.push("═══════════════════════════════════════");
+    lines.push("✓ Execution completed successfully");
+    lines.push(`✓ Execution time: ${(Math.random() * 0.5 + 0.1).toFixed(3)}s`);
+    lines.push(`✓ Memory usage: ${(Math.random() * 10 + 5).toFixed(1)} MB`);
     lines.push("✓ No runtime errors detected");
     lines.push(
-      `✓ Generated ${localCode.split("\n").length} lines of ${settings.language}`,
+      `✓ Processed ${localCode.split("\n").length} lines of ${settings.language} code`,
     );
+    lines.push(`✓ Generated at: ${timestamp}`);
 
     setOutput(lines.join("\n"));
+
+    // Show a notification that execution completed
+    console.log("Code execution simulation completed");
   };
 
   const simulateCodeAnalysis = () => {
