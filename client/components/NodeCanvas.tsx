@@ -1,19 +1,19 @@
 import { useState, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Plus, 
-  Minus, 
-  RotateCcw, 
-  ZoomIn, 
-  ZoomOut, 
+import {
+  Plus,
+  Minus,
+  RotateCcw,
+  ZoomIn,
+  ZoomOut,
   Move3D,
   Code,
   Play,
   Variable,
-  Function,
   Database,
-  Workflow
+  Workflow,
+  Zap as FunctionIcon
 } from "lucide-react";
 
 interface Node {
