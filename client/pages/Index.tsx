@@ -61,7 +61,7 @@ export default function Index() {
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-matrix-gold-400 to-matrix-gold-600 flex items-center justify-center matrix-glow-pulse">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-matrix-gold-400 to-matrix-gold-600 flex items-center justify-center">
               <Zap className="h-5 w-5 text-matrix-dark" />
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-matrix-gold-300 to-matrix-gold-500 bg-clip-text text-transparent">
@@ -96,7 +96,7 @@ export default function Index() {
           </Button>
           <Button
             size="sm"
-            className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark glow-gold matrix-interactive"
+            className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark matrix-interactive"
           >
             <Play className="h-4 w-4 mr-2" />
             Run
