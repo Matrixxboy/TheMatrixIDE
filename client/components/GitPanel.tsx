@@ -3,7 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { GitBranch, GitCommit, GitPullRequest, GitMerge, GitCompare, RefreshCw, Plus } from "lucide-react";
+import {
+  GitBranch,
+  GitCommit,
+  GitPullRequest,
+  GitMerge,
+  GitCompare,
+  RefreshCw,
+  Plus,
+} from "lucide-react";
 
 export default function GitPanel() {
   const [gitOutput, setGitOutput] = useState("");
@@ -27,7 +35,8 @@ export default function GitPanel() {
       setTimeout(() => {
         let output = "";
         if (command.includes("status")) {
-          output = "On branch main\nYour branch is up to date with 'origin/main'.\n\nnothing to commit, working tree clean";
+          output =
+            "On branch main\nYour branch is up to date with 'origin/main'.\n\nnothing to commit, working tree clean";
         } else if (command.includes("add")) {
           output = "All changes staged.";
         } else if (command.includes("commit")) {
@@ -52,7 +61,9 @@ export default function GitPanel() {
 
   return (
     <div className="h-full flex flex-col p-4">
-      <h3 className="text-lg font-medium text-matrix-gold-300 mb-4">Git Operations</h3>
+      <h3 className="text-lg font-medium text-matrix-gold-300 mb-4">
+        Git Operations
+      </h3>
 
       <div className="grid grid-cols-2 gap-3 mb-4">
         <Button onClick={() => runGitCommand("status")} className="glass-panel">
@@ -102,7 +113,9 @@ export default function GitPanel() {
       </div>
 
       <div className="flex-1 flex flex-col glass-panel rounded-lg p-3">
-        <h4 className="text-sm font-medium text-matrix-gold-300 mb-2">Git Output</h4>
+        <h4 className="text-sm font-medium text-matrix-gold-300 mb-2">
+          Git Output
+        </h4>
         <ScrollArea className="flex-1 bg-matrix-dark/30 p-2 rounded text-xs text-matrix-purple-200">
           <pre className="whitespace-pre-wrap">{gitOutput}</pre>
         </ScrollArea>

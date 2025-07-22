@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { useApp } from "@/contexts/AppContext";
 import type { FileNode } from "@/contexts/AppContext";
 import NodeTemplatesPanel from "@/components/NodeTemplatesPanel";
@@ -331,7 +335,11 @@ export default function ProjectSidebar() {
               <Settings className="h-4 w-4" />
             </Button>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 touch-manipulation">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 touch-manipulation"
+              >
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </CollapsibleTrigger>
@@ -411,10 +419,14 @@ export default function ProjectSidebar() {
                       </div>
                       <div className="flex justify-between text-xs">
                         <span className="text-matrix-purple-300">Nodes</span>
-                        <span className="text-matrix-gold-300">{nodes.length}</span>
+                        <span className="text-matrix-gold-300">
+                          {nodes.length}
+                        </span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-matrix-purple-300">Connections</span>
+                        <span className="text-matrix-purple-300">
+                          Connections
+                        </span>
                         <span className="text-matrix-gold-300">
                           {state.connections.length}
                         </span>
@@ -443,8 +455,8 @@ export default function ProjectSidebar() {
                       </Button>
                     </div>
                     <div className="glass-panel rounded-lg p-3 text-center text-xs text-matrix-purple-400">
-                      No custom nodes yet. Create your first custom node to extend
-                      the IDE functionality.
+                      No custom nodes yet. Create your first custom node to
+                      extend the IDE functionality.
                     </div>
                   </div>
                 </ScrollArea>
