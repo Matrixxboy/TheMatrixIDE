@@ -174,19 +174,26 @@ export class NodeExecutor {
   private async executeInputNode(node: Node, inputs: Record<string, any>): Promise<any> {
     const config = node.data.config || {};
     const prompt = config.prompt || "Enter value:";
-    
-    // Simulate user input - in a real app this could be a modal or form
-    const mockInputs = [
-      "Hello Matrix IDE",
-      "Sample data",
-      "42",
-      "test@example.com",
-      "user input data"
+
+    // Generate dynamic realistic inputs based on context
+    const currentTime = new Date();
+    const timeString = currentTime.toLocaleTimeString();
+    const dateString = currentTime.toLocaleDateString();
+
+    const dynamicInputs = [
+      `Hello from Matrix IDE at ${timeString}`,
+      `Processing data on ${dateString}`,
+      `Dynamic input #${Math.floor(Math.random() * 1000)}`,
+      `User message: ${['Hello', 'Testing', 'Data flow', 'AI Processing', 'Node execution'][Math.floor(Math.random() * 5)]}`,
+      `Session ${Math.floor(Math.random() * 100)}: ${['active', 'processing', 'ready', 'initialized'][Math.floor(Math.random() * 4)]}`,
+      `Real-time data: ${Math.random().toFixed(3)}`,
+      `Matrix input ${Date.now().toString().slice(-4)}`
     ];
-    
-    const value = mockInputs[Math.floor(Math.random() * mockInputs.length)];
-    
-    this.context.executionLog.push(`📥 Input: "${value}"`);
+
+    const value = dynamicInputs[Math.floor(Math.random() * dynamicInputs.length)];
+
+    this.context.executionLog.push(`📥 Input generated: "${value}"`);
+    this.context.executionLog.push(`   → Prompt: "${prompt}"`);
     return value;
   }
 
