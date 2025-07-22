@@ -191,13 +191,13 @@ export default function ProjectSidebar() {
     return (
       <div key={node.id}>
         <div
-          className={`flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-colors ${
+          className={`flex items-center gap-2 px-2 py-2 sm:py-1 rounded cursor-pointer transition-colors touch-manipulation ${
             isSelected
               ? "bg-matrix-gold-500/20 text-matrix-gold-300"
               : node.type === "file"
                 ? "text-matrix-purple-300 hover:bg-matrix-purple-700/30"
                 : "text-matrix-gold-300 hover:bg-matrix-purple-700/30"
-          }`}
+          } min-h-10 sm:min-h-8`}
           style={{ paddingLeft: `${8 + depth * 16}px` }}
           onClick={() => {
             if (node.type === "folder") {
