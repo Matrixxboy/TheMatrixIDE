@@ -503,28 +503,36 @@ export default function NodePropertiesPanel() {
   return (
     <div className="h-full flex flex-col">
       {/* Header - Mobile-responsive */}
-      <Collapsible defaultOpen={true}>
+      <Collapsible open={!isCollapsed} onOpenChange={(open) => setIsCollapsed(!open)}>
         <div className="h-12 sm:h-14 glass-panel border-b border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded bg-gradient-to-r from-matrix-purple-500 to-matrix-purple-700 flex items-center justify-center">
-              <Settings className="h-4 w-4 text-white" />
+          <CollapsibleTrigger asChild>
+            <div className="flex items-center gap-3 cursor-pointer hover:bg-matrix-purple-700/20 rounded p-1 -m-1 transition-colors">
+              <div className="w-8 h-8 rounded bg-gradient-to-r from-matrix-purple-500 to-matrix-purple-700 flex items-center justify-center">
+                <Settings className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-matrix-gold-300">
+                  {selectedNodeData.data.label}
+                </h3>
+                <p className="text-xs text-matrix-purple-400 capitalize">
+                  {selectedNodeData.type} Node
+                </p>
+              </div>
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4 text-matrix-purple-400" />
+              ) : (
+                <ChevronUp className="h-4 w-4 text-matrix-purple-400" />
+              )}
             </div>
-            <div>
-              <h3 className="text-sm font-medium text-matrix-gold-300">
-                {selectedNodeData.data.label}
-              </h3>
-              <p className="text-xs text-matrix-purple-400 capitalize">
-                {selectedNodeData.type} Node
-              </p>
-            </div>
-          </div>
+          </CollapsibleTrigger>
 
           <div className="flex items-center gap-1">
             <Button
               size="sm"
               variant="ghost"
               onClick={duplicateNode}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 touch-manipulation"
+              title="Duplicate Node"
             >
               <Copy className="h-3 w-3" />
             </Button>
@@ -532,13 +540,23 @@ export default function NodePropertiesPanel() {
               size="sm"
               variant="ghost"
               onClick={deleteNode}
-              className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
+              className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20 touch-manipulation"
+              title="Delete Node"
             >
               <Trash2 className="h-3 w-3" />
             </Button>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 touch-manipulation">
-                <MoreVertical className="h-4 w-4" />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 touch-manipulation"
+                title={isCollapsed ? "Expand Panel" : "Collapse Panel"}
+              >
+                {isCollapsed ? (
+                  <PanelRightOpen className="h-4 w-4" />
+                ) : (
+                  <PanelRightClose className="h-4 w-4" />
+                )}
               </Button>
             </CollapsibleTrigger>
           </div>
