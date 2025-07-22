@@ -92,6 +92,9 @@ export interface AppState {
     category?: string;
   }>;
   aiProcessing: boolean;
+
+  // Execution state
+  executionContext: ExecutionContext | null;
 }
 
 // Actions
