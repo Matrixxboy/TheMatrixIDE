@@ -85,9 +85,8 @@ export class NodeExecutor {
     connections
       .filter((conn) => conn.target === node.id)
       .forEach((conn) => {
-        const sourceOutput = this.context.nodeOutputs[
-          `${conn.source}_${conn.sourceOutput}`
-        ];
+        const sourceOutput =
+          this.context.nodeOutputs[`${conn.source}_${conn.sourceOutput}`];
         if (sourceOutput !== undefined) {
           inputs[conn.targetInput] = sourceOutput;
         }
