@@ -547,6 +547,14 @@ export default function MonacoCodeEditor() {
                 </Badge>
               )}
             </TabsTrigger>
+            <TabsTrigger
+              value="snippets"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm px-2 sm:px-3 touch-manipulation"
+            >
+              <Code2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Snippets</span>
+              <span className="sm:hidden">Snip</span>
+            </TabsTrigger>
           </TabsList>
         </Tabs>
 
