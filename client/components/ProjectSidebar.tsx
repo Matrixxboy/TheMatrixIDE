@@ -341,27 +341,30 @@ export default function ProjectSidebar() {
         onValueChange={setActiveTab}
         className="flex-1 flex flex-col"
       >
-        <TabsList className="mx-4 bg-matrix-purple-800/30 border border-matrix-purple-600/30 grid grid-cols-3">
+        <TabsList className="mx-3 sm:mx-4 bg-matrix-purple-800/30 border border-matrix-purple-600/30 grid grid-cols-3 h-10">
           <TabsTrigger
             value="files"
-            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
           >
-            <FolderTree className="h-4 w-4 mr-1" />
-            Files
+            <FolderTree className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            <span className="hidden sm:inline">Files</span>
+            <span className="sm:hidden">Files</span>
           </TabsTrigger>
           <TabsTrigger
             value="nodes"
-            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
           >
-            <Workflow className="h-4 w-4 mr-1" />
-            Nodes
+            <Workflow className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            <span className="hidden sm:inline">Nodes</span>
+            <span className="sm:hidden">Nodes</span>
           </TabsTrigger>
           <TabsTrigger
             value="templates"
-            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
           >
-            <Layers className="h-4 w-4 mr-1" />
-            Templates
+            <Layers className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            <span className="hidden sm:inline">Templates</span>
+            <span className="sm:hidden">Temp</span>
           </TabsTrigger>
         </TabsList>
 
