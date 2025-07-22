@@ -171,8 +171,8 @@ export default function MonacoCodeEditor() {
     setIsModified(false);
   };
 
-  const handleRun = () => {
-    simulateExecution();
+  const handleRun = async () => {
+    await executeNodes();
     dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
   };
 
