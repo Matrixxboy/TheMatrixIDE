@@ -504,13 +504,13 @@ export default function MonacoCodeEditor() {
                 }
                 theme="matrix-dark"
                 options={{
-                  fontSize: settings.fontSize,
+                  fontSize: window.innerWidth < 640 ? Math.max(settings.fontSize - 2, 12) : settings.fontSize,
                   fontFamily:
                     'Monaco, Consolas, "Liberation Mono", Courier, monospace',
-                  minimap: { enabled: settings.showMinimap },
+                  minimap: { enabled: window.innerWidth >= 768 ? settings.showMinimap : false },
                   wordWrap: settings.wordWrap ? "on" : "off",
-                  lineNumbers: "on",
-                  rulers: [80, 120],
+                  lineNumbers: window.innerWidth >= 640 ? "on" : "off",
+                  rulers: window.innerWidth >= 768 ? [80, 120] : [],
                   renderWhitespace: "selection",
                   scrollBeyondLastLine: false,
                   automaticLayout: true,
@@ -523,9 +523,13 @@ export default function MonacoCodeEditor() {
                   bracketPairColorization: { enabled: true },
                   guides: {
                     bracketPairs: true,
-                    indentation: true,
+                    indentation: window.innerWidth >= 640,
                   },
-                  padding: { top: 16, bottom: 16 },
+                  padding: { top: window.innerWidth >= 640 ? 16 : 8, bottom: window.innerWidth >= 640 ? 16 : 8 },
+                  glyphMargin: window.innerWidth >= 640,
+                  folding: window.innerWidth >= 768,
+                  lineDecorationsWidth: window.innerWidth >= 640 ? undefined : 0,
+                  lineNumbersMinChars: window.innerWidth >= 640 ? undefined : 0,
                 }}
               />
 
