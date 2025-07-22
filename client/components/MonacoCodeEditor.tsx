@@ -341,8 +341,8 @@ export default function MonacoCodeEditor() {
     <div
       className={`flex flex-col ${isFullscreen ? "fixed inset-0 z-50 bg-matrix-dark" : "h-full"}`}
     >
-      {/* Enhanced Editor Header */}
-      <div className="h-14 glass-panel border-b border-matrix-purple-600/30 flex items-center justify-between px-4">
+      {/* Enhanced Editor Header - Mobile-responsive */}
+      <div className="h-12 sm:h-14 glass-panel border-b border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4">
         <Tabs
           value={activeTab}
           onValueChange={(value) =>
