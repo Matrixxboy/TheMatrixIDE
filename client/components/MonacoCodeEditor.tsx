@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Editor, OnMount, OnChange } from "@monaco-editor/react";
 import { useApp } from "@/contexts/AppContext";
 import { NodeExecutor } from "@/utils/nodeExecutor";
+import { codeSnippets, getSnippetsByLanguage, searchSnippets, getAllCategories, insertSnippet } from "@/utils/codeSnippets";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
