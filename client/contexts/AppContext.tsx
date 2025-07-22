@@ -137,27 +137,58 @@ const initialState: AppState = {
         label: "User Input",
         outputs: ["value"],
         code: 'user_input = input("Enter value: ")',
+        config: {
+          prompt: "Enter your message:",
+          placeholder: "Type something...",
+          validation: "required"
+        },
       },
     },
     {
       id: "2",
       type: "function",
-      position: { x: 300, y: 150 },
+      position: { x: 350, y: 120 },
       data: {
-        label: "Process Data",
-        inputs: ["data"],
-        outputs: ["result"],
-        code: "result = process_data(data)",
+        label: "Text Processor",
+        inputs: ["input"],
+        outputs: ["processed"],
+        code: "def process_text(text):\n    return text.strip().lower()",
+        config: {
+          functionName: "process_text",
+          parameters: ["text"],
+          returnType: "string"
+        },
       },
     },
     {
       id: "3",
-      type: "output",
-      position: { x: 500, y: 200 },
+      type: "function",
+      position: { x: 350, y: 220 },
       data: {
-        label: "Display Result",
-        inputs: ["result"],
-        code: 'print(f"Result: {result}")',
+        label: "AI Enhancer",
+        inputs: ["text"],
+        outputs: ["enhanced"],
+        code: "def ai_enhance(text):\n    return f'AI_ENHANCED: {text}'",
+        config: {
+          functionName: "ai_enhance",
+          model: "local-gpt",
+          maxLength: 500
+        },
+      },
+    },
+    {
+      id: "4",
+      type: "output",
+      position: { x: 600, y: 170 },
+      data: {
+        label: "Console Output",
+        inputs: ["data"],
+        code: 'print(f"Final Result: {data}")',
+        config: {
+          outputType: "console",
+          format: "text",
+          template: "Final Result: {data}"
+        },
       },
     },
   ],
