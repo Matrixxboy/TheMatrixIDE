@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +43,7 @@ import {
   ChevronDown,
   ChevronUp,
   PanelRightClose,
-  PanelRightOpen
+  PanelRightOpen,
 } from "lucide-react";
 
 interface NodePropertyConfig {
@@ -489,7 +493,7 @@ export default function NodePropertiesPanel() {
       <div className="h-full flex flex-col">
         {/* Header - Always visible */}
         <div className="h-12 sm:h-14 glass-panel border-b border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4 flex-shrink-0">
-          <div 
+          <div
             className="flex items-center gap-3 cursor-pointer hover:bg-matrix-purple-700/20 rounded p-1 -m-1 transition-colors flex-1"
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
@@ -500,9 +504,7 @@ export default function NodePropertiesPanel() {
               <h3 className="text-sm font-medium text-matrix-gold-300">
                 Node Properties
               </h3>
-              <p className="text-xs text-matrix-purple-400">
-                No node selected
-              </p>
+              <p className="text-xs text-matrix-purple-400">No node selected</p>
             </div>
             {isCollapsed ? (
               <ChevronDown className="h-4 w-4 text-matrix-purple-400 ml-auto" />
@@ -510,10 +512,10 @@ export default function NodePropertiesPanel() {
               <ChevronUp className="h-4 w-4 text-matrix-purple-400 ml-auto" />
             )}
           </div>
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
+
+          <Button
+            variant="ghost"
+            size="sm"
             className="h-8 w-8 p-0 touch-manipulation"
             title={isCollapsed ? "Expand Panel" : "Collapse Panel"}
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -548,7 +550,7 @@ export default function NodePropertiesPanel() {
     <div className="h-full flex flex-col">
       {/* Header - Always visible */}
       <div className="h-12 sm:h-14 glass-panel border-b border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4 flex-shrink-0">
-        <div 
+        <div
           className="flex items-center gap-3 cursor-pointer hover:bg-matrix-purple-700/20 rounded p-1 -m-1 transition-colors flex-1"
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
@@ -589,9 +591,9 @@ export default function NodePropertiesPanel() {
           >
             <Trash2 className="h-3 w-3" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="h-8 w-8 p-0 touch-manipulation"
             title={isCollapsed ? "Expand Panel" : "Collapse Panel"}
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -877,7 +879,8 @@ export default function NodePropertiesPanel() {
                       variant="outline"
                       className="text-xs border-matrix-gold-400/50 text-matrix-gold-300"
                     >
-                      {selectedNodeData.data.code?.split("\n").length || 1} lines
+                      {selectedNodeData.data.code?.split("\n").length || 1}{" "}
+                      lines
                     </Badge>
                   </div>
                 </div>
