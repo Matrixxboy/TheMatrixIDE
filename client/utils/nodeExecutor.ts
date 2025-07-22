@@ -103,7 +103,10 @@ export class NodeExecutor {
   ): Promise<NodeExecutionResult> {
     const startTime = Date.now();
     this.context.nodeStates.set(node.id, "running");
-    
+
+    // Add small delay to make execution visible
+    await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+
     try {
       let output: any;
 
@@ -132,7 +135,7 @@ export class NodeExecutor {
 
       const executionTime = Date.now() - startTime;
       this.context.nodeStates.set(node.id, "completed");
-      
+
       // Store outputs for connected nodes
       if (node.data.outputs) {
         node.data.outputs.forEach((outputName) => {
@@ -141,7 +144,7 @@ export class NodeExecutor {
       }
 
       this.context.executionLog.push(
-        `✓ ${node.data.label} completed in ${executionTime}ms`,
+        `✓ ${node.data.label} completed in ${executionTime}ms → ${JSON.stringify(output).substring(0, 50)}${JSON.stringify(output).length > 50 ? '...' : ''}`,
       );
 
       return {
@@ -152,7 +155,7 @@ export class NodeExecutor {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.context.nodeStates.set(node.id, "error");
-      
+
       const errorMessage = error instanceof Error ? error.message : String(error);
       this.context.executionLog.push(
         `✗ ${node.data.label} failed: ${errorMessage}`,
