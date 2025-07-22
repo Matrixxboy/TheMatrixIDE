@@ -538,27 +538,30 @@ export default function NodePropertiesPanel() {
           onValueChange={setActiveTab}
           className="h-full flex flex-col"
         >
-          <TabsList className="mx-4 mt-2 bg-matrix-purple-800/30 border border-matrix-purple-600/30">
+          <TabsList className="mx-3 sm:mx-4 mt-2 bg-matrix-purple-800/30 border border-matrix-purple-600/30 h-9 sm:h-10">
             <TabsTrigger
               value="properties"
-              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm px-2 sm:px-3 touch-manipulation"
             >
-              <Settings className="h-4 w-4 mr-1" />
-              Properties
+              <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+              <span className="hidden sm:inline">Properties</span>
+              <span className="sm:hidden">Props</span>
             </TabsTrigger>
             <TabsTrigger
               value="connections"
-              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm px-2 sm:px-3 touch-manipulation"
             >
-              <Link2 className="h-4 w-4 mr-1" />
-              Connections
+              <Link2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+              <span className="hidden sm:inline">Connections</span>
+              <span className="sm:hidden">Links</span>
             </TabsTrigger>
             <TabsTrigger
               value="code"
-              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm px-2 sm:px-3 touch-manipulation"
             >
-              <Code className="h-4 w-4 mr-1" />
-              Code
+              <Code className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+              <span className="hidden sm:inline">Code</span>
+              <span className="sm:hidden">Code</span>
             </TabsTrigger>
           </TabsList>
 
