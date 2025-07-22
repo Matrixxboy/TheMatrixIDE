@@ -19,8 +19,8 @@ export class NodeExecutor {
 
   constructor() {
     this.context = {
-      nodeOutputs: new Map(),
-      nodeStates: new Map(),
+      nodeOutputs: {},
+      nodeStates: {},
       executionLog: [],
       startTime: Date.now(),
     };
