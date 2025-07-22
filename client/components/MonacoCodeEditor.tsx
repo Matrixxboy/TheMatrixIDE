@@ -55,6 +55,9 @@ export default function MonacoCodeEditor() {
   const [output, setOutput] = useState("");
   const [diagnostics, setDiagnostics] = useState<DiagnosticMessage[]>([]);
   const [isModified, setIsModified] = useState(false);
+  const [showSnippets, setShowSnippets] = useState(false);
+  const [snippetSearch, setSnippetSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const editorRef = useRef<any>(null);
 
   useEffect(() => {
