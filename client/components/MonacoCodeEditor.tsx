@@ -201,70 +201,77 @@ export default function MonacoCodeEditor() {
     URL.revokeObjectURL(url);
   };
 
-  const simulateExecution = () => {
+  const executeNodes = async () => {
+    const { nodes, connections } = state;
+
+    if (nodes.length === 0) {
+      setOutput("No nodes to execute. Add some nodes to the canvas first.");
+      return;
+    }
+
     const lines = [];
     const timestamp = new Date().toLocaleTimeString();
 
-    lines.push(`[${timestamp}] Starting execution...`);
-    lines.push(
-      `$ ${settings.language} matrix_generated.${settings.language === "python" ? "py" : settings.language === "javascript" ? "js" : "cpp"}`,
-    );
+    lines.push(`[${timestamp}] Matrix IDE Node Execution`);
+    lines.push("=".repeat(50));
     lines.push("");
 
-    // Simulate actual code execution based on content
-    if (localCode.includes("main()")) {
-      lines.push("Executing main function...");
-    }
+    try {
+      const executor = new NodeExecutor();
+      const context = await executor.executeNodeGraph(nodes, connections);
 
-    if (localCode.includes("input(") || localCode.includes("getUserInput")) {
-      lines.push("User Input: Hello Matrix IDE");
-    }
+      // Display execution log
+      lines.push(...context.executionLog);
+      lines.push("");
 
-    if (
-      localCode.includes("process_data") ||
-      localCode.includes("processData")
-    ) {
-      lines.push("Processing data: hello matrix ide");
-      lines.push("Transformed: HELLO MATRIX IDE");
-    }
+      // Display node states
+      lines.push("Node States:");
+      lines.push("-".repeat(20));
+      nodes.forEach(node => {
+        const state = context.nodeStates.get(node.id) || "unknown";
+        const stateIcon = {
+          completed: "✅",
+          running: "🔄",
+          error: "❌",
+          pending: "⏳"
+        }[state] || "���";
+        lines.push(`${stateIcon} ${node.data.label}: ${state}`);
+      });
 
-    if (localCode.includes("ai_enhance") || localCode.includes("aiEnhance")) {
-      lines.push("AI Enhancement: Applying local model processing...");
-    }
+      lines.push("");
 
-    // Simulate function outputs
-    if (localCode.includes("print(")) {
-      const printMatches = localCode.match(/print\([^)]+\)/g);
-      if (printMatches) {
-        lines.push("");
-        lines.push("Program Output:");
-        printMatches.forEach((match, index) => {
-          if (match.includes("Display Result")) {
-            lines.push("Display Result: hello matrix ide");
-          } else if (match.includes("result")) {
-            lines.push("Execution completed successfully");
-          } else {
-            lines.push(`Output ${index + 1}: Processing complete`);
-          }
+      // Display final outputs
+      if (context.nodeOutputs.size > 0) {
+        lines.push("Final Outputs:");
+        lines.push("-".repeat(20));
+        context.nodeOutputs.forEach((value, key) => {
+          lines.push(`${key}: ${JSON.stringify(value)}`);
         });
+        lines.push("");
       }
-    }
 
-    lines.push("");
-    lines.push("═══════════════════════════════════════");
-    lines.push("✓ Execution completed successfully");
-    lines.push(`✓ Execution time: ${(Math.random() * 0.5 + 0.1).toFixed(3)}s`);
-    lines.push(`✓ Memory usage: ${(Math.random() * 10 + 5).toFixed(1)} MB`);
-    lines.push("✓ No runtime errors detected");
-    lines.push(
-      `✓ Processed ${localCode.split("\n").length} lines of ${settings.language} code`,
-    );
-    lines.push(`✓ Generated at: ${timestamp}`);
+      const totalTime = Date.now() - context.startTime;
+      const completedCount = Array.from(context.nodeStates.values()).filter(s => s === "completed").length;
+      const errorCount = Array.from(context.nodeStates.values()).filter(s => s === "error").length;
+
+      lines.push("Execution Summary:");
+      lines.push("-".repeat(20));
+      lines.push(`⏱️  Total time: ${totalTime}ms`);
+      lines.push(`📊 Nodes processed: ${completedCount}/${nodes.length}`);
+      lines.push(`🔗 Connections: ${connections.length}`);
+      if (errorCount > 0) {
+        lines.push(`❌ Errors: ${errorCount}`);
+      } else {
+        lines.push(`✅ No errors`);
+      }
+
+    } catch (error) {
+      lines.push("❌ Execution failed:");
+      lines.push(error instanceof Error ? error.message : String(error));
+    }
 
     setOutput(lines.join("\n"));
-
-    // Show a notification that execution completed
-    console.log("Code execution simulation completed");
+    console.log("Node execution completed");
   };
 
   const simulateCodeAnalysis = () => {
