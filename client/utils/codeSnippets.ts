@@ -18,7 +18,7 @@ export const codeSnippets: CodeSnippet[] = [
     category: "Basic",
     language: "python",
     code: `print("Hello, World!")`,
-    tags: ["basic", "print", "hello"]
+    tags: ["basic", "print", "hello"],
   },
   {
     id: "py-function-def",
@@ -30,8 +30,15 @@ export const codeSnippets: CodeSnippet[] = [
     """Function description"""
     # Function body
     return result`,
-    placeholders: ["function_name", "param1", "param2", "Function description", "Function body", "result"],
-    tags: ["function", "def", "return"]
+    placeholders: [
+      "function_name",
+      "param1",
+      "param2",
+      "Function description",
+      "Function body",
+      "result",
+    ],
+    tags: ["function", "def", "return"],
   },
   {
     id: "py-class-def",
@@ -48,8 +55,15 @@ export const codeSnippets: CodeSnippet[] = [
     def method_name(self):
         """Method description"""
         return self.attribute`,
-    placeholders: ["ClassName", "Class description", "param", "attribute", "method_name", "Method description"],
-    tags: ["class", "init", "method"]
+    placeholders: [
+      "ClassName",
+      "Class description",
+      "param",
+      "attribute",
+      "method_name",
+      "Method description",
+    ],
+    tags: ["class", "init", "method"],
   },
   {
     id: "py-for-loop",
@@ -61,7 +75,7 @@ export const codeSnippets: CodeSnippet[] = [
     # Loop body
     print(item)`,
     placeholders: ["item", "iterable", "Loop body"],
-    tags: ["loop", "for", "iteration"]
+    tags: ["loop", "for", "iteration"],
   },
   {
     id: "py-while-loop",
@@ -74,7 +88,7 @@ while counter < limit:
     # Loop body
     counter += 1`,
     placeholders: ["counter", "limit", "Loop body"],
-    tags: ["loop", "while", "condition"]
+    tags: ["loop", "while", "condition"],
   },
   {
     id: "py-if-else",
@@ -91,8 +105,14 @@ elif another_condition:
 else:
     # Else block
     pass`,
-    placeholders: ["condition", "If block", "another_condition", "Elif block", "Else block"],
-    tags: ["conditional", "if", "else"]
+    placeholders: [
+      "condition",
+      "If block",
+      "another_condition",
+      "Elif block",
+      "Else block",
+    ],
+    tags: ["conditional", "if", "else"],
   },
   {
     id: "py-try-except",
@@ -109,8 +129,13 @@ except Exception as e:
 finally:
     # Cleanup code
     pass`,
-    placeholders: ["Code that might raise an exception", "Exception", "Handle exception", "Cleanup code"],
-    tags: ["exception", "try", "except", "error"]
+    placeholders: [
+      "Code that might raise an exception",
+      "Exception",
+      "Handle exception",
+      "Cleanup code",
+    ],
+    tags: ["exception", "try", "except", "error"],
   },
   {
     id: "py-list-comprehension",
@@ -120,7 +145,7 @@ finally:
     language: "python",
     code: `result = [expression for item in iterable if condition]`,
     placeholders: ["result", "expression", "item", "iterable", "condition"],
-    tags: ["list", "comprehension", "filter"]
+    tags: ["list", "comprehension", "filter"],
   },
   {
     id: "py-dict-comprehension",
@@ -130,7 +155,7 @@ finally:
     language: "python",
     code: `result = {key_expr: value_expr for item in iterable}`,
     placeholders: ["result", "key_expr", "value_expr", "item", "iterable"],
-    tags: ["dict", "dictionary", "comprehension"]
+    tags: ["dict", "dictionary", "comprehension"],
   },
   {
     id: "py-file-read",
@@ -142,7 +167,7 @@ finally:
     content = file.read()
     # Process content`,
     placeholders: ["filename.txt", "content", "Process content"],
-    tags: ["file", "read", "io", "with"]
+    tags: ["file", "read", "io", "with"],
   },
   {
     id: "py-file-write",
@@ -153,7 +178,7 @@ finally:
     code: `with open('filename.txt', 'w') as file:
     file.write(content)`,
     placeholders: ["filename.txt", "content"],
-    tags: ["file", "write", "io", "with"]
+    tags: ["file", "write", "io", "with"],
   },
   {
     id: "py-main-guard",
@@ -164,7 +189,7 @@ finally:
     code: `if __name__ == "__main__":
     main()`,
     placeholders: ["main()"],
-    tags: ["main", "guard", "execution"]
+    tags: ["main", "guard", "execution"],
   },
   {
     id: "py-import-statements",
@@ -176,9 +201,9 @@ finally:
 from module_name import function_name
 from module_name import ClassName as Alias`,
     placeholders: ["module_name", "function_name", "ClassName", "Alias"],
-    tags: ["import", "from", "module"]
+    tags: ["import", "from", "module"],
   },
-  
+
   // Matrix IDE Specific Snippets
   {
     id: "matrix-input-node",
@@ -191,7 +216,7 @@ from module_name import ClassName as Alias`,
     user_input = input("Enter value: ")
     return user_input`,
     placeholders: ["input_node", "Enter value"],
-    tags: ["matrix", "input", "node"]
+    tags: ["matrix", "input", "node"],
   },
   {
     id: "matrix-process-node",
@@ -205,7 +230,7 @@ from module_name import ClassName as Alias`,
     processed = data.strip().lower()
     return processed`,
     placeholders: ["process_node", "data.strip().lower()"],
-    tags: ["matrix", "process", "node"]
+    tags: ["matrix", "process", "node"],
   },
   {
     id: "matrix-output-node",
@@ -218,7 +243,7 @@ from module_name import ClassName as Alias`,
     print(f"Result: {result}")
     return result`,
     placeholders: ["output_node", "Result"],
-    tags: ["matrix", "output", "node"]
+    tags: ["matrix", "output", "node"],
   },
   {
     id: "matrix-ai-node",
@@ -232,7 +257,7 @@ from module_name import ClassName as Alias`,
     enhanced = f"AI_ENHANCED: {text}"
     return enhanced`,
     placeholders: ["ai_process_node"],
-    tags: ["matrix", "ai", "node", "enhance"]
+    tags: ["matrix", "ai", "node", "enhance"],
   },
   {
     id: "matrix-full-pipeline",
@@ -265,9 +290,9 @@ if __name__ == "__main__":
     processed = process_node(user_data)
     enhanced = ai_enhance_node(processed)
     output_node(enhanced)`,
-    tags: ["matrix", "pipeline", "complete", "workflow"]
+    tags: ["matrix", "pipeline", "complete", "workflow"],
   },
-  
+
   // JavaScript Snippets
   {
     id: "js-function",
@@ -280,7 +305,7 @@ if __name__ == "__main__":
     return result;
 }`,
     placeholders: ["functionName", "params", "Function body", "result"],
-    tags: ["function", "declaration", "js"]
+    tags: ["function", "declaration", "js"],
   },
   {
     id: "js-arrow-function",
@@ -293,7 +318,7 @@ if __name__ == "__main__":
     return result;
 };`,
     placeholders: ["functionName", "params", "Function body", "result"],
-    tags: ["arrow", "function", "es6", "const"]
+    tags: ["arrow", "function", "es6", "const"],
   },
   {
     id: "js-console-log",
@@ -303,31 +328,32 @@ if __name__ == "__main__":
     language: "javascript",
     code: `console.log("Hello, World!");`,
     placeholders: ['"Hello, World!"'],
-    tags: ["console", "log", "debug"]
-  }
+    tags: ["console", "log", "debug"],
+  },
 ];
 
 export const getSnippetsByLanguage = (language: string): CodeSnippet[] => {
-  return codeSnippets.filter(snippet => 
-    snippet.language === language || snippet.language === "all"
+  return codeSnippets.filter(
+    (snippet) => snippet.language === language || snippet.language === "all",
   );
 };
 
 export const getSnippetsByCategory = (category: string): CodeSnippet[] => {
-  return codeSnippets.filter(snippet => snippet.category === category);
+  return codeSnippets.filter((snippet) => snippet.category === category);
 };
 
 export const searchSnippets = (query: string): CodeSnippet[] => {
   const lowercaseQuery = query.toLowerCase();
-  return codeSnippets.filter(snippet =>
-    snippet.name.toLowerCase().includes(lowercaseQuery) ||
-    snippet.description.toLowerCase().includes(lowercaseQuery) ||
-    snippet.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+  return codeSnippets.filter(
+    (snippet) =>
+      snippet.name.toLowerCase().includes(lowercaseQuery) ||
+      snippet.description.toLowerCase().includes(lowercaseQuery) ||
+      snippet.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery)),
   );
 };
 
 export const getAllCategories = (): string[] => {
-  const categories = new Set(codeSnippets.map(snippet => snippet.category));
+  const categories = new Set(codeSnippets.map((snippet) => snippet.category));
   return Array.from(categories).sort();
 };
 

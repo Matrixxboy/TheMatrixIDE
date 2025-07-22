@@ -105,7 +105,9 @@ export class NodeExecutor {
     this.context.nodeStates.set(node.id, "running");
 
     // Add small delay to make execution visible
-    await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+    await new Promise((resolve) =>
+      setTimeout(resolve, 100 + Math.random() * 200),
+    );
 
     try {
       let output: any;
@@ -144,7 +146,7 @@ export class NodeExecutor {
       }
 
       this.context.executionLog.push(
-        `✓ ${node.data.label} completed in ${executionTime}ms → ${JSON.stringify(output).substring(0, 50)}${JSON.stringify(output).length > 50 ? '...' : ''}`,
+        `✓ ${node.data.label} completed in ${executionTime}ms → ${JSON.stringify(output).substring(0, 50)}${JSON.stringify(output).length > 50 ? "..." : ""}`,
       );
 
       return {
@@ -156,7 +158,8 @@ export class NodeExecutor {
       const executionTime = Date.now() - startTime;
       this.context.nodeStates.set(node.id, "error");
 
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       this.context.executionLog.push(
         `✗ ${node.data.label} failed: ${errorMessage}`,
       );
@@ -171,7 +174,10 @@ export class NodeExecutor {
   }
 
   // Node type implementations
-  private async executeInputNode(node: Node, inputs: Record<string, any>): Promise<any> {
+  private async executeInputNode(
+    node: Node,
+    inputs: Record<string, any>,
+  ): Promise<any> {
     const config = node.data.config || {};
     const prompt = config.prompt || "Enter value:";
 
@@ -184,48 +190,64 @@ export class NodeExecutor {
       `Hello from Matrix IDE at ${timeString}`,
       `Processing data on ${dateString}`,
       `Dynamic input #${Math.floor(Math.random() * 1000)}`,
-      `User message: ${['Hello', 'Testing', 'Data flow', 'AI Processing', 'Node execution'][Math.floor(Math.random() * 5)]}`,
-      `Session ${Math.floor(Math.random() * 100)}: ${['active', 'processing', 'ready', 'initialized'][Math.floor(Math.random() * 4)]}`,
+      `User message: ${["Hello", "Testing", "Data flow", "AI Processing", "Node execution"][Math.floor(Math.random() * 5)]}`,
+      `Session ${Math.floor(Math.random() * 100)}: ${["active", "processing", "ready", "initialized"][Math.floor(Math.random() * 4)]}`,
       `Real-time data: ${Math.random().toFixed(3)}`,
-      `Matrix input ${Date.now().toString().slice(-4)}`
+      `Matrix input ${Date.now().toString().slice(-4)}`,
     ];
 
-    const value = dynamicInputs[Math.floor(Math.random() * dynamicInputs.length)];
+    const value =
+      dynamicInputs[Math.floor(Math.random() * dynamicInputs.length)];
 
     this.context.executionLog.push(`📥 Input generated: "${value}"`);
     this.context.executionLog.push(`   → Prompt: "${prompt}"`);
     return value;
   }
 
-  private async executeFunctionNode(node: Node, inputs: Record<string, any>): Promise<any> {
+  private async executeFunctionNode(
+    node: Node,
+    inputs: Record<string, any>,
+  ): Promise<any> {
     const config = node.data.config || {};
     const inputValue = Object.values(inputs)[0] || "";
-    const functionName = config.functionName || node.data.label.toLowerCase().replace(/\s+/g, '_');
+    const functionName =
+      config.functionName || node.data.label.toLowerCase().replace(/\s+/g, "_");
 
     this.context.executionLog.push(`⚙️ Executing function: ${functionName}`);
     this.context.executionLog.push(`   → Input: ${JSON.stringify(inputValue)}`);
 
     // Execute based on function type or custom code
-    if (node.data.label.toLowerCase().includes("process") || node.data.label.toLowerCase().includes("text")) {
-      const processed = typeof inputValue === "string"
-        ? inputValue.trim().toLowerCase()
-        : String(inputValue).toLowerCase();
+    if (
+      node.data.label.toLowerCase().includes("process") ||
+      node.data.label.toLowerCase().includes("text")
+    ) {
+      const processed =
+        typeof inputValue === "string"
+          ? inputValue.trim().toLowerCase()
+          : String(inputValue).toLowerCase();
 
       // Add some realistic processing steps
       this.context.executionLog.push(`   → Trimming whitespace...`);
       this.context.executionLog.push(`   → Converting to lowercase...`);
-      this.context.executionLog.push(`🔄 Text processed: "${inputValue}" → "${processed}"`);
+      this.context.executionLog.push(
+        `🔄 Text processed: "${inputValue}" → "${processed}"`,
+      );
       return processed;
     }
 
-    if (node.data.label.toLowerCase().includes("ai") || node.data.label.toLowerCase().includes("enhance")) {
+    if (
+      node.data.label.toLowerCase().includes("ai") ||
+      node.data.label.toLowerCase().includes("enhance")
+    ) {
       const timestamp = Date.now().toString().slice(-4);
       const enhanced = `AI_ENHANCED_${timestamp}: ${inputValue}`;
 
       this.context.executionLog.push(`   → Loading AI model...`);
       this.context.executionLog.push(`   → Processing with neural network...`);
       this.context.executionLog.push(`   → Applying enhancement algorithms...`);
-      this.context.executionLog.push(`🤖 AI Enhanced: "${inputValue}" → "${enhanced}"`);
+      this.context.executionLog.push(
+        `🤖 AI Enhanced: "${inputValue}" → "${enhanced}"`,
+      );
       return enhanced;
     }
 
@@ -236,12 +258,16 @@ export class NodeExecutor {
         isValid,
         data: inputValue,
         confidence: score.toFixed(2),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       this.context.executionLog.push(`   → Running validation checks...`);
-      this.context.executionLog.push(`   → Confidence score: ${score.toFixed(2)}%`);
-      this.context.executionLog.push(`✅ Validation: "${inputValue}" is ${isValid ? "valid" : "invalid"}`);
+      this.context.executionLog.push(
+        `   → Confidence score: ${score.toFixed(2)}%`,
+      );
+      this.context.executionLog.push(
+        `✅ Validation: "${inputValue}" is ${isValid ? "valid" : "invalid"}`,
+      );
       return result;
     }
 
@@ -250,10 +276,14 @@ export class NodeExecutor {
       try {
         const result = this.executeCustomCode(node.data.code, inputs);
         this.context.executionLog.push(`   → Executing custom code...`);
-        this.context.executionLog.push(`⚙️ Custom function result: ${JSON.stringify(result)}`);
+        this.context.executionLog.push(
+          `⚙️ Custom function result: ${JSON.stringify(result)}`,
+        );
         return result;
       } catch (error) {
-        this.context.executionLog.push(`⚠️ Custom code execution failed: ${error}`);
+        this.context.executionLog.push(
+          `⚠️ Custom code execution failed: ${error}`,
+        );
         return inputValue;
       }
     }
@@ -263,25 +293,32 @@ export class NodeExecutor {
       originalValue: inputValue,
       processedAt: new Date().toISOString(),
       nodeId: node.id,
-      nodeType: node.type
+      nodeType: node.type,
     };
 
     this.context.executionLog.push(`   → Adding metadata...`);
-    this.context.executionLog.push(`➡️ Enhanced pass-through: ${JSON.stringify(metadata)}`);
+    this.context.executionLog.push(
+      `➡️ Enhanced pass-through: ${JSON.stringify(metadata)}`,
+    );
     return metadata;
   }
 
-  private async executeApiNode(node: Node, inputs: Record<string, any>): Promise<any> {
+  private async executeApiNode(
+    node: Node,
+    inputs: Record<string, any>,
+  ): Promise<any> {
     const config = node.data.config || {};
     const url = config.url || "https://api.example.com/data";
     const method = config.method || "GET";
 
     // Simulate API call
     this.context.executionLog.push(`🌐 API Call: ${method} ${url}`);
-    
+
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 300));
-    
+    await new Promise((resolve) =>
+      setTimeout(resolve, 200 + Math.random() * 300),
+    );
+
     const mockResponse = {
       status: 200,
       data: {
@@ -292,14 +329,19 @@ export class NodeExecutor {
       },
     };
 
-    this.context.executionLog.push(`📡 API Response: ${JSON.stringify(mockResponse.data)}`);
+    this.context.executionLog.push(
+      `📡 API Response: ${JSON.stringify(mockResponse.data)}`,
+    );
     return mockResponse.data;
   }
 
-  private async executeLogicNode(node: Node, inputs: Record<string, any>): Promise<any> {
+  private async executeLogicNode(
+    node: Node,
+    inputs: Record<string, any>,
+  ): Promise<any> {
     const inputValue = Object.values(inputs)[0];
     const config = node.data.config || {};
-    
+
     // Simple condition evaluation
     let result;
     if (typeof inputValue === "number") {
@@ -314,22 +356,30 @@ export class NodeExecutor {
     return result;
   }
 
-  private async executeOutputNode(node: Node, inputs: Record<string, any>): Promise<any> {
+  private async executeOutputNode(
+    node: Node,
+    inputs: Record<string, any>,
+  ): Promise<any> {
     const inputValue = Object.values(inputs)[0];
     const config = node.data.config || {};
     const template = config.template || "Result: {result}";
-    
+
     const output = template.replace("{result}", String(inputValue));
-    
+
     this.context.executionLog.push(`📤 Output: ${output}`);
     return output;
   }
 
-  private async executeVariableNode(node: Node, inputs: Record<string, any>): Promise<any> {
+  private async executeVariableNode(
+    node: Node,
+    inputs: Record<string, any>,
+  ): Promise<any> {
     const config = node.data.config || {};
     const value = config.value || Object.values(inputs)[0] || null;
-    
-    this.context.executionLog.push(`📊 Variable: ${node.data.label} = ${JSON.stringify(value)}`);
+
+    this.context.executionLog.push(
+      `📊 Variable: ${node.data.label} = ${JSON.stringify(value)}`,
+    );
     return value;
   }
 
@@ -337,27 +387,33 @@ export class NodeExecutor {
   private executeCustomCode(code: string, inputs: Record<string, any>): any {
     // Very basic and safe code execution for simple operations
     try {
-      if (code.includes("return") && !code.includes("eval") && !code.includes("Function")) {
+      if (
+        code.includes("return") &&
+        !code.includes("eval") &&
+        !code.includes("Function")
+      ) {
         // Extract simple return statements
         const returnMatch = code.match(/return\s+(.+)/);
         if (returnMatch) {
           const expression = returnMatch[1].trim().replace(/;$/, "");
-          
+
           // Only allow safe mathematical and string operations
           if (/^[\w\s+\-*\/()."']+$/.test(expression)) {
             // Replace input references
             let processedExpression = expression;
-            Object.keys(inputs).forEach(key => {
+            Object.keys(inputs).forEach((key) => {
               processedExpression = processedExpression.replace(
-                new RegExp(`\\b${key}\\b`, 'g'), 
-                JSON.stringify(inputs[key])
+                new RegExp(`\\b${key}\\b`, "g"),
+                JSON.stringify(inputs[key]),
               );
             });
-            
+
             // Very limited evaluation
-            if (processedExpression.includes('+')) {
-              const parts = processedExpression.split('+').map(p => p.trim().replace(/"/g, ''));
-              return parts.join('');
+            if (processedExpression.includes("+")) {
+              const parts = processedExpression
+                .split("+")
+                .map((p) => p.trim().replace(/"/g, ""));
+              return parts.join("");
             }
           }
         }
@@ -365,7 +421,7 @@ export class NodeExecutor {
     } catch (error) {
       // Fall back to input passthrough
     }
-    
+
     return Object.values(inputs)[0];
   }
 
@@ -386,35 +442,41 @@ export class NodeExecutor {
       this.context.nodeStates.set(node.id, "pending");
     });
 
-    this.context.executionLog.push(`🚀 Starting execution of ${nodes.length} nodes`);
+    this.context.executionLog.push(
+      `🚀 Starting execution of ${nodes.length} nodes`,
+    );
 
     // Get execution order
     const executionOrder = this.getExecutionOrder(nodes, connections);
-    
+
     if (executionOrder.length !== nodes.length) {
-      this.context.executionLog.push("⚠️ Warning: Circular dependency detected in node graph");
+      this.context.executionLog.push(
+        "⚠️ Warning: Circular dependency detected in node graph",
+      );
     }
 
     // Execute nodes in order
     for (const node of executionOrder) {
       const inputs = this.getNodeInputs(node, connections);
       this.context.executionLog.push(`▶️ Executing: ${node.data.label}`);
-      
+
       const result = await this.executeNode(node, inputs);
-      
+
       if (!result.success) {
-        this.context.executionLog.push(`💥 Execution stopped due to error in ${node.data.label}`);
+        this.context.executionLog.push(
+          `💥 Execution stopped due to error in ${node.data.label}`,
+        );
         break;
       }
     }
 
     const totalTime = Date.now() - this.context.startTime;
     const completedNodes = Array.from(this.context.nodeStates.values()).filter(
-      state => state === "completed"
+      (state) => state === "completed",
     ).length;
-    
+
     this.context.executionLog.push(
-      `🏁 Execution completed: ${completedNodes}/${nodes.length} nodes in ${totalTime}ms`
+      `🏁 Execution completed: ${completedNodes}/${nodes.length} nodes in ${totalTime}ms`,
     );
 
     return this.context;

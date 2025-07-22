@@ -124,7 +124,13 @@ type AppAction =
     }
   | { type: "SET_AI_PROCESSING"; payload: boolean }
   | { type: "SET_EXECUTION_CONTEXT"; payload: ExecutionContext | null }
-  | { type: "UPDATE_NODE_EXECUTION_STATE"; payload: { nodeId: string; state: "pending" | "running" | "completed" | "error" } };
+  | {
+      type: "UPDATE_NODE_EXECUTION_STATE";
+      payload: {
+        nodeId: string;
+        state: "pending" | "running" | "completed" | "error";
+      };
+    };
 
 // Initial state
 const initialState: AppState = {
@@ -140,7 +146,7 @@ const initialState: AppState = {
         config: {
           prompt: "Enter your message:",
           placeholder: "Type something...",
-          validation: "required"
+          validation: "required",
         },
       },
     },
@@ -156,7 +162,7 @@ const initialState: AppState = {
         config: {
           functionName: "process_text",
           parameters: ["text"],
-          returnType: "string"
+          returnType: "string",
         },
       },
     },
@@ -172,7 +178,7 @@ const initialState: AppState = {
         config: {
           functionName: "ai_enhance",
           model: "local-gpt",
-          maxLength: 500
+          maxLength: 500,
         },
       },
     },
@@ -187,7 +193,7 @@ const initialState: AppState = {
         config: {
           outputType: "console",
           format: "text",
-          template: "Final Result: {data}"
+          template: "Final Result: {data}",
         },
       },
     },

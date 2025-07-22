@@ -100,7 +100,9 @@ export default function NodeCanvas() {
   } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [nodeExecutionStates, setNodeExecutionStates] = useState<Map<string, string>>(new Map());
+  const [nodeExecutionStates, setNodeExecutionStates] = useState<
+    Map<string, string>
+  >(new Map());
   const [isExecuting, setIsExecuting] = useState(false);
 
   const handleZoomIn = () =>
@@ -153,11 +155,14 @@ export default function NodeCanvas() {
       const executor = new NodeExecutor();
 
       // Set up execution monitoring
-      const originalExecuteNode = executor['executeNode'];
-      executor['executeNode'] = async function(node, inputs) {
-        setNodeExecutionStates(prev => new Map(prev.set(node.id, 'running')));
+      const originalExecuteNode = executor["executeNode"];
+      executor["executeNode"] = async function (node, inputs) {
+        setNodeExecutionStates((prev) => new Map(prev.set(node.id, "running")));
         const result = await originalExecuteNode.call(this, node, inputs);
-        setNodeExecutionStates(prev => new Map(prev.set(node.id, result.success ? 'completed' : 'error')));
+        setNodeExecutionStates(
+          (prev) =>
+            new Map(prev.set(node.id, result.success ? "completed" : "error")),
+        );
         return result;
       };
 
@@ -171,7 +176,6 @@ export default function NodeCanvas() {
         const event = new CustomEvent("executeCode");
         window.dispatchEvent(event);
       }, 100);
-
     } catch (error) {
       console.error("Node execution failed:", error);
     } finally {
@@ -373,9 +377,13 @@ export default function NodeCanvas() {
         className={`absolute glass-panel rounded-lg p-3 sm:p-4 min-w-32 sm:min-w-40 cursor-move transform transition-all duration-200 touch-manipulation ${
           isSelected ? "ring-2 ring-matrix-gold-400/50 shadow-lg" : ""
         } ${dragState.isDragging && dragState.nodeId === node.id ? "z-50" : "z-10"} ${
-          executionState === 'running' ? 'ring-2 ring-blue-400 animate-pulse' :
-          executionState === 'completed' ? 'ring-2 ring-green-400' :
-          executionState === 'error' ? 'ring-2 ring-red-400' : ''
+          executionState === "running"
+            ? "ring-2 ring-blue-400 animate-pulse"
+            : executionState === "completed"
+              ? "ring-2 ring-green-400"
+              : executionState === "error"
+                ? "ring-2 ring-red-400"
+                : ""
         }`}
         style={{
           left: node.position.x,
@@ -408,13 +416,13 @@ export default function NodeCanvas() {
               )}
             </div>
           </div>
-          {executionState === 'running' && (
+          {executionState === "running" && (
             <div className="w-3 h-3 rounded-full bg-blue-400 animate-spin border-2 border-blue-200 border-t-transparent"></div>
           )}
-          {executionState === 'completed' && (
+          {executionState === "completed" && (
             <div className="w-3 h-3 rounded-full bg-green-400"></div>
           )}
-          {executionState === 'error' && (
+          {executionState === "error" && (
             <div className="w-3 h-3 rounded-full bg-red-400"></div>
           )}
           {isSelected && !executionState && (

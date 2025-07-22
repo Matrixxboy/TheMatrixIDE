@@ -2,7 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Editor, OnMount, OnChange } from "@monaco-editor/react";
 import { useApp } from "@/contexts/AppContext";
 import { NodeExecutor } from "@/utils/nodeExecutor";
-import { codeSnippets, getSnippetsByLanguage, searchSnippets, getAllCategories, insertSnippet } from "@/utils/codeSnippets";
+import {
+  codeSnippets,
+  getSnippetsByLanguage,
+  searchSnippets,
+  getAllCategories,
+  insertSnippet,
+} from "@/utils/codeSnippets";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -256,20 +262,21 @@ export default function MonacoCodeEditor() {
       // Display node results
       lines.push("📊 Node Results:");
       lines.push("-".repeat(30));
-      nodes.forEach(node => {
+      nodes.forEach((node) => {
         const state = context.nodeStates.get(node.id) || "unknown";
-        const stateIcon = {
-          completed: "✅",
-          running: "🔄",
-          error: "❌",
-          pending: "⏳"
-        }[state] || "❓";
+        const stateIcon =
+          {
+            completed: "✅",
+            running: "🔄",
+            error: "❌",
+            pending: "⏳",
+          }[state] || "❓";
 
         lines.push(`${stateIcon} ${node.data.label}: ${state}`);
 
         // Show node outputs
         if (node.data.outputs) {
-          node.data.outputs.forEach(outputName => {
+          node.data.outputs.forEach((outputName) => {
             const outputKey = `${node.id}_${outputName}`;
             const outputValue = context.nodeOutputs.get(outputKey);
             if (outputValue !== undefined) {
@@ -283,8 +290,12 @@ export default function MonacoCodeEditor() {
 
       // Final summary
       const totalTime = Date.now() - context.startTime;
-      const completedCount = Array.from(context.nodeStates.values()).filter(s => s === "completed").length;
-      const errorCount = Array.from(context.nodeStates.values()).filter(s => s === "error").length;
+      const completedCount = Array.from(context.nodeStates.values()).filter(
+        (s) => s === "completed",
+      ).length;
+      const errorCount = Array.from(context.nodeStates.values()).filter(
+        (s) => s === "error",
+      ).length;
 
       lines.push("📈 Execution Summary:");
       lines.push("-".repeat(30));
@@ -297,7 +308,6 @@ export default function MonacoCodeEditor() {
       } else {
         lines.push(`✨ All nodes executed successfully!`);
       }
-
     } catch (error) {
       lines.push("❌ Node execution failed:");
       lines.push(error instanceof Error ? error.message : String(error));
@@ -308,16 +318,18 @@ export default function MonacoCodeEditor() {
   };
 
   // Function to execute user's custom code
-  const executeUserCode = async (code: string): Promise<{output: string, executionTime: number}> => {
+  const executeUserCode = async (
+    code: string,
+  ): Promise<{ output: string; executionTime: number }> => {
     const startTime = Date.now();
     const lines = [];
 
     try {
       // Simple Python-like code execution simulation
-      if (code.includes('print(')) {
+      if (code.includes("print(")) {
         const printMatches = code.match(/print\(["'`]([^"'`]+)["'`]\)/g);
         if (printMatches) {
-          printMatches.forEach(match => {
+          printMatches.forEach((match) => {
             const content = match.match(/print\(["'`]([^"'`]+)["'`]\)/)?.[1];
             if (content) {
               lines.push(content);
@@ -329,14 +341,14 @@ export default function MonacoCodeEditor() {
       // Handle f-strings and variable interpolation
       const fStringMatches = code.match(/print\(f["'`]([^"'`]+)["'`]\)/g);
       if (fStringMatches) {
-        fStringMatches.forEach(match => {
+        fStringMatches.forEach((match) => {
           let content = match.match(/print\(f["'`]([^"'`]+)["'`]\)/)?.[1] || "";
           // Simple variable substitution
           content = content.replace(/{([^}]+)}/g, (_, varName) => {
             // Return placeholder values for demo
-            if (varName.includes('result')) return 'processed_data';
-            if (varName.includes('name')) return 'Matrix IDE';
-            if (varName.includes('value')) return '42';
+            if (varName.includes("result")) return "processed_data";
+            if (varName.includes("name")) return "Matrix IDE";
+            if (varName.includes("value")) return "42";
             return varName;
           });
           lines.push(content);
@@ -344,15 +356,16 @@ export default function MonacoCodeEditor() {
       }
 
       // Handle input() statements
-      if (code.includes('input(')) {
+      if (code.includes("input(")) {
         lines.push("User input: Hello from Matrix IDE!");
       }
 
       // Handle basic variable assignments
       const varMatches = code.match(/(\w+)\s*=\s*["'`]([^"'`]+)["'`]/g);
       if (varMatches) {
-        varMatches.forEach(match => {
-          const [_, varName, value] = match.match(/(\w+)\s*=\s*["'`]([^"'`]+)["'`]/) || [];
+        varMatches.forEach((match) => {
+          const [_, varName, value] =
+            match.match(/(\w+)\s*=\s*["'`]([^"'`]+)["'`]/) || [];
           if (varName && value) {
             lines.push(`Variable ${varName} set to: ${value}`);
           }
@@ -360,10 +373,10 @@ export default function MonacoCodeEditor() {
       }
 
       // Handle function definitions
-      if (code.includes('def ')) {
+      if (code.includes("def ")) {
         const funcMatches = code.match(/def\s+(\w+)\s*\(/g);
         if (funcMatches) {
-          funcMatches.forEach(match => {
+          funcMatches.forEach((match) => {
             const funcName = match.match(/def\s+(\w+)\s*\(/)?.[1];
             if (funcName) {
               lines.push(`Function '${funcName}' defined successfully`);
@@ -373,7 +386,10 @@ export default function MonacoCodeEditor() {
       }
 
       // Handle main execution
-      if (code.includes('if __name__ == "__main__"') || code.includes('main()')) {
+      if (
+        code.includes('if __name__ == "__main__"') ||
+        code.includes("main()")
+      ) {
         lines.push("Executing main program...");
         lines.push("Program completed successfully!");
       }
@@ -382,7 +398,7 @@ export default function MonacoCodeEditor() {
       if (lines.length === 0) {
         if (code.trim().length > 0) {
           lines.push("Code parsed successfully");
-          lines.push(`Lines of code: ${code.split('\n').length}`);
+          lines.push(`Lines of code: ${code.split("\n").length}`);
           lines.push(`Characters: ${code.length}`);
           lines.push("Ready for execution");
         } else {
@@ -392,15 +408,14 @@ export default function MonacoCodeEditor() {
 
       const executionTime = Date.now() - startTime;
       return {
-        output: lines.join('\n'),
-        executionTime
+        output: lines.join("\n"),
+        executionTime,
       };
-
     } catch (error) {
       const executionTime = Date.now() - startTime;
       return {
         output: `Error: ${error instanceof Error ? error.message : String(error)}`,
-        executionTime
+        executionTime,
       };
     }
   };
@@ -832,15 +847,21 @@ export default function MonacoCodeEditor() {
               <ScrollArea className="flex-1">
                 <div className="p-3 space-y-2">
                   {(() => {
-                    let filteredSnippets = getSnippetsByLanguage(settings.language);
+                    let filteredSnippets = getSnippetsByLanguage(
+                      settings.language,
+                    );
 
                     if (selectedCategory !== "All") {
-                      filteredSnippets = filteredSnippets.filter(s => s.category === selectedCategory);
+                      filteredSnippets = filteredSnippets.filter(
+                        (s) => s.category === selectedCategory,
+                      );
                     }
 
                     if (snippetSearch) {
                       const searchResults = searchSnippets(snippetSearch);
-                      filteredSnippets = filteredSnippets.filter(s => searchResults.includes(s));
+                      filteredSnippets = filteredSnippets.filter((s) =>
+                        searchResults.includes(s),
+                      );
                     }
 
                     return filteredSnippets.map((snippet) => (
@@ -870,8 +891,7 @@ export default function MonacoCodeEditor() {
                           <pre className="text-xs text-matrix-purple-200 whitespace-pre-wrap font-mono overflow-hidden">
                             {snippet.code.length > 100
                               ? snippet.code.substring(0, 100) + "..."
-                              : snippet.code
-                            }
+                              : snippet.code}
                           </pre>
                         </div>
 
@@ -887,8 +907,7 @@ export default function MonacoCodeEditor() {
                         </div>
                       </div>
                     ));
-                  })()
-                  }
+                  })()}
                 </div>
               </ScrollArea>
             </div>
