@@ -330,7 +330,7 @@ export default function NodeCanvas() {
     return (
       <div
         key={node.id}
-        className={`absolute glass-panel rounded-lg p-4 min-w-40 cursor-move transform transition-all duration-200 ${
+        className={`absolute glass-panel rounded-lg p-3 sm:p-4 min-w-32 sm:min-w-40 cursor-move transform transition-all duration-200 touch-manipulation ${
           isSelected ? "ring-2 ring-matrix-gold-400/50 shadow-lg" : ""
         } ${dragState.isDragging && dragState.nodeId === node.id ? "z-50" : "z-10"}`}
         style={{
@@ -339,7 +339,7 @@ export default function NodeCanvas() {
           transform: `scale(${canvasZoom})`,
           transformOrigin: "top left",
         }}
-        onMouseDown={(e) => handleMouseDown(e, node.id)}
+        onPointerDown={(e) => handlePointerDown(e, node.id)}
         onContextMenu={(e) => handleContextMenu(e, node.id)}
       >
         {/* Node Header */}
