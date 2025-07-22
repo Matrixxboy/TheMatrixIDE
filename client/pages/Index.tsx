@@ -57,10 +57,10 @@ export default function Index() {
       </div>
 
       {/* Header */}
-      <header className="h-16 glass-dark border-b border-matrix-purple-600/30 flex items-center justify-between px-6 z-50 relative">
+      <header className="h-16 glass-dark border-b border-matrix-purple-600/30 flex items-center justify-between px-4 sm:px-6 z-50 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-matrix-purple-500/5 to-transparent"></div>
 
-        <div className="flex items-center gap-4 relative z-10">
+        <div className="flex items-center gap-2 sm:gap-4 relative z-10">
           <Button
             variant="ghost"
             size="icon"
@@ -69,64 +69,99 @@ export default function Index() {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-matrix-gold-400 to-matrix-gold-600 flex items-center justify-center">
-              <Zap className="h-5 w-5 text-matrix-dark" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-matrix-gold-400 to-matrix-gold-600 flex items-center justify-center">
+              <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-matrix-dark" />
             </div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-matrix-gold-300 to-matrix-gold-500 bg-clip-text text-transparent">
-              The Matrix IDE
+            <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-matrix-gold-300 to-matrix-gold-500 bg-clip-text text-transparent">
+              <span className="hidden sm:inline">The Matrix IDE</span>
+              <span className="sm:hidden">Matrix</span>
             </h1>
             <Badge
               variant="outline"
-              className="border-matrix-gold-400/50 text-matrix-gold-300 glass matrix-interactive"
+              className="border-matrix-gold-400/50 text-matrix-gold-300 glass matrix-interactive text-xs hidden sm:inline-flex"
             >
               v1.0.0-beta
             </Badge>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 relative z-10">
+        <div className="flex items-center gap-1 sm:gap-2 relative z-10">
           {/* Language Selector */}
           <Badge
             variant="secondary"
-            className="glass text-matrix-gold-300 border-matrix-purple-600/50 matrix-interactive"
+            className="glass text-matrix-gold-300 border-matrix-purple-600/50 matrix-interactive text-xs"
           >
             {settings.language.toUpperCase()}
           </Badge>
 
-          {/* Action Buttons */}
-          <Button
-            size="sm"
-            variant="outline"
-            className="glass border-matrix-purple-600/50 hover:bg-matrix-purple-700/50 matrix-interactive"
-          >
-            <Save className="h-4 w-4 mr-2" />
-            Save
-          </Button>
-          <Button
-            size="sm"
-            className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark matrix-interactive"
-            onClick={() => {
-              dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" });
-              dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
-              // Trigger code execution by creating a custom event
-              setTimeout(() => {
-                const event = new CustomEvent('executeCode');
-                window.dispatchEvent(event);
-              }, 100);
-            }}
-          >
-            <Play className="h-4 w-4 mr-2" />
-            Run
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="glass border-matrix-purple-600/50 hover:bg-matrix-purple-700/50 matrix-interactive"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
+          {/* Action Buttons - Desktop */}
+          <div className="hidden md:flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className="glass border-matrix-purple-600/50 hover:bg-matrix-purple-700/50 matrix-interactive"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save
+            </Button>
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark matrix-interactive"
+              onClick={() => {
+                dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" });
+                dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
+                // Trigger code execution by creating a custom event
+                setTimeout(() => {
+                  const event = new CustomEvent('executeCode');
+                  window.dispatchEvent(event);
+                }, 100);
+              }}
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Run
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="glass border-matrix-purple-600/50 hover:bg-matrix-purple-700/50 matrix-interactive"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </div>
+
+          {/* Action Buttons - Mobile */}
+          <div className="flex md:hidden items-center gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 hover:bg-matrix-purple-700/50"
+            >
+              <Save className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark h-8 px-3"
+              onClick={() => {
+                dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" });
+                dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
+                setTimeout(() => {
+                  const event = new CustomEvent('executeCode');
+                  window.dispatchEvent(event);
+                }, 100);
+              }}
+            >
+              <Play className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 hover:bg-matrix-purple-700/50"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
