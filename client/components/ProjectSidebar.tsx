@@ -451,12 +451,12 @@ export default function ProjectSidebar() {
               </TabsContent>
 
               <TabsContent value="templates" className="h-full m-0">
-            <NodeTemplatesPanel />
-          </TabsContent>
+                <NodeTemplatesPanel />
+              </TabsContent>
 
-          <TabsContent value="git" className="h-full m-0">
-            <GitPanel />
-          </TabsContent>
+              <TabsContent value="git" className="h-full m-0">
+                <GitPanel />
+              </TabsContent>
             </div>
           </Tabs>
         </CollapsibleContent>
