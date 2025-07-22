@@ -165,111 +165,136 @@ export default function Index() {
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden relative">
-        {/* Sidebar */}
+      {/* Main Layout Container */}
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        {/* Sidebar - Mobile Overlay, Desktop Side Panel */}
         {sidebarOpen && (
-          <div className="w-80 glass-panel border-r border-matrix-purple-600/30 flex flex-col m-2 rounded-xl matrix-interactive">
-            <ProjectSidebar />
-          </div>
+          <>
+            {/* Mobile Overlay */}
+            <div
+              className="lg:hidden fixed inset-0 bg-black/50 z-40"
+              onClick={() => dispatch({ type: "TOGGLE_SIDEBAR" })}
+            />
+            {/* Sidebar Panel */}
+            <div className="w-80 glass-panel border-r border-matrix-purple-600/30 flex flex-col m-2 rounded-xl matrix-interactive lg:relative fixed left-0 top-16 bottom-0 z-50 lg:z-auto">
+              <ProjectSidebar />
+            </div>
+          </>
         )}
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex gap-2 p-2">
-          {/* Node Canvas */}
-          <div className="flex-1 relative glass-panel rounded-xl overflow-hidden matrix-interactive">
-            <NodeCanvas />
-          </div>
+        {/* Main Content Area - Responsive Layout */}
+        <div className="flex-1 flex flex-col xl:flex-row gap-2 p-2 min-h-0">
+          {/* Primary Content - Canvas + Properties */}
+          <div className="flex-1 flex flex-col lg:flex-row gap-2 min-h-0">
+            {/* Node Canvas */}
+            <div className="flex-1 relative glass-panel rounded-xl overflow-hidden matrix-interactive min-h-80 lg:min-h-0">
+              <NodeCanvas />
+            </div>
 
-          {/* Right Panel - Node Properties */}
-          <div className="w-80 glass-panel rounded-xl flex flex-col matrix-interactive">
-            <div className="flex-1 overflow-hidden">
-              <NodePropertiesPanel />
+            {/* Right Panel - Node Properties (Hidden on small screens, collapsible on medium) */}
+            <div className="w-full lg:w-80 glass-panel rounded-xl flex flex-col matrix-interactive lg:min-h-0">
+              <div className="flex-1 overflow-hidden">
+                <NodePropertiesPanel />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Bottom Panel - Code Editor, AI, Settings */}
-        <div className="h-96 glass-panel border-t border-matrix-purple-600/30 flex flex-col m-2 mt-0 rounded-xl matrix-interactive">
-          {/* Panel Tabs */}
-          <div className="h-12 flex items-center gap-1 px-4 border-b border-matrix-purple-600/30">
-            <Button
-              variant={activePanel === "code" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() =>
-                dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" })
-              }
-              className={
-                activePanel === "code"
-                  ? "glass text-matrix-gold-300 matrix-interactive"
-                  : "hover:bg-matrix-purple-700/30 matrix-interactive"
-              }
-            >
-              <Code className="h-4 w-4 mr-2" />
-              Code Editor
-            </Button>
-            <Button
-              variant={activePanel === "ai" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() =>
-                dispatch({ type: "SET_ACTIVE_PANEL", payload: "ai" })
-              }
-              className={
-                activePanel === "ai"
-                  ? "glass text-matrix-gold-300 matrix-interactive"
-                  : "hover:bg-matrix-purple-700/30 matrix-interactive"
-              }
-            >
-              <Bot className="h-4 w-4 mr-2" />
-              AI Assistant
-            </Button>
-            <Button
-              variant={activePanel === "settings" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() =>
-                dispatch({ type: "SET_ACTIVE_PANEL", payload: "settings" })
-              }
-              className={
-                activePanel === "settings"
-                  ? "glass text-matrix-gold-300 matrix-interactive"
-                  : "hover:bg-matrix-purple-700/30 matrix-interactive"
-              }
-            >
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-          </div>
+          {/* Bottom/Side Panel - Code Editor, AI, Settings */}
+          <div className="w-full xl:w-96 h-96 xl:h-auto glass-panel border-t xl:border-t-0 xl:border-l border-matrix-purple-600/30 flex flex-col xl:mt-0 rounded-xl matrix-interactive">
+            {/* Panel Tabs */}
+            <div className="h-12 flex items-center gap-1 px-4 border-b border-matrix-purple-600/30 overflow-x-auto">
+              <Button
+                variant={activePanel === "code" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() =>
+                  dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" })
+                }
+                className={
+                  activePanel === "code"
+                    ? "glass text-matrix-gold-300 matrix-interactive flex-shrink-0"
+                    : "hover:bg-matrix-purple-700/30 matrix-interactive flex-shrink-0"
+                }
+              >
+                <Code className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Code Editor</span>
+                <span className="sm:hidden">Code</span>
+              </Button>
+              <Button
+                variant={activePanel === "ai" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() =>
+                  dispatch({ type: "SET_ACTIVE_PANEL", payload: "ai" })
+                }
+                className={
+                  activePanel === "ai"
+                    ? "glass text-matrix-gold-300 matrix-interactive flex-shrink-0"
+                    : "hover:bg-matrix-purple-700/30 matrix-interactive flex-shrink-0"
+                }
+              >
+                <Bot className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">AI Assistant</span>
+                <span className="sm:hidden">AI</span>
+              </Button>
+              <Button
+                variant={activePanel === "settings" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() =>
+                  dispatch({ type: "SET_ACTIVE_PANEL", payload: "settings" })
+                }
+                className={
+                  activePanel === "settings"
+                    ? "glass text-matrix-gold-300 matrix-interactive flex-shrink-0"
+                    : "hover:bg-matrix-purple-700/30 matrix-interactive flex-shrink-0"
+                }
+              >
+                <Settings className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Settings</span>
+                <span className="sm:hidden">Config</span>
+              </Button>
+            </div>
 
-          {/* Panel Content */}
-          <div className="flex-1 overflow-hidden">
-            {activePanel === "code" && <MonacoCodeEditor />}
-            {activePanel === "ai" && <AIAssistant />}
-            {activePanel === "settings" && <SettingsPanel />}
+            {/* Panel Content */}
+            <div className="flex-1 overflow-hidden">
+              {activePanel === "code" && <MonacoCodeEditor />}
+              {activePanel === "ai" && <AIAssistant />}
+              {activePanel === "settings" && <SettingsPanel />}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="h-8 glass-dark border-t border-matrix-purple-600/30 flex items-center justify-between px-6 text-sm relative z-10">
-        <div className="flex items-center gap-4">
+      {/* Footer - Mobile-responsive */}
+      <footer className="h-8 sm:h-10 glass-dark border-t border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-6 text-xs sm:text-sm relative z-10">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Badge
             variant="outline"
             className="border-matrix-gold-400/50 text-matrix-gold-300 text-xs glass matrix-interactive"
           >
-            Open Source
+            <span className="hidden sm:inline">Open Source</span>
+            <span className="sm:hidden">OSS</span>
           </Badge>
-          <span className="text-matrix-purple-300">Offline-First AI IDE</span>
+          <span className="text-matrix-purple-300 hidden sm:inline">
+            Offline-First AI IDE
+          </span>
+          <span className="text-matrix-purple-300 sm:hidden">
+            AI IDE
+          </span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 text-xs hover:bg-matrix-purple-700/30 matrix-interactive"
+            className="h-6 sm:h-7 text-xs hover:bg-matrix-purple-700/30 matrix-interactive touch-manipulation px-2"
           >
             <Github className="h-3 w-3 mr-1" />
-            GitHub
+            <span className="hidden sm:inline">GitHub</span>
+            <span className="sm:hidden">Git</span>
           </Button>
-          <span className="text-matrix-purple-400">
+          <span className="text-matrix-purple-400 hidden lg:inline text-xs">
             Ready for deployment on Windows, Linux, macOS
+          </span>
+          <span className="text-matrix-purple-400 lg:hidden text-xs">
+            Multi-platform
           </span>
         </div>
       </footer>
