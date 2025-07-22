@@ -375,21 +375,21 @@ export default function ProjectSidebar() {
                 <span className="sm:hidden">Nodes</span>
               </TabsTrigger>
               <TabsTrigger
-              value="templates"
-              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
-            >
-              <Layers className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-              <span className="hidden sm:inline">Templates</span>
-              <span className="sm:hidden">Temp</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="git"
-              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
-            >
-              <GitBranch className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-              <span className="hidden sm:inline">Git</span>
-              <span className="sm:hidden">Git</span>
-            </TabsTrigger>
+                value="templates"
+                className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
+              >
+                <Layers className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                <span className="hidden sm:inline">Templates</span>
+                <span className="sm:hidden">Temp</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="git"
+                className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
+              >
+                <GitBranch className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                <span className="hidden sm:inline">Git</span>
+                <span className="sm:hidden">Git</span>
+              </TabsTrigger>
             </TabsList>
 
             <div className="flex-1 overflow-hidden">
