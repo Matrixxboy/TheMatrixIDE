@@ -101,8 +101,8 @@ export default function NodeCanvas() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [nodeExecutionStates, setNodeExecutionStates] = useState<
-    Map<string, string>
-  >(new Map());
+    Record<string, string>
+  >({});
   const [isExecuting, setIsExecuting] = useState(false);
 
   const handleZoomIn = () =>
