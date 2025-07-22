@@ -557,8 +557,15 @@ export default function NodeCanvas() {
             size="sm"
             variant="ghost"
             className="h-6 w-6 p-0 ml-auto touch-manipulation"
+            onClick={executeNodes}
+            disabled={isExecuting}
+            title="Execute Nodes"
           >
-            <Play className="h-3 w-3" />
+            {isExecuting ? (
+              <div className="w-3 h-3 rounded-full border-2 border-matrix-gold-400 border-t-transparent animate-spin"></div>
+            ) : (
+              <Play className="h-3 w-3" />
+            )}
           </Button>
         </div>
         <div className="bg-matrix-dark/50 rounded p-2 sm:p-3 font-mono text-xs text-matrix-purple-300 max-h-24 sm:max-h-32 overflow-auto">
