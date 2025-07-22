@@ -752,7 +752,7 @@ export default function NodePropertiesPanel() {
                     size="sm"
                     variant="ghost"
                     onClick={() => {
-                      const updatedCode = `# ${selectedNodeData.data.label} Node\n# Generated at: ${new Date().toISOString()}\n\ndef ${selectedNodeData.data.label.toLowerCase().replace(/\s+/g, '_')}():\n    """${selectedNodeData.data.label} implementation"""\n    pass\n\nif __name__ == "__main__":\n    ${selectedNodeData.data.label.toLowerCase().replace(/\s+/g, '_')}()`;
+                      const updatedCode = `# ${selectedNodeData.data.label} Node\n# Generated at: ${new Date().toISOString()}\n\ndef ${selectedNodeData.data.label.toLowerCase().replace(/\s+/g, "_")}():\n    """${selectedNodeData.data.label} implementation"""\n    pass\n\nif __name__ == "__main__":\n    ${selectedNodeData.data.label.toLowerCase().replace(/\s+/g, "_")}()`;
                       dispatch({
                         type: "UPDATE_NODE",
                         payload: {
@@ -773,7 +773,10 @@ export default function NodePropertiesPanel() {
                   </Button>
                 </div>
                 <Textarea
-                  value={selectedNodeData.data.code || "# Code will be generated based on node configuration"}
+                  value={
+                    selectedNodeData.data.code ||
+                    "# Code will be generated based on node configuration"
+                  }
                   onChange={(e) =>
                     dispatch({
                       type: "UPDATE_NODE",
@@ -795,8 +798,11 @@ export default function NodePropertiesPanel() {
                   <p className="text-xs text-matrix-purple-400">
                     Edit the code that will be executed for this node
                   </p>
-                  <Badge variant="outline" className="text-xs border-matrix-gold-400/50 text-matrix-gold-300">
-                    {selectedNodeData.data.code?.split('\n').length || 1} lines
+                  <Badge
+                    variant="outline"
+                    className="text-xs border-matrix-gold-400/50 text-matrix-gold-300"
+                  >
+                    {selectedNodeData.data.code?.split("\n").length || 1} lines
                   </Badge>
                 </div>
               </div>

@@ -35,7 +35,11 @@ export default function Index() {
   // Generate code when nodes or connections change
   useEffect(() => {
     if (nodes.length > 0) {
-      const code = generateCodeForLanguage(nodes, connections, settings.language);
+      const code = generateCodeForLanguage(
+        nodes,
+        connections,
+        settings.language,
+      );
       dispatch({ type: "SET_GENERATED_CODE", payload: code });
       console.log("Code regenerated due to node/connection changes");
     }
@@ -113,7 +117,7 @@ export default function Index() {
                 dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
                 // Trigger code execution by creating a custom event
                 setTimeout(() => {
-                  const event = new CustomEvent('executeCode');
+                  const event = new CustomEvent("executeCode");
                   window.dispatchEvent(event);
                 }, 100);
               }}
@@ -147,7 +151,7 @@ export default function Index() {
                 dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" });
                 dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
                 setTimeout(() => {
-                  const event = new CustomEvent('executeCode');
+                  const event = new CustomEvent("executeCode");
                   window.dispatchEvent(event);
                 }, 100);
               }}
@@ -276,9 +280,7 @@ export default function Index() {
           <span className="text-matrix-purple-300 hidden sm:inline">
             Offline-First AI IDE
           </span>
-          <span className="text-matrix-purple-300 sm:hidden">
-            AI IDE
-          </span>
+          <span className="text-matrix-purple-300 sm:hidden">AI IDE</span>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
           <Button

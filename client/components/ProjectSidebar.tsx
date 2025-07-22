@@ -313,10 +313,18 @@ export default function ProjectSidebar() {
           <span className="sm:hidden">Explorer</span>
         </h2>
         <div className="flex items-center gap-1">
-          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 touch-manipulation">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-8 w-8 p-0 touch-manipulation"
+          >
             <Plus className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 touch-manipulation">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-8 w-8 p-0 touch-manipulation"
+          >
             <Settings className="h-4 w-4" />
           </Button>
         </div>

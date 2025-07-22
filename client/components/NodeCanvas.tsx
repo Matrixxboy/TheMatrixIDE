@@ -483,7 +483,9 @@ export default function NodeCanvas() {
                 >
                   <Icon className="h-3 w-3 sm:h-2 sm:w-2 text-white" />
                 </div>
-                <span className="text-xs hidden sm:inline">{nodeType.label}</span>
+                <span className="text-xs hidden sm:inline">
+                  {nodeType.label}
+                </span>
               </Button>
             );
           })}
@@ -498,7 +500,11 @@ export default function NodeCanvas() {
             <span className="hidden sm:inline">Generated Code</span>
             <span className="sm:hidden">Code</span>
           </span>
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0 ml-auto touch-manipulation">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-6 w-6 p-0 ml-auto touch-manipulation"
+          >
             <Play className="h-3 w-3" />
           </Button>
         </div>

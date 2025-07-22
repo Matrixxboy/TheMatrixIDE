@@ -69,10 +69,10 @@ export default function MonacoCodeEditor() {
       handleRun();
     };
 
-    window.addEventListener('executeCode', handleExecuteCode);
+    window.addEventListener("executeCode", handleExecuteCode);
 
     return () => {
-      window.removeEventListener('executeCode', handleExecuteCode);
+      window.removeEventListener("executeCode", handleExecuteCode);
     };
   }, []);
 
@@ -504,10 +504,16 @@ export default function MonacoCodeEditor() {
                 }
                 theme="matrix-dark"
                 options={{
-                  fontSize: window.innerWidth < 640 ? Math.max(settings.fontSize - 2, 12) : settings.fontSize,
+                  fontSize:
+                    window.innerWidth < 640
+                      ? Math.max(settings.fontSize - 2, 12)
+                      : settings.fontSize,
                   fontFamily:
                     'Monaco, Consolas, "Liberation Mono", Courier, monospace',
-                  minimap: { enabled: window.innerWidth >= 768 ? settings.showMinimap : false },
+                  minimap: {
+                    enabled:
+                      window.innerWidth >= 768 ? settings.showMinimap : false,
+                  },
                   wordWrap: settings.wordWrap ? "on" : "off",
                   lineNumbers: window.innerWidth >= 640 ? "on" : "off",
                   rulers: window.innerWidth >= 768 ? [80, 120] : [],
@@ -525,10 +531,14 @@ export default function MonacoCodeEditor() {
                     bracketPairs: true,
                     indentation: window.innerWidth >= 640,
                   },
-                  padding: { top: window.innerWidth >= 640 ? 16 : 8, bottom: window.innerWidth >= 640 ? 16 : 8 },
+                  padding: {
+                    top: window.innerWidth >= 640 ? 16 : 8,
+                    bottom: window.innerWidth >= 640 ? 16 : 8,
+                  },
                   glyphMargin: window.innerWidth >= 640,
                   folding: window.innerWidth >= 768,
-                  lineDecorationsWidth: window.innerWidth >= 640 ? undefined : 0,
+                  lineDecorationsWidth:
+                    window.innerWidth >= 640 ? undefined : 0,
                   lineNumbersMinChars: window.innerWidth >= 640 ? undefined : 0,
                 }}
               />
