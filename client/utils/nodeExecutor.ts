@@ -471,7 +471,7 @@ export class NodeExecutor {
     }
 
     const totalTime = Date.now() - this.context.startTime;
-    const completedNodes = Array.from(this.context.nodeStates.values()).filter(
+    const completedNodes = Object.values(this.context.nodeStates).filter(
       (state) => state === "completed",
     ).length;
 
