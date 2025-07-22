@@ -157,12 +157,12 @@ export default function NodeCanvas() {
       // Set up execution monitoring
       const originalExecuteNode = executor["executeNode"];
       executor["executeNode"] = async function (node, inputs) {
-        setNodeExecutionStates((prev) => new Map(prev.set(node.id, "running")));
+        setNodeExecutionStates((prev) => ({ ...prev, [node.id]: "running" }));
         const result = await originalExecuteNode.call(this, node, inputs);
-        setNodeExecutionStates(
-          (prev) =>
-            new Map(prev.set(node.id, result.success ? "completed" : "error")),
-        );
+        setNodeExecutionStates((prev) => ({
+          ...prev,
+          [node.id]: result.success ? "completed" : "error",
+        }));
         return result;
       };
 
