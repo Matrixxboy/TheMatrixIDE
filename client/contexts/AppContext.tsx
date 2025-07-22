@@ -413,6 +413,27 @@ function appReducer(state: AppState, action: AppAction): AppState {
         aiProcessing: action.payload,
       };
 
+    case "SET_EXECUTION_CONTEXT":
+      return {
+        ...state,
+        executionContext: action.payload,
+      };
+
+    case "UPDATE_NODE_EXECUTION_STATE":
+      const currentContext = state.executionContext;
+      if (!currentContext) return state;
+
+      const newNodeStates = new Map(currentContext.nodeStates);
+      newNodeStates.set(action.payload.nodeId, action.payload.state);
+
+      return {
+        ...state,
+        executionContext: {
+          ...currentContext,
+          nodeStates: newNodeStates,
+        },
+      };
+
     default:
       return state;
   }
