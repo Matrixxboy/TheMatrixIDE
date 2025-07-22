@@ -307,16 +307,17 @@ export default function ProjectSidebar() {
   return (
     <div className="h-full flex flex-col">
       {/* Sidebar Header */}
-      <div className="h-12 border-b border-matrix-purple-600/30 flex items-center justify-between px-4">
+      <div className="h-12 border-b border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4">
         <h2 className="text-sm font-medium text-matrix-gold-300">
-          Project Explorer
+          <span className="hidden sm:inline">Project Explorer</span>
+          <span className="sm:hidden">Explorer</span>
         </h2>
         <div className="flex items-center gap-1">
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-            <Plus className="h-3 w-3" />
+          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 touch-manipulation">
+            <Plus className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-            <Settings className="h-3 w-3" />
+          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 touch-manipulation">
+            <Settings className="h-4 w-4" />
           </Button>
         </div>
       </div>
