@@ -247,6 +247,7 @@ export default function NodePropertiesPanel() {
   const [activeTab, setActiveTab] = useState("properties");
   const [nodeConfig, setNodeConfig] = useState<NodePropertyConfig[]>([]);
   const [hasChanges, setHasChanges] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const selectedNodeData = selectedNode
     ? nodes.find((n) => n.id === selectedNode)
