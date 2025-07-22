@@ -433,7 +433,7 @@ export default function NodePropertiesPanel() {
           <Textarea
             value={property.value}
             onChange={(e) => updateProperty(property.id, e.target.value)}
-            className="bg-matrix-purple-800/30 border-matrix-purple-600/50 font-mono text-sm min-h-20"
+            className="bg-matrix-purple-800/30 border-matrix-purple-600/50 font-mono text-sm min-h-24 sm:min-h-20 touch-manipulation"
             placeholder={property.description}
           />
         );
