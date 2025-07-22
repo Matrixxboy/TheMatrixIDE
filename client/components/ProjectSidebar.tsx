@@ -323,14 +323,14 @@ export default function ProjectSidebar() {
       </div>
 
       {/* Search */}
-      <div className="p-4 border-b border-matrix-purple-600/30">
+      <div className="p-3 sm:p-4 border-b border-matrix-purple-600/30">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-matrix-purple-400" />
           <Input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search files or nodes..."
-            className="pl-10 bg-matrix-purple-800/30 border-matrix-purple-600/50 text-matrix-purple-200 placeholder:text-matrix-purple-400"
+            placeholder="Search files..."
+            className="pl-10 bg-matrix-purple-800/30 border-matrix-purple-600/50 text-matrix-purple-200 placeholder:text-matrix-purple-400 text-sm touch-manipulation"
           />
         </div>
       </div>
