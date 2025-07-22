@@ -26,11 +26,11 @@ export const codeSnippets: CodeSnippet[] = [
     description: "Basic function with parameters and return",
     category: "Functions",
     language: "python",
-    code: `def ${1:function_name}(${2:param1}, ${3:param2}):
-    """${4:Function description}"""
-    ${5:# Function body}
-    return ${6:result}`,
-    placeholders: ["function_name", "param1", "param2", "Function description", "# Function body", "result"],
+    code: `def function_name(param1, param2):
+    """Function description"""
+    # Function body
+    return result`,
+    placeholders: ["function_name", "param1", "param2", "Function description", "Function body", "result"],
     tags: ["function", "def", "return"]
   },
   {
@@ -39,15 +39,15 @@ export const codeSnippets: CodeSnippet[] = [
     description: "Basic class with constructor",
     category: "Classes",
     language: "python",
-    code: `class ${1:ClassName}:
-    """${2:Class description}"""
+    code: `class ClassName:
+    """Class description"""
     
-    def __init__(self, ${3:param}):
-        self.${4:attribute} = ${3:param}
+    def __init__(self, param):
+        self.attribute = param
     
-    def ${5:method_name}(self):
-        """${6:Method description}"""
-        return self.${4:attribute}`,
+    def method_name(self):
+        """Method description"""
+        return self.attribute`,
     placeholders: ["ClassName", "Class description", "param", "attribute", "method_name", "Method description"],
     tags: ["class", "init", "method"]
   },
@@ -57,10 +57,10 @@ export const codeSnippets: CodeSnippet[] = [
     description: "For loop with range or iterable",
     category: "Loops",
     language: "python",
-    code: `for ${1:item} in ${2:iterable}:
-    ${3:# Loop body}
-    print(${1:item})`,
-    placeholders: ["item", "iterable", "# Loop body"],
+    code: `for item in iterable:
+    # Loop body
+    print(item)`,
+    placeholders: ["item", "iterable", "Loop body"],
     tags: ["loop", "for", "iteration"]
   },
   {
@@ -69,11 +69,11 @@ export const codeSnippets: CodeSnippet[] = [
     description: "While loop with condition",
     category: "Loops",
     language: "python",
-    code: `${1:counter} = 0
-while ${1:counter} < ${2:limit}:
-    ${3:# Loop body}
-    ${1:counter} += 1`,
-    placeholders: ["counter", "limit", "# Loop body"],
+    code: `counter = 0
+while counter < limit:
+    # Loop body
+    counter += 1`,
+    placeholders: ["counter", "limit", "Loop body"],
     tags: ["loop", "while", "condition"]
   },
   {
@@ -82,13 +82,16 @@ while ${1:counter} < ${2:limit}:
     description: "Conditional statement with if-elif-else",
     category: "Conditionals",
     language: "python",
-    code: `if ${1:condition}:
-    ${2:# If block}
-elif ${3:another_condition}:
-    ${4:# Elif block}
+    code: `if condition:
+    # If block
+    pass
+elif another_condition:
+    # Elif block
+    pass
 else:
-    ${5:# Else block}`,
-    placeholders: ["condition", "# If block", "another_condition", "# Elif block", "# Else block"],
+    # Else block
+    pass`,
+    placeholders: ["condition", "If block", "another_condition", "Elif block", "Else block"],
     tags: ["conditional", "if", "else"]
   },
   {
@@ -98,13 +101,15 @@ else:
     category: "Error Handling",
     language: "python",
     code: `try:
-    ${1:# Code that might raise an exception}
-except ${2:ExceptionType} as e:
-    ${3:# Handle exception}
+    # Code that might raise an exception
+    pass
+except Exception as e:
+    # Handle exception
     print(f"Error: {e}")
 finally:
-    ${4:# Cleanup code}`,
-    placeholders: ["# Code that might raise an exception", "ExceptionType", "# Handle exception", "# Cleanup code"],
+    # Cleanup code
+    pass`,
+    placeholders: ["Code that might raise an exception", "Exception", "Handle exception", "Cleanup code"],
     tags: ["exception", "try", "except", "error"]
   },
   {
@@ -113,7 +118,7 @@ finally:
     description: "List comprehension with condition",
     category: "Data Structures",
     language: "python",
-    code: `${1:result} = [${2:expression} for ${3:item} in ${4:iterable} if ${5:condition}]`,
+    code: `result = [expression for item in iterable if condition]`,
     placeholders: ["result", "expression", "item", "iterable", "condition"],
     tags: ["list", "comprehension", "filter"]
   },
@@ -123,7 +128,7 @@ finally:
     description: "Dictionary comprehension",
     category: "Data Structures",
     language: "python",
-    code: `${1:result} = {${2:key_expr}: ${3:value_expr} for ${4:item} in ${5:iterable}}`,
+    code: `result = {key_expr: value_expr for item in iterable}`,
     placeholders: ["result", "key_expr", "value_expr", "item", "iterable"],
     tags: ["dict", "dictionary", "comprehension"]
   },
@@ -133,10 +138,10 @@ finally:
     description: "Read file with context manager",
     category: "File I/O",
     language: "python",
-    code: `with open('${1:filename}', 'r') as file:
-    ${2:content} = file.read()
-    ${3:# Process content}`,
-    placeholders: ["filename", "content", "# Process content"],
+    code: `with open('filename.txt', 'r') as file:
+    content = file.read()
+    # Process content`,
+    placeholders: ["filename.txt", "content", "Process content"],
     tags: ["file", "read", "io", "with"]
   },
   {
@@ -145,9 +150,9 @@ finally:
     description: "Write to file with context manager",
     category: "File I/O",
     language: "python",
-    code: `with open('${1:filename}', 'w') as file:
-    file.write(${2:content})`,
-    placeholders: ["filename", "content"],
+    code: `with open('filename.txt', 'w') as file:
+    file.write(content)`,
+    placeholders: ["filename.txt", "content"],
     tags: ["file", "write", "io", "with"]
   },
   {
@@ -157,7 +162,7 @@ finally:
     category: "Structure",
     language: "python",
     code: `if __name__ == "__main__":
-    ${1:main()}`,
+    main()`,
     placeholders: ["main()"],
     tags: ["main", "guard", "execution"]
   },
@@ -167,10 +172,10 @@ finally:
     description: "Common import patterns",
     category: "Imports",
     language: "python",
-    code: `import ${1:module}
-from ${2:module} import ${3:function}
-from ${4:module} import ${5:class} as ${6:alias}`,
-    placeholders: ["module", "module", "function", "module", "class", "alias"],
+    code: `import module_name
+from module_name import function_name
+from module_name import ClassName as Alias`,
+    placeholders: ["module_name", "function_name", "ClassName", "Alias"],
     tags: ["import", "from", "module"]
   },
   
@@ -181,9 +186,9 @@ from ${4:module} import ${5:class} as ${6:alias}`,
     description: "Template for Matrix IDE input node",
     category: "Matrix IDE",
     language: "python",
-    code: `def ${1:input_node}():
+    code: `def input_node():
     """Matrix IDE input node"""
-    user_input = input("${2:Enter value}: ")
+    user_input = input("Enter value: ")
     return user_input`,
     placeholders: ["input_node", "Enter value"],
     tags: ["matrix", "input", "node"]
@@ -194,10 +199,10 @@ from ${4:module} import ${5:class} as ${6:alias}`,
     description: "Template for Matrix IDE processing node",
     category: "Matrix IDE",
     language: "python",
-    code: `def ${1:process_node}(data):
+    code: `def process_node(data):
     """Matrix IDE processing node"""
     # Process the input data
-    processed = ${2:data.strip().lower()}
+    processed = data.strip().lower()
     return processed`,
     placeholders: ["process_node", "data.strip().lower()"],
     tags: ["matrix", "process", "node"]
@@ -208,9 +213,9 @@ from ${4:module} import ${5:class} as ${6:alias}`,
     description: "Template for Matrix IDE output node",
     category: "Matrix IDE",
     language: "python",
-    code: `def ${1:output_node}(result):
+    code: `def output_node(result):
     """Matrix IDE output node"""
-    print(f"${2:Result}: {result}")
+    print(f"Result: {result}")
     return result`,
     placeholders: ["output_node", "Result"],
     tags: ["matrix", "output", "node"]
@@ -221,13 +226,46 @@ from ${4:module} import ${5:class} as ${6:alias}`,
     description: "Template for Matrix IDE AI processing node",
     category: "Matrix IDE",
     language: "python",
-    code: `def ${1:ai_process_node}(text):
+    code: `def ai_process_node(text):
     """Matrix IDE AI processing node"""
     # Simulate AI processing
     enhanced = f"AI_ENHANCED: {text}"
     return enhanced`,
     placeholders: ["ai_process_node"],
     tags: ["matrix", "ai", "node", "enhance"]
+  },
+  {
+    id: "matrix-full-pipeline",
+    name: "Matrix Full Pipeline",
+    description: "Complete Matrix IDE pipeline template",
+    category: "Matrix IDE",
+    language: "python",
+    code: `# Matrix IDE Complete Pipeline
+
+def input_node():
+    """Get user input"""
+    return input("Enter your message: ")
+
+def process_node(data):
+    """Process the data"""
+    return data.strip().lower()
+
+def ai_enhance_node(text):
+    """Enhance with AI"""
+    return f"AI_ENHANCED: {text}"
+
+def output_node(result):
+    """Display result"""
+    print(f"Final Result: {result}")
+    return result
+
+# Execute pipeline
+if __name__ == "__main__":
+    user_data = input_node()
+    processed = process_node(user_data)
+    enhanced = ai_enhance_node(processed)
+    output_node(enhanced)`,
+    tags: ["matrix", "pipeline", "complete", "workflow"]
   },
   
   // JavaScript Snippets
@@ -237,11 +275,11 @@ from ${4:module} import ${5:class} as ${6:alias}`,
     description: "JavaScript function declaration",
     category: "Functions",
     language: "javascript",
-    code: `function ${1:functionName}(${2:params}) {
-    ${3:// Function body}
-    return ${4:result};
+    code: `function functionName(params) {
+    // Function body
+    return result;
 }`,
-    placeholders: ["functionName", "params", "// Function body", "result"],
+    placeholders: ["functionName", "params", "Function body", "result"],
     tags: ["function", "declaration", "js"]
   },
   {
@@ -250,11 +288,11 @@ from ${4:module} import ${5:class} as ${6:alias}`,
     description: "ES6 arrow function",
     category: "Functions",
     language: "javascript",
-    code: `const ${1:functionName} = (${2:params}) => {
-    ${3:// Function body}
-    return ${4:result};
+    code: `const functionName = (params) => {
+    // Function body
+    return result;
 };`,
-    placeholders: ["functionName", "params", "// Function body", "result"],
+    placeholders: ["functionName", "params", "Function body", "result"],
     tags: ["arrow", "function", "es6", "const"]
   },
   {
@@ -263,7 +301,7 @@ from ${4:module} import ${5:class} as ${6:alias}`,
     description: "Console log statement",
     category: "Basic",
     language: "javascript",
-    code: `console.log(${1:"Hello, World!"});`,
+    code: `console.log("Hello, World!");`,
     placeholders: ['"Hello, World!"'],
     tags: ["console", "log", "debug"]
   }
@@ -293,16 +331,6 @@ export const getAllCategories = (): string[] => {
   return Array.from(categories).sort();
 };
 
-export const insertSnippet = (snippet: CodeSnippet, replacePlaceholders: boolean = true): string => {
-  if (!replacePlaceholders || !snippet.placeholders) {
-    return snippet.code;
-  }
-  
-  let code = snippet.code;
-  snippet.placeholders.forEach((placeholder, index) => {
-    const placeholderPattern = new RegExp(`\\$\\{${index + 1}:([^}]+)\\}`, 'g');
-    code = code.replace(placeholderPattern, placeholder);
-  });
-  
-  return code;
+export const insertSnippet = (snippet: CodeSnippet): string => {
+  return snippet.code;
 };
