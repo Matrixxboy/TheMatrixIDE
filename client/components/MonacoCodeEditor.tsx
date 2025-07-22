@@ -263,7 +263,7 @@ export default function MonacoCodeEditor() {
       lines.push("📊 Node Results:");
       lines.push("-".repeat(30));
       nodes.forEach((node) => {
-        const state = context.nodeStates.get(node.id) || "unknown";
+        const state = context.nodeStates[node.id] || "unknown";
         const stateIcon =
           {
             completed: "✅",
