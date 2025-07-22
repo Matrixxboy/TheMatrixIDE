@@ -461,12 +461,12 @@ export default function NodeCanvas() {
         </div>
       </div>
 
-      {/* Node Palette */}
-      <div className="absolute top-4 right-4 z-20 glass-panel rounded-lg p-2">
-        <div className="text-xs text-matrix-gold-300 mb-2 font-medium">
+      {/* Node Palette - Mobile-responsive */}
+      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-20 glass-panel rounded-lg p-2">
+        <div className="text-xs text-matrix-gold-300 mb-2 font-medium hidden sm:block">
           Add Node
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex sm:flex-col gap-1">
           {nodeTypes.map((nodeType) => {
             const Icon = nodeType.icon;
             return (
@@ -475,14 +475,15 @@ export default function NodeCanvas() {
                 size="sm"
                 variant="ghost"
                 onClick={() => addNode(nodeType.type)}
-                className="justify-start gap-2 h-8 hover:bg-matrix-purple-700/30"
+                className="justify-start gap-2 h-10 sm:h-8 hover:bg-matrix-purple-700/30 touch-manipulation min-w-10 sm:min-w-auto"
+                title={nodeType.label}
               >
                 <div
-                  className={`w-4 h-4 rounded bg-gradient-to-r ${nodeType.color} flex items-center justify-center`}
+                  className={`w-5 h-5 sm:w-4 sm:h-4 rounded bg-gradient-to-r ${nodeType.color} flex items-center justify-center`}
                 >
-                  <Icon className="h-2 w-2 text-white" />
+                  <Icon className="h-3 w-3 sm:h-2 sm:w-2 text-white" />
                 </div>
-                <span className="text-xs">{nodeType.label}</span>
+                <span className="text-xs hidden sm:inline">{nodeType.label}</span>
               </Button>
             );
           })}
