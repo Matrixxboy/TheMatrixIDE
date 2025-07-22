@@ -278,7 +278,7 @@ export default function MonacoCodeEditor() {
         if (node.data.outputs) {
           node.data.outputs.forEach((outputName) => {
             const outputKey = `${node.id}_${outputName}`;
-            const outputValue = context.nodeOutputs.get(outputKey);
+            const outputValue = context.nodeOutputs[outputKey];
             if (outputValue !== undefined) {
               lines.push(`   → ${outputName}: ${JSON.stringify(outputValue)}`);
             }
