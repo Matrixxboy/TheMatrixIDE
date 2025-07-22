@@ -146,7 +146,7 @@ export class NodeExecutor {
       }
 
       this.context.executionLog.push(
-        `✓ ${node.data.label} completed in ${executionTime}ms �� ${JSON.stringify(output).substring(0, 50)}${JSON.stringify(output).length > 50 ? "..." : ""}`,
+        `✓ ${node.data.label} completed in ${executionTime}ms → ${JSON.stringify(output).substring(0, 50)}${JSON.stringify(output).length > 50 ? "..." : ""}`,
       );
 
       return {
@@ -439,7 +439,7 @@ export class NodeExecutor {
 
     // Initialize all nodes as pending
     nodes.forEach((node) => {
-      this.context.nodeStates.set(node.id, "pending");
+      this.context.nodeStates[node.id] = "pending";
     });
 
     this.context.executionLog.push(
