@@ -408,7 +408,16 @@ export default function NodeCanvas() {
               )}
             </div>
           </div>
-          {isSelected && (
+          {executionState === 'running' && (
+            <div className="w-3 h-3 rounded-full bg-blue-400 animate-spin border-2 border-blue-200 border-t-transparent"></div>
+          )}
+          {executionState === 'completed' && (
+            <div className="w-3 h-3 rounded-full bg-green-400"></div>
+          )}
+          {executionState === 'error' && (
+            <div className="w-3 h-3 rounded-full bg-red-400"></div>
+          )}
+          {isSelected && !executionState && (
             <div className="w-2 h-2 rounded-full bg-matrix-gold-400 animate-pulse"></div>
           )}
         </div>
