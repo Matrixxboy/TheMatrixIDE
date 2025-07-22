@@ -454,9 +454,9 @@ export default function NodePropertiesPanel() {
                   size="sm"
                   variant="ghost"
                   onClick={() => removeArrayItem(property.id, index)}
-                  className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
+                  className="h-10 w-10 sm:h-8 sm:w-8 p-0 text-red-400 hover:bg-red-500/20 touch-manipulation"
                 >
-                  <Minus className="h-3 w-3" />
+                  <Minus className="h-4 w-4 sm:h-3 sm:w-3" />
                 </Button>
               </div>
             ))}
