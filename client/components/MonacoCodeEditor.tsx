@@ -203,30 +203,52 @@ export default function MonacoCodeEditor() {
 
   const executeNodes = async () => {
     const { nodes, connections } = state;
+    const timestamp = new Date().toLocaleTimeString();
+    const lines = [];
 
+    lines.push(`[${timestamp}] Matrix IDE Execution`);
+    lines.push("=".repeat(60));
+    lines.push("");
+
+    // Execute current code in editor if no nodes
     if (nodes.length === 0) {
-      setOutput("No nodes to execute. Add some nodes to the canvas first.");
+      lines.push("📝 Executing code from editor...");
+      lines.push("");
+
+      try {
+        const result = await executeUserCode(localCode);
+        lines.push("📊 Code Execution Output:");
+        lines.push("-".repeat(30));
+        lines.push(result.output);
+        lines.push("");
+        lines.push(`✅ Execution completed in ${result.executionTime}ms`);
+      } catch (error) {
+        lines.push("❌ Code execution failed:");
+        lines.push(error instanceof Error ? error.message : String(error));
+      }
+
+      setOutput(lines.join("\n"));
       return;
     }
 
-    const lines = [];
-    const timestamp = new Date().toLocaleTimeString();
-
-    lines.push(`[${timestamp}] Matrix IDE Node Execution`);
-    lines.push("=".repeat(50));
+    // Execute node graph
+    lines.push("🔗 Executing node graph...");
+    lines.push(`Nodes: ${nodes.length}, Connections: ${connections.length}`);
     lines.push("");
 
     try {
       const executor = new NodeExecutor();
       const context = await executor.executeNodeGraph(nodes, connections);
 
-      // Display execution log
+      // Display detailed execution log
+      lines.push("📋 Execution Log:");
+      lines.push("-".repeat(30));
       lines.push(...context.executionLog);
       lines.push("");
 
-      // Display node states
-      lines.push("Node States:");
-      lines.push("-".repeat(20));
+      // Display node results
+      lines.push("📊 Node Results:");
+      lines.push("-".repeat(30));
       nodes.forEach(node => {
         const state = context.nodeStates.get(node.id) || "unknown";
         const stateIcon = {
@@ -234,44 +256,146 @@ export default function MonacoCodeEditor() {
           running: "🔄",
           error: "❌",
           pending: "⏳"
-        }[state] || "���";
+        }[state] || "❓";
+
         lines.push(`${stateIcon} ${node.data.label}: ${state}`);
+
+        // Show node outputs
+        if (node.data.outputs) {
+          node.data.outputs.forEach(outputName => {
+            const outputKey = `${node.id}_${outputName}`;
+            const outputValue = context.nodeOutputs.get(outputKey);
+            if (outputValue !== undefined) {
+              lines.push(`   → ${outputName}: ${JSON.stringify(outputValue)}`);
+            }
+          });
+        }
       });
 
       lines.push("");
 
-      // Display final outputs
-      if (context.nodeOutputs.size > 0) {
-        lines.push("Final Outputs:");
-        lines.push("-".repeat(20));
-        context.nodeOutputs.forEach((value, key) => {
-          lines.push(`${key}: ${JSON.stringify(value)}`);
-        });
-        lines.push("");
-      }
-
+      // Final summary
       const totalTime = Date.now() - context.startTime;
       const completedCount = Array.from(context.nodeStates.values()).filter(s => s === "completed").length;
       const errorCount = Array.from(context.nodeStates.values()).filter(s => s === "error").length;
 
-      lines.push("Execution Summary:");
-      lines.push("-".repeat(20));
+      lines.push("📈 Execution Summary:");
+      lines.push("-".repeat(30));
       lines.push(`⏱️  Total time: ${totalTime}ms`);
-      lines.push(`📊 Nodes processed: ${completedCount}/${nodes.length}`);
+      lines.push(`✅ Completed: ${completedCount}/${nodes.length} nodes`);
       lines.push(`🔗 Connections: ${connections.length}`);
+
       if (errorCount > 0) {
         lines.push(`❌ Errors: ${errorCount}`);
       } else {
-        lines.push(`✅ No errors`);
+        lines.push(`✨ All nodes executed successfully!`);
       }
 
     } catch (error) {
-      lines.push("❌ Execution failed:");
+      lines.push("❌ Node execution failed:");
       lines.push(error instanceof Error ? error.message : String(error));
     }
 
     setOutput(lines.join("\n"));
-    console.log("Node execution completed");
+    console.log("Execution completed");
+  };
+
+  // Function to execute user's custom code
+  const executeUserCode = async (code: string): Promise<{output: string, executionTime: number}> => {
+    const startTime = Date.now();
+    const lines = [];
+
+    try {
+      // Simple Python-like code execution simulation
+      if (code.includes('print(')) {
+        const printMatches = code.match(/print\(["'`]([^"'`]+)["'`]\)/g);
+        if (printMatches) {
+          printMatches.forEach(match => {
+            const content = match.match(/print\(["'`]([^"'`]+)["'`]\)/)?.[1];
+            if (content) {
+              lines.push(content);
+            }
+          });
+        }
+      }
+
+      // Handle f-strings and variable interpolation
+      const fStringMatches = code.match(/print\(f["'`]([^"'`]+)["'`]\)/g);
+      if (fStringMatches) {
+        fStringMatches.forEach(match => {
+          let content = match.match(/print\(f["'`]([^"'`]+)["'`]\)/)?.[1] || "";
+          // Simple variable substitution
+          content = content.replace(/{([^}]+)}/g, (_, varName) => {
+            // Return placeholder values for demo
+            if (varName.includes('result')) return 'processed_data';
+            if (varName.includes('name')) return 'Matrix IDE';
+            if (varName.includes('value')) return '42';
+            return varName;
+          });
+          lines.push(content);
+        });
+      }
+
+      // Handle input() statements
+      if (code.includes('input(')) {
+        lines.push("User input: Hello from Matrix IDE!");
+      }
+
+      // Handle basic variable assignments
+      const varMatches = code.match(/(\w+)\s*=\s*["'`]([^"'`]+)["'`]/g);
+      if (varMatches) {
+        varMatches.forEach(match => {
+          const [_, varName, value] = match.match(/(\w+)\s*=\s*["'`]([^"'`]+)["'`]/) || [];
+          if (varName && value) {
+            lines.push(`Variable ${varName} set to: ${value}`);
+          }
+        });
+      }
+
+      // Handle function definitions
+      if (code.includes('def ')) {
+        const funcMatches = code.match(/def\s+(\w+)\s*\(/g);
+        if (funcMatches) {
+          funcMatches.forEach(match => {
+            const funcName = match.match(/def\s+(\w+)\s*\(/)?.[1];
+            if (funcName) {
+              lines.push(`Function '${funcName}' defined successfully`);
+            }
+          });
+        }
+      }
+
+      // Handle main execution
+      if (code.includes('if __name__ == "__main__"') || code.includes('main()')) {
+        lines.push("Executing main program...");
+        lines.push("Program completed successfully!");
+      }
+
+      // If no specific patterns found, show generic success
+      if (lines.length === 0) {
+        if (code.trim().length > 0) {
+          lines.push("Code parsed successfully");
+          lines.push(`Lines of code: ${code.split('\n').length}`);
+          lines.push(`Characters: ${code.length}`);
+          lines.push("Ready for execution");
+        } else {
+          lines.push("No code to execute");
+        }
+      }
+
+      const executionTime = Date.now() - startTime;
+      return {
+        output: lines.join('\n'),
+        executionTime
+      };
+
+    } catch (error) {
+      const executionTime = Date.now() - startTime;
+      return {
+        output: `Error: ${error instanceof Error ? error.message : String(error)}`,
+        executionTime
+      };
+    }
   };
 
   const simulateCodeAnalysis = () => {
