@@ -467,14 +467,14 @@ function appReducer(state: AppState, action: AppAction): AppState {
       const currentContext = state.executionContext;
       if (!currentContext) return state;
 
-      const newNodeStates = new Map(currentContext.nodeStates);
-      newNodeStates.set(action.payload.nodeId, action.payload.state);
-
       return {
         ...state,
         executionContext: {
           ...currentContext,
-          nodeStates: newNodeStates,
+          nodeStates: {
+            ...currentContext.nodeStates,
+            [action.payload.nodeId]: action.payload.state,
+          },
         },
       };
 
