@@ -486,16 +486,60 @@ export default function NodePropertiesPanel() {
 
   if (!selectedNodeData) {
     return (
-      <div className="h-full flex items-center justify-center text-center p-8">
-        <div>
-          <Settings className="h-12 w-12 text-matrix-purple-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-matrix-gold-300 mb-2">
-            No Node Selected
-          </h3>
-          <p className="text-sm text-matrix-purple-400">
-            Select a node from the canvas to view and edit its properties.
-          </p>
-        </div>
+      <div className="h-full flex flex-col">
+        <Collapsible open={!isCollapsed} onOpenChange={(open) => setIsCollapsed(!open)}>
+          <div className="h-12 sm:h-14 glass-panel border-b border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4">
+            <CollapsibleTrigger asChild>
+              <div className="flex items-center gap-3 cursor-pointer hover:bg-matrix-purple-700/20 rounded p-1 -m-1 transition-colors">
+                <div className="w-8 h-8 rounded bg-gradient-to-r from-matrix-purple-500 to-matrix-purple-700 flex items-center justify-center">
+                  <Settings className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-matrix-gold-300">
+                    Node Properties
+                  </h3>
+                  <p className="text-xs text-matrix-purple-400">
+                    No node selected
+                  </p>
+                </div>
+                {isCollapsed ? (
+                  <ChevronDown className="h-4 w-4 text-matrix-purple-400" />
+                ) : (
+                  <ChevronUp className="h-4 w-4 text-matrix-purple-400" />
+                )}
+              </div>
+            </CollapsibleTrigger>
+
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 touch-manipulation"
+                title={isCollapsed ? "Expand Panel" : "Collapse Panel"}
+              >
+                {isCollapsed ? (
+                  <PanelRightOpen className="h-4 w-4" />
+                ) : (
+                  <PanelRightClose className="h-4 w-4" />
+                )}
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+
+          <CollapsibleContent>
+            <div className="h-full flex items-center justify-center text-center p-8">
+              <div>
+                <Settings className="h-12 w-12 text-matrix-purple-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-matrix-gold-300 mb-2">
+                  No Node Selected
+                </h3>
+                <p className="text-sm text-matrix-purple-400">
+                  Select a node from the canvas to view and edit its properties.
+                </p>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
     );
   }
