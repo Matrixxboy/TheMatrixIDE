@@ -113,15 +113,29 @@ export default function Index() {
             <Button
               size="sm"
               className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark matrix-interactive"
-              onClick={() => {
-                dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" });
-                dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
-                // Trigger code execution by creating a custom event
+            onClick={async () => {
+              if (nodes.length === 0) {
+                alert("Add some nodes to the canvas first!");
+                return;
+              }
+
+              dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" });
+              dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
+
+              try {
+                const executor = new NodeExecutor();
+                const context = await executor.executeNodeGraph(nodes, connections);
+                dispatch({ type: "SET_EXECUTION_CONTEXT", payload: context });
+
+                // Trigger code editor to update output
                 setTimeout(() => {
                   const event = new CustomEvent("executeCode");
                   window.dispatchEvent(event);
                 }, 100);
-              }}
+              } catch (error) {
+                console.error("Execution failed:", error);
+              }
+            }}
             >
               <Play className="h-4 w-4 mr-2" />
               Run
