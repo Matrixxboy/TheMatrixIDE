@@ -385,7 +385,7 @@ export default function NodePropertiesPanel() {
             value={property.value}
             onChange={(e) => updateProperty(property.id, e.target.value)}
             placeholder={property.description}
-            className="bg-matrix-purple-800/30 border-matrix-purple-600/50"
+            className="bg-matrix-purple-800/30 border-matrix-purple-600/50 h-10 sm:h-9 touch-manipulation"
           />
         );
 
