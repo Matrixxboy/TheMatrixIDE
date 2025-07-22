@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useApp } from "@/contexts/AppContext";
 import type { FileNode } from "@/contexts/AppContext";
 import NodeTemplatesPanel from "@/components/NodeTemplatesPanel";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import GitPanel from "@/components/GitPanel";
 import {
   FolderTree,
   FileText,
@@ -307,138 +309,158 @@ export default function ProjectSidebar() {
   return (
     <div className="h-full flex flex-col">
       {/* Sidebar Header */}
-      <div className="h-12 border-b border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4">
-        <h2 className="text-sm font-medium text-matrix-gold-300">
-          <span className="hidden sm:inline">Project Explorer</span>
-          <span className="sm:hidden">Explorer</span>
-        </h2>
-        <div className="flex items-center gap-1">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-8 w-8 p-0 touch-manipulation"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-8 w-8 p-0 touch-manipulation"
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
+      <Collapsible defaultOpen={true}>
+        <div className="h-12 border-b border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4">
+          <h2 className="text-sm font-medium text-matrix-gold-300">
+            <span className="hidden sm:inline">Project Explorer</span>
+            <span className="sm:hidden">Explorer</span>
+          </h2>
+          <div className="flex items-center gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 touch-manipulation"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 touch-manipulation"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 touch-manipulation">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
         </div>
-      </div>
+        <CollapsibleContent>
+          {/* Search */}
+          <div className="p-3 sm:p-4 border-b border-matrix-purple-600/30">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-matrix-purple-400" />
+              <Input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search files..."
+                className="pl-10 bg-matrix-purple-800/30 border-matrix-purple-600/50 text-matrix-purple-200 placeholder:text-matrix-purple-400 text-sm touch-manipulation"
+              />
+            </div>
+          </div>
 
-      {/* Search */}
-      <div className="p-3 sm:p-4 border-b border-matrix-purple-600/30">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-matrix-purple-400" />
-          <Input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search files..."
-            className="pl-10 bg-matrix-purple-800/30 border-matrix-purple-600/50 text-matrix-purple-200 placeholder:text-matrix-purple-400 text-sm touch-manipulation"
-          />
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="flex-1 flex flex-col"
-      >
-        <TabsList className="mx-3 sm:mx-4 bg-matrix-purple-800/30 border border-matrix-purple-600/30 grid grid-cols-3 h-10">
-          <TabsTrigger
-            value="files"
-            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
+          {/* Tabs */}
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="flex-1 flex flex-col"
           >
-            <FolderTree className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-            <span className="hidden sm:inline">Files</span>
-            <span className="sm:hidden">Files</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="nodes"
-            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
-          >
-            <Workflow className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-            <span className="hidden sm:inline">Nodes</span>
-            <span className="sm:hidden">Nodes</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="templates"
-            className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
-          >
-            <Layers className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-            <span className="hidden sm:inline">Templates</span>
-            <span className="sm:hidden">Temp</span>
-          </TabsTrigger>
-        </TabsList>
+            <TabsList className="mx-3 sm:mx-4 bg-matrix-purple-800/30 border border-matrix-purple-600/30 grid grid-cols-3 h-10">
+              <TabsTrigger
+                value="files"
+                className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
+              >
+                <FolderTree className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                <span className="hidden sm:inline">Files</span>
+                <span className="sm:hidden">Files</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="nodes"
+                className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
+              >
+                <Workflow className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                <span className="hidden sm:inline">Nodes</span>
+                <span className="sm:hidden">Nodes</span>
+              </TabsTrigger>
+              <TabsTrigger
+              value="templates"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
+            >
+              <Layers className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+              <span className="hidden sm:inline">Templates</span>
+              <span className="sm:hidden">Temp</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="git"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
+            >
+              <GitBranch className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+              <span className="hidden sm:inline">Git</span>
+              <span className="sm:hidden">Git</span>
+            </TabsTrigger>
+            </TabsList>
 
-        <div className="flex-1 overflow-hidden">
-          <TabsContent value="files" className="h-full m-0">
-            <ScrollArea className="h-full px-4 py-2">
-              {filteredFiles.map((node) => renderFileNode(node))}
+            <div className="flex-1 overflow-hidden">
+              <TabsContent value="files" className="h-full m-0">
+                <ScrollArea className="h-full px-4 py-2">
+                  {filteredFiles.map((node) => renderFileNode(node))}
 
-              {/* Project Stats */}
-              <div className="mt-6 pt-4 border-t border-matrix-purple-600/30">
-                <div className="text-xs text-matrix-purple-400 mb-2">
-                  Project Statistics
-                </div>
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-matrix-purple-300">Files</span>
-                    <span className="text-matrix-gold-300">
-                      {countFiles(projectFiles)}
-                    </span>
+                  {/* Project Stats */}
+                  <div className="mt-6 pt-4 border-t border-matrix-purple-600/30">
+                    <div className="text-xs text-matrix-purple-400 mb-2">
+                      Project Statistics
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-matrix-purple-300">Files</span>
+                        <span className="text-matrix-gold-300">
+                          {countFiles(projectFiles)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-matrix-purple-300">Nodes</span>
+                        <span className="text-matrix-gold-300">{nodes.length}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-matrix-purple-300">Connections</span>
+                        <span className="text-matrix-gold-300">
+                          {state.connections.length}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-matrix-purple-300">Nodes</span>
-                    <span className="text-matrix-gold-300">{nodes.length}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-matrix-purple-300">Connections</span>
-                    <span className="text-matrix-gold-300">
-                      {state.connections.length}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </ScrollArea>
-          </TabsContent>
+                </ScrollArea>
+              </TabsContent>
 
-          <TabsContent value="nodes" className="h-full m-0">
-            <ScrollArea className="h-full px-4 py-2">
-              <div className="text-xs text-matrix-purple-400 mb-3">
-                Node Library (Click + to add)
-              </div>
-              {filteredNodes.map(renderNodeLibraryItem)}
-
-              {/* Custom Nodes */}
-              <div className="mt-6 pt-4 border-t border-matrix-purple-600/30">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="text-xs text-matrix-purple-400">
-                    Custom Nodes
+              <TabsContent value="nodes" className="h-full m-0">
+                <ScrollArea className="h-full px-4 py-2">
+                  <div className="text-xs text-matrix-purple-400 mb-3">
+                    Node Library (Click + to add)
                   </div>
-                  <Button size="sm" variant="ghost" className="h-6 text-xs">
-                    <Plus className="h-3 w-3 mr-1" />
-                    Create
-                  </Button>
-                </div>
-                <div className="glass-panel rounded-lg p-3 text-center text-xs text-matrix-purple-400">
-                  No custom nodes yet. Create your first custom node to extend
-                  the IDE functionality.
-                </div>
-              </div>
-            </ScrollArea>
-          </TabsContent>
+                  {filteredNodes.map(renderNodeLibraryItem)}
 
-          <TabsContent value="templates" className="h-full m-0">
+                  {/* Custom Nodes */}
+                  <div className="mt-6 pt-4 border-t border-matrix-purple-600/30">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-xs text-matrix-purple-400">
+                        Custom Nodes
+                      </div>
+                      <Button size="sm" variant="ghost" className="h-6 text-xs">
+                        <Plus className="h-3 w-3 mr-1" />
+                        Create
+                      </Button>
+                    </div>
+                    <div className="glass-panel rounded-lg p-3 text-center text-xs text-matrix-purple-400">
+                      No custom nodes yet. Create your first custom node to extend
+                      the IDE functionality.
+                    </div>
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+
+              <TabsContent value="templates" className="h-full m-0">
             <NodeTemplatesPanel />
           </TabsContent>
-        </div>
-      </Tabs>
+
+          <TabsContent value="git" className="h-full m-0">
+            <GitPanel />
+          </TabsContent>
+            </div>
+          </Tabs>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 }

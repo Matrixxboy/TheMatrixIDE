@@ -59,6 +59,8 @@ export default function MonacoCodeEditor() {
   const [editorInstance, setEditorInstance] = useState<any>(null);
   const [localCode, setLocalCode] = useState(generatedCode);
   const [output, setOutput] = useState("");
+  const [terminalInput, setTerminalInput] = useState("");
+  const [awaitingInput, setAwaitingInput] = useState(false);
   const [diagnostics, setDiagnostics] = useState<DiagnosticMessage[]>([]);
   const [isModified, setIsModified] = useState(false);
   const [showSnippets, setShowSnippets] = useState(false);
@@ -185,6 +187,10 @@ export default function MonacoCodeEditor() {
   };
 
   const handleRun = async () => {
+    setOutput("");
+    mockInputQueue.current = [];
+    setTerminalInput("");
+    setAwaitingInput(false);
     await executeNodes();
     dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
   };
@@ -318,92 +324,95 @@ export default function MonacoCodeEditor() {
   };
 
   // Function to execute user's custom code
+  const mockInputQueue = useRef<string[]>([]);
+
   const executeUserCode = async (
     code: string,
   ): Promise<{ output: string; executionTime: number }> => {
     const startTime = Date.now();
-    const lines = [];
+    const lines: string[] = [];
+    let currentCode = code;
+
+    const simulateInput = async (prompt: string = "") => {
+      lines.push(`> ${prompt}`);
+      setOutput(lines.join("\n"));
+      setAwaitingInput(true);
+
+      return new Promise<string>((resolve) => {
+        const handleInput = (e: KeyboardEvent) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const inputVal = mockInputQueue.current.shift() || terminalInput;
+            lines.push(inputVal);
+            setTerminalInput("");
+            setAwaitingInput(false);
+            window.removeEventListener("keydown", handleInput);
+            resolve(inputVal);
+          }
+        };
+        window.addEventListener("keydown", handleInput);
+      });
+    };
+
+    const simulatePrint = (message: string) => {
+      lines.push(message);
+      setOutput(lines.join("\n"));
+    };
+
+    const simulateError = (message: string) => {
+      lines.push(`ERROR: ${message}`);
+      setOutput(lines.join("\n"));
+    };
 
     try {
-      // Simple Python-like code execution simulation
-      if (code.includes("print(")) {
-        const printMatches = code.match(/print\(["'`]([^"'`]+)["'`]\)/g);
-        if (printMatches) {
-          printMatches.forEach((match) => {
-            const content = match.match(/print\(["'`]([^"'`]+)["'`]\)/)?.[1];
-            if (content) {
-              lines.push(content);
-            }
-          });
-        }
-      }
+      // Basic simulation of Python execution
+      const pythonKeywords = [
+        "print",
+        "input",
+        "def",
+        "if",
+        "else",
+        "elif",
+        "for",
+        "while",
+        "return",
+        "class",
+        "import",
+        "try",
+        "except",
+        "finally",
+      ];
 
-      // Handle f-strings and variable interpolation
-      const fStringMatches = code.match(/print\(f["'`]([^"'`]+)["'`]\)/g);
-      if (fStringMatches) {
-        fStringMatches.forEach((match) => {
-          let content = match.match(/print\(f["'`]([^"'`]+)["'`]\)/)?.[1] || "";
-          // Simple variable substitution
-          content = content.replace(/{([^}]+)}/g, (_, varName) => {
-            // Return placeholder values for demo
-            if (varName.includes("result")) return "processed_data";
-            if (varName.includes("name")) return "Matrix IDE";
-            if (varName.includes("value")) return "42";
-            return varName;
-          });
-          lines.push(content);
-        });
-      }
+      const processLine = async (line: string) => {
+        line = line.trim();
 
-      // Handle input() statements
-      if (code.includes("input(")) {
-        lines.push("User input: Hello from Matrix IDE!");
-      }
-
-      // Handle basic variable assignments
-      const varMatches = code.match(/(\w+)\s*=\s*["'`]([^"'`]+)["'`]/g);
-      if (varMatches) {
-        varMatches.forEach((match) => {
-          const [_, varName, value] =
-            match.match(/(\w+)\s*=\s*["'`]([^"'`]+)["'`]/) || [];
-          if (varName && value) {
-            lines.push(`Variable ${varName} set to: ${value}`);
+        if (line.startsWith("print(")) {
+          const match = line.match(/^print\((.*)\)$/);
+          if (match) {
+            let content = match[1];
+            // Basic f-string simulation
+            content = content.replace(/`([^`]+)`/g, (match, p1) => {
+              try {
+                return eval(p1); // DANGEROUS in real app, but okay for simulation
+              } catch { return match; }
+            });
+            simulatePrint(content.replace(/["']/g, ""));
           }
-        });
-      }
-
-      // Handle function definitions
-      if (code.includes("def ")) {
-        const funcMatches = code.match(/def\s+(\w+)\s*\(/g);
-        if (funcMatches) {
-          funcMatches.forEach((match) => {
-            const funcName = match.match(/def\s+(\w+)\s*\(/)?.[1];
-            if (funcName) {
-              lines.push(`Function '${funcName}' defined successfully`);
-            }
-          });
+        } else if (line.startsWith("input(")) {
+          const match = line.match(/^input\((.*)\)$/);
+          const prompt = match ? match[1].replace(/["']/g, "") : "";
+          await simulateInput(prompt);
+        } else if (pythonKeywords.some((kw) => line.startsWith(kw))) {
+          // Generic handling for other Python constructs
+          simulatePrint(`> Executing: ${line}`);
+        } else if (line.length > 0) {
+          simulatePrint(`> ${line}`);
         }
-      }
+      };
 
-      // Handle main execution
-      if (
-        code.includes('if __name__ == "__main__"') ||
-        code.includes("main()")
-      ) {
-        lines.push("Executing main program...");
-        lines.push("Program completed successfully!");
-      }
-
-      // If no specific patterns found, show generic success
-      if (lines.length === 0) {
-        if (code.trim().length > 0) {
-          lines.push("Code parsed successfully");
-          lines.push(`Lines of code: ${code.split("\n").length}`);
-          lines.push(`Characters: ${code.length}`);
-          lines.push("Ready for execution");
-        } else {
-          lines.push("No code to execute");
-        }
+      const linesToExecute = currentCode.split("\n");
+      for (const line of linesToExecute) {
+        await processLine(line);
       }
 
       const executionTime = Date.now() - startTime;
@@ -413,8 +422,9 @@ export default function MonacoCodeEditor() {
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
+      simulateError(error instanceof Error ? error.message : String(error));
       return {
-        output: `Error: ${error instanceof Error ? error.message : String(error)}`,
+        output: lines.join("\n"),
         executionTime,
       };
     }
@@ -753,10 +763,34 @@ export default function MonacoCodeEditor() {
           </TabsContent>
 
           <TabsContent value="output" className="h-full m-0">
-            <div className="h-full bg-matrix-dark/30 p-4 font-mono text-sm text-matrix-purple-200">
-              <pre className="whitespace-pre-wrap">
-                {output || 'Click "Run" to execute the code...'}
-              </pre>
+            <div className="h-full flex flex-col bg-matrix-dark/30 p-4 font-mono text-sm text-matrix-purple-200">
+              <ScrollArea className="flex-1 pb-4">
+                <pre className="whitespace-pre-wrap">
+                  {output || 'Click "Run" to execute the code...'}
+                </pre>
+              </ScrollArea>
+              {activeTab === "output" && (
+                <div className="flex items-center gap-2 border-t border-matrix-purple-600/30 pt-2">
+                  <span className="text-matrix-gold-300">{'>'}{'>'}</span>
+                  <input
+                    type="text"
+                    value={terminalInput}
+                    onChange={(e) => setTerminalInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && awaitingInput) {
+                        // This will trigger the promise resolution in executeUserCode
+                        // by updating the state that the promise is waiting for.
+                        // The actual value is read from terminalInput in simulateInput.
+                        setAwaitingInput(false);
+                      }
+                    }}
+                    className="flex-1 bg-transparent outline-none text-matrix-purple-200"
+                    placeholder={awaitingInput ? "Enter input..." : ""}
+                    disabled={!awaitingInput}
+                    autoFocus
+                  />
+                </div>
+              )}
             </div>
           </TabsContent>
 
