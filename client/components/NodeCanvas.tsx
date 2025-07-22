@@ -490,24 +490,25 @@ export default function NodeCanvas() {
         </div>
       </div>
 
-      {/* Code Generation Panel */}
-      <div className="absolute bottom-4 right-4 z-20 glass-panel rounded-lg p-4 max-w-sm">
+      {/* Code Generation Panel - Mobile-responsive */}
+      <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-20 glass-panel rounded-lg p-3 sm:p-4 max-w-xs sm:max-w-sm">
         <div className="flex items-center gap-2 mb-2">
           <Code className="h-4 w-4 text-matrix-gold-400" />
-          <span className="text-sm font-medium text-matrix-gold-300">
-            Generated Code
+          <span className="text-xs sm:text-sm font-medium text-matrix-gold-300">
+            <span className="hidden sm:inline">Generated Code</span>
+            <span className="sm:hidden">Code</span>
           </span>
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0 ml-auto">
+          <Button size="sm" variant="ghost" className="h-6 w-6 p-0 ml-auto touch-manipulation">
             <Play className="h-3 w-3" />
           </Button>
         </div>
-        <div className="bg-matrix-dark/50 rounded p-3 font-mono text-xs text-matrix-purple-300 max-h-32 overflow-auto">
+        <div className="bg-matrix-dark/50 rounded p-2 sm:p-3 font-mono text-xs text-matrix-purple-300 max-h-24 sm:max-h-32 overflow-auto">
           <pre className="whitespace-pre-wrap">
-            {generatedCode.split("\n").slice(0, 10).join("\n")}
+            {generatedCode.split("\n").slice(0, 6).join("\n")}
           </pre>
-          {generatedCode.split("\n").length > 10 && (
-            <div className="text-matrix-purple-400 mt-2">
-              ...and {generatedCode.split("\n").length - 10} more lines
+          {generatedCode.split("\n").length > 6 && (
+            <div className="text-matrix-purple-400 mt-1 sm:mt-2 text-xs">
+              ...+{generatedCode.split("\n").length - 6} lines
             </div>
           )}
         </div>
@@ -515,7 +516,8 @@ export default function NodeCanvas() {
           variant="outline"
           className="mt-2 border-matrix-gold-400/50 text-matrix-gold-300 text-xs"
         >
-          {settings.language.toUpperCase()} - Auto-generated
+          {settings.language.toUpperCase()}
+          <span className="hidden sm:inline"> - Auto-generated</span>
         </Badge>
       </div>
 
