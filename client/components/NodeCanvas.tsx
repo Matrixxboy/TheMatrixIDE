@@ -428,35 +428,35 @@ export default function NodeCanvas() {
 
   return (
     <div className="relative w-full h-full overflow-hidden node-canvas">
-      {/* Toolbar */}
-      <div className="absolute top-4 left-4 z-20 glass-panel rounded-lg p-2 flex flex-col gap-2">
-        <div className="flex items-center gap-1">
+      {/* Toolbar - Mobile-friendly */}
+      <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-20 glass-panel rounded-lg p-2 flex flex-col gap-2">
+        <div className="flex sm:flex-col items-center gap-1 sm:gap-2">
           <Button
             size="sm"
             variant="ghost"
             onClick={handleZoomIn}
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 sm:h-8 sm:w-8 p-0 touch-manipulation"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-5 w-5 sm:h-4 sm:w-4" />
           </Button>
           <Button
             size="sm"
             variant="ghost"
             onClick={handleZoomOut}
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 sm:h-8 sm:w-8 p-0 touch-manipulation"
           >
-            <Minus className="h-4 w-4" />
+            <Minus className="h-5 w-5 sm:h-4 sm:w-4" />
           </Button>
           <Button
             size="sm"
             variant="ghost"
             onClick={handleReset}
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 sm:h-8 sm:w-8 p-0 touch-manipulation"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-5 w-5 sm:h-4 sm:w-4" />
           </Button>
         </div>
-        <div className="text-xs text-matrix-purple-300 text-center">
+        <div className="text-xs text-matrix-purple-300 text-center hidden sm:block">
           {Math.round(canvasZoom * 100)}%
         </div>
       </div>
