@@ -28,19 +28,19 @@ export class NodeExecutor {
 
   // Topological sort to determine execution order
   private getExecutionOrder(nodes: Node[], connections: Connection[]): Node[] {
-    const inDegree = new Map<string, number>();
-    const adjList = new Map<string, string[]>();
+    const inDegree: Record<string, number> = {};
+    const adjList: Record<string, string[]> = {};
 
     // Initialize
     nodes.forEach((node) => {
-      inDegree.set(node.id, 0);
-      adjList.set(node.id, []);
+      inDegree[node.id] = 0;
+      adjList[node.id] = [];
     });
 
     // Build adjacency list and calculate in-degrees
     connections.forEach((conn) => {
-      adjList.get(conn.source)?.push(conn.target);
-      inDegree.set(conn.target, (inDegree.get(conn.target) || 0) + 1);
+      adjList[conn.source]?.push(conn.target);
+      inDegree[conn.target] = (inDegree[conn.target] || 0) + 1;
     });
 
     // Topological sort
@@ -48,7 +48,7 @@ export class NodeExecutor {
     const result: Node[] = [];
 
     // Find nodes with no incoming edges
-    inDegree.forEach((degree, nodeId) => {
+    Object.entries(inDegree).forEach(([nodeId, degree]) => {
       if (degree === 0) {
         queue.push(nodeId);
       }
@@ -61,9 +61,9 @@ export class NodeExecutor {
         result.push(node);
       }
 
-      adjList.get(nodeId)?.forEach((neighbor) => {
-        const newDegree = (inDegree.get(neighbor) || 0) - 1;
-        inDegree.set(neighbor, newDegree);
+      adjList[nodeId]?.forEach((neighbor) => {
+        const newDegree = (inDegree[neighbor] || 0) - 1;
+        inDegree[neighbor] = newDegree;
         if (newDegree === 0) {
           queue.push(neighbor);
         }
