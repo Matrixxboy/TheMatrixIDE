@@ -172,20 +172,20 @@ export default function NodeCanvas() {
     [nodes, canvasPan, canvasZoom, dispatch],
   );
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
       const rect = canvasRef.current?.getBoundingClientRect();
       if (!rect) return;
 
-      const mouseX = (e.clientX - rect.left - canvasPan.x) / canvasZoom;
-      const mouseY = (e.clientY - rect.top - canvasPan.y) / canvasZoom;
+      const pointerX = (e.clientX - rect.left - canvasPan.x) / canvasZoom;
+      const pointerY = (e.clientY - rect.top - canvasPan.y) / canvasZoom;
 
-      setMousePosition({ x: mouseX, y: mouseY });
+      setMousePosition({ x: pointerX, y: pointerY });
 
       if (dragState.isDragging && dragState.nodeId) {
         const newPosition = {
-          x: mouseX - dragState.offset.x,
-          y: mouseY - dragState.offset.y,
+          x: pointerX - dragState.offset.x,
+          y: pointerY - dragState.offset.y,
         };
 
         // Snap to grid if enabled
@@ -203,7 +203,7 @@ export default function NodeCanvas() {
       if (connectionState.isConnecting) {
         setConnectionState((prev) => ({
           ...prev,
-          tempConnection: { x: mouseX, y: mouseY },
+          tempConnection: { x: pointerX, y: pointerY },
         }));
       }
     },
