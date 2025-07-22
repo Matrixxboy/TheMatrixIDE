@@ -372,7 +372,11 @@ export default function NodeCanvas() {
         key={node.id}
         className={`absolute glass-panel rounded-lg p-3 sm:p-4 min-w-32 sm:min-w-40 cursor-move transform transition-all duration-200 touch-manipulation ${
           isSelected ? "ring-2 ring-matrix-gold-400/50 shadow-lg" : ""
-        } ${dragState.isDragging && dragState.nodeId === node.id ? "z-50" : "z-10"}`}
+        } ${dragState.isDragging && dragState.nodeId === node.id ? "z-50" : "z-10"} ${
+          executionState === 'running' ? 'ring-2 ring-blue-400 animate-pulse' :
+          executionState === 'completed' ? 'ring-2 ring-green-400' :
+          executionState === 'error' ? 'ring-2 ring-red-400' : ''
+        }`}
         style={{
           left: node.position.x,
           top: node.position.y,
