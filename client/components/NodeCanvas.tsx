@@ -149,7 +149,7 @@ export default function NodeCanvas() {
     if (isExecuting) return;
 
     setIsExecuting(true);
-    setNodeExecutionStates(new Map());
+    setNodeExecutionStates({});
 
     try {
       const executor = new NodeExecutor();
