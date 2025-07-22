@@ -102,7 +102,7 @@ export class NodeExecutor {
     inputs: Record<string, any>,
   ): Promise<NodeExecutionResult> {
     const startTime = Date.now();
-    this.context.nodeStates.set(node.id, "running");
+    this.context.nodeStates[node.id] = "running";
 
     // Add small delay to make execution visible
     await new Promise((resolve) =>
