@@ -122,7 +122,9 @@ type AppAction =
       type: "ADD_AI_MESSAGE";
       payload: { type: "user" | "ai"; content: string; category?: string };
     }
-  | { type: "SET_AI_PROCESSING"; payload: boolean };
+  | { type: "SET_AI_PROCESSING"; payload: boolean }
+  | { type: "SET_EXECUTION_CONTEXT"; payload: ExecutionContext | null }
+  | { type: "UPDATE_NODE_EXECUTION_STATE"; payload: { nodeId: string; state: "pending" | "running" | "completed" | "error" } };
 
 // Initial state
 const initialState: AppState = {
