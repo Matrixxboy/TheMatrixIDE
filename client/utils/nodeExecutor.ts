@@ -136,12 +136,12 @@ export class NodeExecutor {
       }
 
       const executionTime = Date.now() - startTime;
-      this.context.nodeStates.set(node.id, "completed");
+      this.context.nodeStates[node.id] = "completed";
 
       // Store outputs for connected nodes
       if (node.data.outputs) {
         node.data.outputs.forEach((outputName) => {
-          this.context.nodeOutputs.set(`${node.id}_${outputName}`, output);
+          this.context.nodeOutputs[`${node.id}_${outputName}`] = output;
         });
       }
 
