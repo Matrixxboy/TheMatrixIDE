@@ -1,8 +1,8 @@
 import { Node, Connection } from "@/contexts/AppContext";
 
 export interface ExecutionContext {
-  nodeOutputs: Map<string, any>;
-  nodeStates: Map<string, "pending" | "running" | "completed" | "error">;
+  nodeOutputs: Record<string, any>;
+  nodeStates: Record<string, "pending" | "running" | "completed" | "error">;
   executionLog: string[];
   startTime: number;
 }
