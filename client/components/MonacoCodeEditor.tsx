@@ -389,67 +389,104 @@ export default function MonacoCodeEditor() {
           </TabsList>
         </Tabs>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Badge
             variant="outline"
-            className="border-matrix-gold-400/50 text-matrix-gold-300"
+            className="border-matrix-gold-400/50 text-matrix-gold-300 text-xs"
           >
             {settings.language.toUpperCase()}
           </Badge>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={formatCode}
-            className="h-8"
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleCopy}
-            className="h-8"
-          >
-            <Copy className="h-4 w-4" />
-          </Button>
-          {isModified && (
+
+          {/* Desktop buttons */}
+          <div className="hidden sm:flex items-center gap-2">
             <Button
               size="sm"
               variant="ghost"
-              onClick={handleSave}
-              className="h-8 text-matrix-gold-300"
+              onClick={formatCode}
+              className="h-8"
             >
-              <Save className="h-4 w-4" />
+              <Settings className="h-4 w-4" />
             </Button>
-          )}
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleDownload}
-            className="h-8"
-          >
-            <Download className="h-4 w-4" />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={toggleFullscreen}
-            className="h-8"
-          >
-            {isFullscreen ? (
-              <Minimize2 className="h-4 w-4" />
-            ) : (
-              <Maximize2 className="h-4 w-4" />
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleCopy}
+              className="h-8"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+            {isModified && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleSave}
+                className="h-8 text-matrix-gold-300"
+              >
+                <Save className="h-4 w-4" />
+              </Button>
             )}
-          </Button>
-          <Button
-            size="sm"
-            onClick={handleRun}
-            className="h-8 bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark"
-          >
-            <Play className="h-4 w-4 mr-1" />
-            Run
-          </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleDownload}
+              className="h-8"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={toggleFullscreen}
+              className="h-8"
+            >
+              {isFullscreen ? (
+                <Minimize2 className="h-4 w-4" />
+              ) : (
+                <Maximize2 className="h-4 w-4" />
+              )}
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleRun}
+              className="h-8 bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark"
+            >
+              <Play className="h-4 w-4 mr-1" />
+              Run
+            </Button>
+          </div>
+
+          {/* Mobile buttons */}
+          <div className="flex sm:hidden items-center gap-1">
+            {isModified && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleSave}
+                className="h-8 w-8 p-0 text-matrix-gold-300 touch-manipulation"
+              >
+                <Save className="h-4 w-4" />
+              </Button>
+            )}
+            <Button
+              size="sm"
+              onClick={handleRun}
+              className="h-8 px-3 bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark touch-manipulation"
+            >
+              <Play className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={toggleFullscreen}
+              className="h-8 w-8 p-0 touch-manipulation"
+            >
+              {isFullscreen ? (
+                <Minimize2 className="h-4 w-4" />
+              ) : (
+                <Maximize2 className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
 
