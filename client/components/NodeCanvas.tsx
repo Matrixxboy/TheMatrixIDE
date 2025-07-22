@@ -140,10 +140,10 @@ export default function NodeCanvas() {
     setContextMenu(null);
   };
 
-  // Mouse handlers for node dragging
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent, nodeId: string) => {
-      if (e.button !== 0) return; // Only left click
+  // Mouse and Touch handlers for node dragging
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent, nodeId: string) => {
+      e.currentTarget.setPointerCapture(e.pointerId);
 
       const rect = canvasRef.current?.getBoundingClientRect();
       if (!rect) return;
@@ -151,17 +151,17 @@ export default function NodeCanvas() {
       const node = nodes.find((n) => n.id === nodeId);
       if (!node) return;
 
-      const mouseX = (e.clientX - rect.left - canvasPan.x) / canvasZoom;
-      const mouseY = (e.clientY - rect.top - canvasPan.y) / canvasZoom;
+      const pointerX = (e.clientX - rect.left - canvasPan.x) / canvasZoom;
+      const pointerY = (e.clientY - rect.top - canvasPan.y) / canvasZoom;
 
       setDragState({
         isDragging: true,
         nodeId,
         offset: {
-          x: mouseX - node.position.x,
-          y: mouseY - node.position.y,
+          x: pointerX - node.position.x,
+          y: pointerY - node.position.y,
         },
-        startPosition: { x: mouseX, y: mouseY },
+        startPosition: { x: pointerX, y: pointerY },
       });
 
       dispatch({ type: "SELECT_NODE", payload: nodeId });
