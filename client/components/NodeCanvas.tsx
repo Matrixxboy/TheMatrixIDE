@@ -528,9 +528,9 @@ export default function NodeCanvas() {
         style={{
           transform: `translate(${canvasPan.x}px, ${canvasPan.y}px)`,
         }}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
         onClick={() => dispatch({ type: "SELECT_NODE", payload: null })}
       >
         {/* Render connections */}
