@@ -786,6 +786,113 @@ export default function MonacoCodeEditor() {
               </div>
             </ScrollArea>
           </TabsContent>
+
+          <TabsContent value="snippets" className="h-full m-0">
+            <div className="h-full flex flex-col">
+              {/* Snippets Header */}
+              <div className="p-3 border-b border-matrix-purple-600/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <Code2 className="h-4 w-4 text-matrix-gold-400" />
+                  <span className="text-sm font-medium text-matrix-gold-300">
+                    Code Snippets
+                  </span>
+                </div>
+
+                {/* Search */}
+                <div className="relative mb-3">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-matrix-purple-400" />
+                  <input
+                    type="text"
+                    value={snippetSearch}
+                    onChange={(e) => setSnippetSearch(e.target.value)}
+                    placeholder="Search snippets..."
+                    className="w-full pl-10 pr-4 py-2 bg-matrix-purple-800/30 border border-matrix-purple-600/50 rounded text-sm text-matrix-purple-200 placeholder:text-matrix-purple-400 focus:outline-none focus:border-matrix-gold-400/50"
+                  />
+                </div>
+
+                {/* Category Filter */}
+                <div className="flex gap-1 flex-wrap">
+                  {["All", ...getAllCategories()].map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`px-2 py-1 rounded text-xs transition-colors ${
+                        selectedCategory === category
+                          ? "bg-matrix-gold-500/20 text-matrix-gold-300 border border-matrix-gold-400/50"
+                          : "bg-matrix-purple-800/30 text-matrix-purple-300 border border-matrix-purple-600/50 hover:bg-matrix-purple-700/30"
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Snippets List */}
+              <ScrollArea className="flex-1">
+                <div className="p-3 space-y-2">
+                  {(() => {
+                    let filteredSnippets = getSnippetsByLanguage(settings.language);
+
+                    if (selectedCategory !== "All") {
+                      filteredSnippets = filteredSnippets.filter(s => s.category === selectedCategory);
+                    }
+
+                    if (snippetSearch) {
+                      const searchResults = searchSnippets(snippetSearch);
+                      filteredSnippets = filteredSnippets.filter(s => searchResults.includes(s));
+                    }
+
+                    return filteredSnippets.map((snippet) => (
+                      <div
+                        key={snippet.id}
+                        className="glass-panel rounded-lg p-3 cursor-pointer hover:bg-matrix-purple-700/20 transition-colors"
+                        onClick={() => insertCodeSnippet(snippet)}
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex-1">
+                            <h4 className="text-sm font-medium text-matrix-gold-300">
+                              {snippet.name}
+                            </h4>
+                            <p className="text-xs text-matrix-purple-400 mt-1">
+                              {snippet.description}
+                            </p>
+                          </div>
+                          <Badge
+                            variant="outline"
+                            className="text-xs border-matrix-purple-600/50 text-matrix-purple-300"
+                          >
+                            {snippet.category}
+                          </Badge>
+                        </div>
+
+                        <div className="bg-matrix-dark/50 rounded p-2 mt-2">
+                          <pre className="text-xs text-matrix-purple-200 whitespace-pre-wrap font-mono overflow-hidden">
+                            {snippet.code.length > 100
+                              ? snippet.code.substring(0, 100) + "..."
+                              : snippet.code
+                            }
+                          </pre>
+                        </div>
+
+                        <div className="flex gap-1 mt-2 flex-wrap">
+                          {snippet.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2 py-1 bg-matrix-purple-800/50 text-xs text-matrix-purple-300 rounded"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ));
+                  })()
+                  }
+                </div>
+              </ScrollArea>
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
