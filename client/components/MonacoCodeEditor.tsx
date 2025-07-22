@@ -290,10 +290,10 @@ export default function MonacoCodeEditor() {
 
       // Final summary
       const totalTime = Date.now() - context.startTime;
-      const completedCount = Array.from(context.nodeStates.values()).filter(
+      const completedCount = Object.values(context.nodeStates).filter(
         (s) => s === "completed",
       ).length;
-      const errorCount = Array.from(context.nodeStates.values()).filter(
+      const errorCount = Object.values(context.nodeStates).filter(
         (s) => s === "error",
       ).length;
 
