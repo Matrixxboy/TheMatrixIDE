@@ -217,7 +217,7 @@ export default function NodeCanvas() {
     ],
   );
 
-  const handleMouseUp = useCallback(() => {
+  const handlePointerUp = useCallback(() => {
     if (dragState.isDragging) {
       setDragState({
         isDragging: false,
