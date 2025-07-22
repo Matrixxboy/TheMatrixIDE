@@ -378,7 +378,7 @@ export default function NodeCanvas() {
                 className="flex items-center gap-2 mb-1 relative"
                 onMouseUp={(e) => endConnection(node.id, input, e)}
               >
-                <div className="w-3 h-3 rounded-full bg-matrix-purple-400 border-2 border-matrix-purple-300 cursor-pointer hover:bg-matrix-purple-300 transition-colors"></div>
+                <div className="w-4 h-4 sm:w-3 sm:h-3 rounded-full bg-matrix-purple-400 border-2 border-matrix-purple-300 cursor-pointer hover:bg-matrix-purple-300 transition-colors touch-manipulation"></div>
                 <span className="text-xs text-matrix-purple-300">{input}</span>
               </div>
             ))}
