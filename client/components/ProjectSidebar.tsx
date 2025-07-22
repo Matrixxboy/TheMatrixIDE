@@ -357,7 +357,7 @@ export default function ProjectSidebar() {
             onValueChange={setActiveTab}
             className="flex-1 flex flex-col"
           >
-            <TabsList className="mx-3 sm:mx-4 bg-matrix-purple-800/30 border border-matrix-purple-600/30 grid grid-cols-3 h-10">
+            <TabsList className="mx-3 sm:mx-4 bg-matrix-purple-800/30 border border-matrix-purple-600/30 grid grid-cols-4 h-10">
               <TabsTrigger
                 value="files"
                 className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm touch-manipulation"
