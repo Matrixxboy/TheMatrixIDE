@@ -54,6 +54,14 @@ export interface Settings {
   minifyCode: boolean;
 }
 
+export interface ExecutionContext {
+  nodeOutputs: Map<string, any>;
+  nodeStates: Map<string, "pending" | "running" | "completed" | "error">;
+  executionLog: string[];
+  startTime: number;
+  isExecuting: boolean;
+}
+
 export interface AppState {
   // Canvas state
   nodes: Node[];
