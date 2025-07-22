@@ -26,6 +26,9 @@ import {
   CheckCircle,
   AlertCircle,
   Info,
+  Code2,
+  Search,
+  Plus,
 } from "lucide-react";
 
 interface EditorProps {
