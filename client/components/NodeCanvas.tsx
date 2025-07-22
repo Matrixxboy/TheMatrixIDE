@@ -143,6 +143,42 @@ export default function NodeCanvas() {
     setContextMenu(null);
   };
 
+  const executeNodes = async () => {
+    if (isExecuting) return;
+
+    setIsExecuting(true);
+    setNodeExecutionStates(new Map());
+
+    try {
+      const executor = new NodeExecutor();
+
+      // Set up execution monitoring
+      const originalExecuteNode = executor['executeNode'];
+      executor['executeNode'] = async function(node, inputs) {
+        setNodeExecutionStates(prev => new Map(prev.set(node.id, 'running')));
+        const result = await originalExecuteNode.call(this, node, inputs);
+        setNodeExecutionStates(prev => new Map(prev.set(node.id, result.success ? 'completed' : 'error')));
+        return result;
+      };
+
+      const context = await executor.executeNodeGraph(nodes, connections);
+
+      // Trigger code editor to show results
+      dispatch({ type: "SET_ACTIVE_PANEL", payload: "code" });
+      dispatch({ type: "SET_ACTIVE_TAB", payload: "output" });
+
+      setTimeout(() => {
+        const event = new CustomEvent("executeCode");
+        window.dispatchEvent(event);
+      }, 100);
+
+    } catch (error) {
+      console.error("Node execution failed:", error);
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
   // Mouse and Touch handlers for node dragging
   const handlePointerDown = useCallback(
     (e: React.PointerEvent, nodeId: string) => {
