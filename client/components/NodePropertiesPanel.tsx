@@ -803,25 +803,32 @@ export default function NodePropertiesPanel() {
             </TabsContent>
           </ScrollArea>
 
-          {/* Action Buttons */}
+          {/* Action Buttons - Mobile-responsive */}
           {hasChanges && (
-            <div className="h-14 glass-panel border-t border-matrix-purple-600/30 flex items-center justify-between px-4">
+            <div className="h-12 sm:h-14 glass-panel border-t border-matrix-purple-600/30 flex items-center justify-between px-3 sm:px-4">
               <div className="flex items-center gap-2 text-xs text-matrix-gold-300">
                 <AlertTriangle className="h-3 w-3" />
-                Unsaved changes
+                <span className="hidden sm:inline">Unsaved changes</span>
+                <span className="sm:hidden">Unsaved</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Button size="sm" variant="ghost" onClick={resetChanges}>
-                  <RotateCcw className="h-3 w-3 mr-1" />
-                  Reset
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={resetChanges}
+                  className="h-9 sm:h-8 px-2 sm:px-3 touch-manipulation"
+                >
+                  <RotateCcw className="h-4 w-4 sm:h-3 sm:w-3 mr-1" />
+                  <span className="hidden sm:inline">Reset</span>
                 </Button>
                 <Button
                   size="sm"
                   onClick={saveChanges}
-                  className="bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark"
+                  className="h-9 sm:h-8 px-3 sm:px-3 bg-gradient-to-r from-matrix-gold-500 to-matrix-gold-600 hover:from-matrix-gold-600 hover:to-matrix-gold-700 text-matrix-dark touch-manipulation"
                 >
-                  <Save className="h-3 w-3 mr-1" />
-                  Save
+                  <Save className="h-4 w-4 sm:h-3 sm:w-3 mr-1" />
+                  <span className="hidden sm:inline">Save</span>
+                  <span className="sm:hidden">Save</span>
                 </Button>
               </div>
             </div>
