@@ -465,6 +465,28 @@ export default function MonacoCodeEditor() {
     setIsFullscreen(!isFullscreen);
   };
 
+  const insertCodeSnippet = (snippet: any) => {
+    if (editorInstance) {
+      const position = editorInstance.getPosition();
+      const range = {
+        startLineNumber: position.lineNumber,
+        startColumn: position.column,
+        endLineNumber: position.lineNumber,
+        endColumn: position.column,
+      };
+
+      const op = {
+        range: range,
+        text: insertSnippet(snippet),
+        forceMoveMarkers: true,
+      };
+
+      editorInstance.executeEdits("snippet-insert", [op]);
+      editorInstance.focus();
+      setShowSnippets(false);
+    }
+  };
+
   const getDiagnosticIcon = (type: DiagnosticMessage["type"]) => {
     switch (type) {
       case "error":
