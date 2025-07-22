@@ -365,6 +365,7 @@ export default function NodeCanvas() {
     const nodeTypeConfig = nodeTypes.find((nt) => nt.type === node.type);
     const Icon = nodeTypeConfig?.icon || FunctionIcon;
     const isSelected = selectedNode === node.id;
+    const executionState = nodeExecutionStates.get(node.id);
 
     return (
       <div
