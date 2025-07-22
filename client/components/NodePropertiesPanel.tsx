@@ -35,7 +35,11 @@ import {
   EyeOff,
   Info,
   AlertTriangle,
-  MoreVertical
+  MoreVertical,
+  ChevronDown,
+  ChevronUp,
+  PanelRightClose,
+  PanelRightOpen
 } from "lucide-react";
 
 interface NodePropertyConfig {
