@@ -265,6 +265,7 @@ const initialState: AppState = {
     },
   ],
   aiProcessing: false,
+  executionContext: null,
 };
 
 // Reducer
