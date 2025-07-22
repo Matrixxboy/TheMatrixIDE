@@ -261,7 +261,7 @@ export default function ProjectSidebar() {
     return (
       <div
         key={node.id}
-        className="glass-panel rounded-lg p-3 mb-2 cursor-pointer hover:bg-matrix-purple-700/20 group"
+        className="glass-panel rounded-lg p-3 mb-2 cursor-pointer hover:bg-matrix-purple-700/20 group touch-manipulation min-h-16"
       >
         <div className="flex items-center gap-3">
           <div
