@@ -146,7 +146,7 @@ export class NodeExecutor {
       }
 
       this.context.executionLog.push(
-        `✓ ${node.data.label} completed in ${executionTime}ms → ${JSON.stringify(output).substring(0, 50)}${JSON.stringify(output).length > 50 ? "..." : ""}`,
+        `✓ ${node.data.label} completed in ${executionTime}ms �� ${JSON.stringify(output).substring(0, 50)}${JSON.stringify(output).length > 50 ? "..." : ""}`,
       );
 
       return {
@@ -156,7 +156,7 @@ export class NodeExecutor {
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
-      this.context.nodeStates.set(node.id, "error");
+      this.context.nodeStates[node.id] = "error";
 
       const errorMessage =
         error instanceof Error ? error.message : String(error);
