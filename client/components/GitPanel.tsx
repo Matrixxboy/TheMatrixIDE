@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { GitBranch, GitCommit, GitPullRequest, GitMerge, GitCompare, RefreshCw } from "lucide-react";
+import { GitBranch, GitCommit, GitPullRequest, GitMerge, GitCompare, RefreshCw, Plus } from "lucide-react";
 
 export default function GitPanel() {
   const [gitOutput, setGitOutput] = useState("");
