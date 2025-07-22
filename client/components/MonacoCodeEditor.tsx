@@ -350,34 +350,37 @@ export default function MonacoCodeEditor() {
           }
           className="flex-1"
         >
-          <TabsList className="bg-matrix-purple-800/30 border border-matrix-purple-600/30">
+          <TabsList className="bg-matrix-purple-800/30 border border-matrix-purple-600/30 h-9 sm:h-10">
             <TabsTrigger
               value="generated"
-              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm px-2 sm:px-3 touch-manipulation"
             >
-              <FileText className="h-4 w-4 mr-2" />
-              Code
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Code</span>
+              <span className="sm:hidden">Code</span>
               {isModified && (
                 <span className="ml-1 w-2 h-2 bg-matrix-gold-400 rounded-full"></span>
               )}
             </TabsTrigger>
             <TabsTrigger
               value="output"
-              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm px-2 sm:px-3 touch-manipulation"
             >
-              <Terminal className="h-4 w-4 mr-2" />
-              Output
+              <Terminal className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Output</span>
+              <span className="sm:hidden">Out</span>
             </TabsTrigger>
             <TabsTrigger
               value="diagnostics"
-              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300"
+              className="data-[state=active]:bg-matrix-purple-700/50 data-[state=active]:text-matrix-gold-300 text-xs sm:text-sm px-2 sm:px-3 touch-manipulation"
             >
-              <Bug className="h-4 w-4 mr-2" />
-              Problems
+              <Bug className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Problems</span>
+              <span className="sm:hidden">Issues</span>
               {diagnostics.length > 0 && (
                 <Badge
                   variant="outline"
-                  className="ml-2 h-5 text-xs border-matrix-gold-400/50 text-matrix-gold-300"
+                  className="ml-1 sm:ml-2 h-4 sm:h-5 text-xs border-matrix-gold-400/50 text-matrix-gold-300"
                 >
                   {diagnostics.length}
                 </Badge>
