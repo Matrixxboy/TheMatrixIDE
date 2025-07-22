@@ -233,7 +233,7 @@ export default function Index() {
           </div>
 
           {/* Bottom/Side Panel - Code Editor, AI, Settings */}
-          <div className="w-full xl:w-96 h-96 xl:h-auto glass-panel border-t xl:border-t-0 xl:border-l border-matrix-purple-600/30 flex flex-col xl:mt-0 rounded-xl matrix-interactive">
+          <div className="w-full xl:w-[600px] h-[500px] xl:h-auto glass-panel border-t xl:border-t-0 xl:border-l border-matrix-purple-600/30 flex flex-col xl:mt-0 rounded-xl matrix-interactive">
             {/* Panel Tabs */}
             <div className="h-12 flex items-center gap-1 px-4 border-b border-matrix-purple-600/30 overflow-x-auto">
               <Button
